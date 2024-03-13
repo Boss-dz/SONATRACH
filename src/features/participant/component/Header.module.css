@@ -8,15 +8,18 @@
   grid-row-start: 1;
   grid-row-end: 2;
   padding: 20px 20px 0 0;
-  background-color: blue;
   margin-bottom: 10px;
 }
 .img {
   display: flex;
   gap: 15px;
 }
+.img .one {
+  cursor: pointer;
+}
 .container input {
-  border: none;
+  border-color: transparent;
   padding: 10px;
   border-radius: 10px;
+  outline: none;
 }

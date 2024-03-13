@@ -5,7 +5,7 @@ export default function Welcome() {
   return (
     <div className={style.welcome}>
       <div className={style.container}>
-        <p className={style.text}>Your Text Here</p>
+        <p className={style.text}>Bienvenue Rayan</p>
       </div>
     </div>
   );
