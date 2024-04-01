@@ -9,7 +9,21 @@ const data = [
     tempRestant: "5jrs",
   },
   {
+    title: "Adm Microsoft ",
+    company: "Microsoft",
+    dureFormation: "4j",
+    debutQestionnaire: "3h",
+    tempRestant: "5jrs",
+  },
+  {
     title: "Adm Microsoft",
+    company: "Microsoft ",
+    dureFormation: "4j",
+    debutQestionnaire: "3h",
+    tempRestant: "5jrs",
+  },
+  {
+    title: "Adm Microsoft ",
     company: "Microsoft",
     dureFormation: "4j",
     debutQestionnaire: "3h",
@@ -29,23 +43,8 @@ const data = [
     debutQestionnaire: "3h",
     tempRestant: "5jrs",
   },
-  {
-    title: "Adm Microsoft",
-    company: "Microsoft",
-    dureFormation: "4j",
-    debutQestionnaire: "3h",
-    tempRestant: "5jrs",
-  },
-  {
-    title: "Adm Microsoft",
-    company: "Microsoft",
-    dureFormation: "4j",
-    debutQestionnaire: "3h",
-    tempRestant: "5jrs",
-  },
-
 ];
-export default function QuestDetails() {
+export default function QuestDetails({ color }) {
   return (
     <div className={style.container}>
       <ul className={style.info}>
@@ -55,8 +54,8 @@ export default function QuestDetails() {
         <li>Début de questionnaire</li>
         <li>Temps restant</li>
       </ul>
-      {data.map((e,i) => (
-        <div className={style.details} key={i}>
+      {data.map((e, i) => (
+        <div className={style.details} style={{ "--color": color }} key={i}>
           <h3>{e.title}</h3>
           <h5>{e.company}</h5>
           <span>{e.dureFormation}</span>

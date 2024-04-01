@@ -8,6 +8,9 @@
   justify-content: center;
   padding-top: 20px;
 }
+.change{
+  grid-row-start: 10;
+}
 .container span {
   border-top: 1px solid;
 

@@ -31,11 +31,15 @@
   border-radius: 15px;
 }
 .container .details::before {
+  position: absolute;
   content: "";
   border-width: 5px;
   border-style: solid;
   height: 15px;
-  border-color: #dc354680;
+  border-color: var(--color, #dc354680);
   align-self: center;
   border-radius: 2px;
+}
+.details h3{
+  margin-left: 30px;
 }
