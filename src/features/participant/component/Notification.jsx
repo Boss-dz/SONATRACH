@@ -10,7 +10,7 @@ const data = [
     company: "Microsoft",
   },
   {
-    title: "Adm Microsoft",
+    title: "Admrezrezrezrzrzrrezrze Microsoft",
     company: "Microsoft",
   },
   {
