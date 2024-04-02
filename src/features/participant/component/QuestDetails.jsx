@@ -9,7 +9,7 @@ const data = [
     tempRestant: "5jrs",
   },
   {
-    title: "Adm Microsoft ",
+    title: "Adm Microsoft",
     company: "Microsoft",
     dureFormation: "4j",
     debutQestionnaire: "3h",

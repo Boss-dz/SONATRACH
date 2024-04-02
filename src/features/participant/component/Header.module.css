@@ -23,3 +23,12 @@
   border-radius: 10px;
   outline: none;
 }
+.link{
+  color: #33333399;
+  text-decoration: none;
+  padding-right: 5px;
+}
+.path span{
+  color: #33333399;
+
+}
