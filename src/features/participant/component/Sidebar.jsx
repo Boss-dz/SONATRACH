@@ -9,9 +9,6 @@ export default function Sidebar() {
         <NavLink to="/">
           <img className={style.logo} src="Logo_Mask.svg" alt="LOGO" />
         </NavLink>
-        {/* <NavLink to="/">
-          <img className={style.utils} src="DashBoardA.svg" alt="UTILS" />
-        </NavLink> */}
         <NavLink to="/">
           <img
             className={
@@ -26,7 +23,8 @@ export default function Sidebar() {
         <NavLink to="/questionnaire_en_attente">
           <img
             className={
-              location.pathname === "/questionnaire_en_attente"
+              location.pathname === "/questionnaire_en_attente" ||
+              location.pathname === "/questionnaire"
                 ? style.utils
                 : `${style.utils} ${style.active}`
             }

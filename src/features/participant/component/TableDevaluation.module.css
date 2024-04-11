@@ -1,0 +1,40 @@
+.container {
+  grid-column-start: 2;
+  grid-column-end: 8;
+  margin-top: -30px;
+}
+table {
+  border-collapse: collapse;
+  width: 100%;
+  background-color: #fff;
+  border-radius: 10px;
+  border: 1px solid #00000040;
+}
+th,
+td {
+  padding: 8px;
+  border: 1px solid #00000040;
+}
+th {
+  text-align: center;
+}
+.tableContainer {
+  border-radius: 20px;
+  overflow: hidden;
+}
+.tableHead {
+  background-image: url("Welcome.svg");
+  background-size: auto;
+  background-repeat: no-repeat;
+  background-position: center;
+}
+.emojis {
+  text-align: center;
+}
+.emojis img {
+  width: 25px;
+  cursor: pointer;
+}
+.color {
+  background-color: #fad8b9;
+}

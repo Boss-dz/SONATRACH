@@ -13,7 +13,12 @@ export default function Header() {
           <NavLink to="/" className={style.link}>
             Acceuil
           </NavLink>
-          <span>{">"} Questionnaire en attente</span>
+          <span>
+            {">"}
+            <NavLink to="/questionnaire_en_attente" className={style.link}>
+              Questionnaire en attente
+            </NavLink>
+          </span>
         </div>
       )}
       {location.pathname === "/questionnaire_non_cloture" && (
@@ -21,7 +26,12 @@ export default function Header() {
           <NavLink to="/" className={style.link}>
             Acceuil
           </NavLink>
-          <span>{">"} Questionnaire non cloturer</span>
+          <span>
+            {">"}
+            <NavLink to="/questionnaire_non_cloture" className={style.link}>
+              Questionnaire non cloturer
+            </NavLink>
+          </span>
         </div>
       )}
       {location.pathname === "/questionnaire_cloture" && (
@@ -29,7 +39,12 @@ export default function Header() {
           <NavLink to="/" className={style.link}>
             Acceuil
           </NavLink>
-          <span>{">"} Questionnaire cloturer</span>
+          <span>
+            {">"}
+            <NavLink to="/questionnaire_cloture" className={style.link}>
+              Questionnaire cloturer
+            </NavLink>
+          </span>
         </div>
       )}
       {location.pathname === "/parametre" && (
@@ -37,7 +52,31 @@ export default function Header() {
           <NavLink to="/" className={style.link}>
             Acceuil
           </NavLink>
-          <span>{">"} Parametre</span>
+          <span>
+            {">"}
+            <NavLink to="/parametre" className={style.link}>
+              Parametre
+            </NavLink>
+          </span>
+        </div>
+      )}
+      {location.pathname === "/questionnaire" && (
+        <div className={style.path}>
+          <NavLink to="/" className={style.link}>
+            Acceuil
+          </NavLink>
+          <span>
+            {">"}
+            <NavLink to="/questionnaire_en_attente" className={style.link}>
+              Questionnaire en attente
+            </NavLink>
+          </span>
+          <span>
+            {">"}
+            <NavLink to="/questionnaire" className={style.link}>
+              Questionnaire
+            </NavLink>
+          </span>
         </div>
       )}
       <div className={style.img}>

@@ -4,6 +4,7 @@ import QuestEnAttente from "./features/participant/pages/QuestEnAttente";
 import QuestNonClot from "./features/participant/pages/QuestNonClot";
 import QuestClot from "./features/participant/pages/QuestClot";
 import Parametre from "./features/participant/pages/Parametre";
+import Questionnaire from "./features/participant/pages/Questionnaire";
 export default function App() {
   return (
     <BrowserRouter>
@@ -13,6 +14,7 @@ export default function App() {
         <Route path="/questionnaire_non_cloture" element={<QuestNonClot />} />
         <Route path="/questionnaire_cloture" element={<QuestClot />} />
         <Route path="/parametre" element={<Parametre />} />
+        <Route path="/questionnaire" element={<Questionnaire />} />
       </Routes>
     </BrowserRouter>
   );
