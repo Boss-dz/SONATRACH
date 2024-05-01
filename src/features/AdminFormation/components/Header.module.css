@@ -1,0 +1,37 @@
+.container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  padding: 20px 70px 0 60px;
+  margin-bottom: 10px;
+}
+.img {
+  display: flex;
+  gap: 22px;
+}
+.img .one {
+  cursor: pointer;
+}
+.img .one:first-child {
+  width: 13px;
+}
+.img .one:nth-child(2) {
+  width: 30px;
+}
+.container input {
+  border-color: transparent;
+  padding: 10px;
+  border-radius: 10px;
+  outline: none;
+  height: 40px;
+  width: 260px;
+}
+.link {
+  color: #33333399;
+  text-decoration: none;
+  padding-right: 5px;
+}
+.path span {
+  color: #33333399;
+}
