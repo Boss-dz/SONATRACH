@@ -1,6 +1,11 @@
+import { useState } from "react";
 import style from "./TableDevaluation.module.css";
 
 export default function TableDevaluation() {
+  const [selectedOption, setSelectedOption] = useState(null);
+  const handleOptionChange = (value) => {
+    setSelectedOption(value);
+  };
   return (
     <div className={style.container}>
       <div className={style.tableContainer}>
@@ -166,6 +171,203 @@ export default function TableDevaluation() {
             </tr>
             <tr>
               <td>Implication des participants</td>
+              <td className={style.emojis}>
+                <img src="Insatisfait.svg" alt="Insatisfait" />
+              </td>
+              <td className={style.emojis}>
+                <img src="Peu_satisfait.svg" alt="Peu_satisfait" />
+              </td>
+              <td className={style.emojis}>
+                <img src="Satisfait.svg" alt="Satisfait" />
+              </td>
+              <td className={style.emojis}>
+                <img src="TresSatisfait.svg" alt="TresSatisfait" />
+              </td>
+            </tr>
+            <tr className={style.color}>
+              <td>3. Environnement et Logistique</td>
+              <td colSpan={2}>Concerné</td>
+              <td>
+                <input
+                  type="radio"
+                  value="oui"
+                  checked={selectedOption === "oui"}
+                  onChange={() => handleOptionChange("oui")}
+                />
+                Oui
+              </td>
+              <td>
+                <input
+                  type="radio"
+                  value="non"
+                  checked={selectedOption === "non"}
+                  onChange={() => handleOptionChange("non")}
+                />
+                Non
+              </td>
+            </tr>
+            <tr>
+              <td>Accuil</td>
+              <td className={style.emojis}>
+                <img src="Insatisfait.svg" alt="Insatisfait" />
+              </td>
+              <td className={style.emojis}>
+                <img src="Peu_satisfait.svg" alt="Peu_satisfait" />
+              </td>
+              <td className={style.emojis}>
+                <img src="Satisfait.svg" alt="Satisfait" />
+              </td>
+              <td className={style.emojis}>
+                <img src="TresSatisfait.svg" alt="TresSatisfait" />
+              </td>
+            </tr>
+            <tr>
+              <td>Organisation</td>
+              <td className={style.emojis}>
+                <img src="Insatisfait.svg" alt="Insatisfait" />
+              </td>
+              <td className={style.emojis}>
+                <img src="Peu_satisfait.svg" alt="Peu_satisfait" />
+              </td>
+              <td className={style.emojis}>
+                <img src="Satisfait.svg" alt="Satisfait" />
+              </td>
+              <td className={style.emojis}>
+                <img src="TresSatisfait.svg" alt="TresSatisfait" />
+              </td>
+            </tr>
+            <tr>
+              <td>Salle de Formation/Equipement</td>
+              <td className={style.emojis}>
+                <img src="Insatisfait.svg" alt="Insatisfait" />
+              </td>
+              <td className={style.emojis}>
+                <img src="Peu_satisfait.svg" alt="Peu_satisfait" />
+              </td>
+              <td className={style.emojis}>
+                <img src="Satisfait.svg" alt="Satisfait" />
+              </td>
+              <td className={style.emojis}>
+                <img src="TresSatisfait.svg" alt="TresSatisfait" />
+              </td>
+            </tr>
+            <tr>
+              <td>Hébergement</td>
+              <td className={style.emojis}>
+                <img src="Insatisfait.svg" alt="Insatisfait" />
+              </td>
+              <td className={style.emojis}>
+                <img src="Peu_satisfait.svg" alt="Peu_satisfait" />
+              </td>
+              <td className={style.emojis}>
+                <img src="Satisfait.svg" alt="Satisfait" />
+              </td>
+              <td className={style.emojis}>
+                <img src="TresSatisfait.svg" alt="TresSatisfait" />
+              </td>
+            </tr>
+            <tr>
+              <td>Restoration</td>
+              <td className={style.emojis}>
+                <img src="Insatisfait.svg" alt="Insatisfait" />
+              </td>
+              <td className={style.emojis}>
+                <img src="Peu_satisfait.svg" alt="Peu_satisfait" />
+              </td>
+              <td className={style.emojis}>
+                <img src="Satisfait.svg" alt="Satisfait" />
+              </td>
+              <td className={style.emojis}>
+                <img src="TresSatisfait.svg" alt="TresSatisfait" />
+              </td>
+            </tr>
+            <tr>
+              <td colSpan={5} className={style.color}>
+                4. Groupe
+              </td>
+            </tr>
+            <tr>
+              <td>Homogénéité du groupe</td>
+              <td className={style.emojis}>
+                <img src="Insatisfait.svg" alt="Insatisfait" />
+              </td>
+              <td className={style.emojis}>
+                <img src="Peu_satisfait.svg" alt="Peu_satisfait" />
+              </td>
+              <td className={style.emojis}>
+                <img src="Satisfait.svg" alt="Satisfait" />
+              </td>
+              <td className={style.emojis}>
+                <img src="TresSatisfait.svg" alt="TresSatisfait" />
+              </td>
+            </tr>
+            <tr>
+              <td>Intensité des échanges dans le groupe et participation</td>
+              <td className={style.emojis}>
+                <img src="Insatisfait.svg" alt="Insatisfait" />
+              </td>
+              <td className={style.emojis}>
+                <img src="Peu_satisfait.svg" alt="Peu_satisfait" />
+              </td>
+              <td className={style.emojis}>
+                <img src="Satisfait.svg" alt="Satisfait" />
+              </td>
+              <td className={style.emojis}>
+                <img src="TresSatisfait.svg" alt="TresSatisfait" />
+              </td>
+            </tr>
+            <tr>
+              <td colSpan={5} className={style.color}>
+                4. Appréciation Globale
+              </td>
+            </tr>
+            <tr>
+              <td>Information préalable sur le contenu de la formation</td>
+              <td className={style.emojis}>
+                <img src="Insatisfait.svg" alt="Insatisfait" />
+              </td>
+              <td className={style.emojis}>
+                <img src="Peu_satisfait.svg" alt="Peu_satisfait" />
+              </td>
+              <td className={style.emojis}>
+                <img src="Satisfait.svg" alt="Satisfait" />
+              </td>
+              <td className={style.emojis}>
+                <img src="TresSatisfait.svg" alt="TresSatisfait" />
+              </td>
+            </tr>
+            <tr>
+              <td>Atteinte des objectifs de la formation</td>
+              <td className={style.emojis}>
+                <img src="Insatisfait.svg" alt="Insatisfait" />
+              </td>
+              <td className={style.emojis}>
+                <img src="Peu_satisfait.svg" alt="Peu_satisfait" />
+              </td>
+              <td className={style.emojis}>
+                <img src="Satisfait.svg" alt="Satisfait" />
+              </td>
+              <td className={style.emojis}>
+                <img src="TresSatisfait.svg" alt="TresSatisfait" />
+              </td>
+            </tr>
+            <tr>
+              <td>Durée de la formation</td>
+              <td className={style.emojis}>
+                <img src="Insatisfait.svg" alt="Insatisfait" />
+              </td>
+              <td className={style.emojis}>
+                <img src="Peu_satisfait.svg" alt="Peu_satisfait" />
+              </td>
+              <td className={style.emojis}>
+                <img src="Satisfait.svg" alt="Satisfait" />
+              </td>
+              <td className={style.emojis}>
+                <img src="TresSatisfait.svg" alt="TresSatisfait" />
+              </td>
+            </tr>
+            <tr>
+              <td>Possibilite de mettre en œuvre les acquis de la formation</td>
               <td className={style.emojis}>
                 <img src="Insatisfait.svg" alt="Insatisfait" />
               </td>

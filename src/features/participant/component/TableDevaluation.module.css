@@ -19,8 +19,8 @@ th {
   text-align: center;
 }
 .tableContainer {
-  border-radius: 20px;
   overflow: hidden;
+  padding-bottom: 20px;
 }
 .tableHead {
   background-image: url("Welcome.svg");
