@@ -29,7 +29,7 @@ export default function QuestDetails({ color }) {
         <li>Duré du formation</li>
         <li>Début de questionnaire</li>
         <li>
-          {location.pathname === "/questionnaire_cloture"
+          {location.pathname === "/Participant/questionnaire_cloture"
             ? "Fin du questionnaire"
             : "Temps restant"}
         </li>
@@ -39,7 +39,7 @@ export default function QuestDetails({ color }) {
           className={style.details}
           style={{ "--color": color }}
           key={i}
-          onClick={() => navigate("/questionnaire")}
+          onClick={() => navigate("/Participant/questionnaire")}
         >
           <div className={style.item}>
             <h3>{e.title}</h3>

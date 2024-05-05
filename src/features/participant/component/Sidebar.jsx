@@ -6,71 +6,71 @@ export default function Sidebar() {
   return (
     <div className={style.sidebar}>
       <div className={style.choices}>
-        <NavLink to="/">
-          <img className={style.logo} src="Logo_Mask.svg" alt="LOGO" />
+        <NavLink to="/Participant">
+          <img className={style.logo} src="/public/Logo_Mask.svg" alt="LOGO" />
         </NavLink>
-        <NavLink to="/">
+        <NavLink to="/Participant">
           <img
             className={
-              location.pathname === "/"
+              location.pathname === "/Participant"
                 ? style.utils
                 : `${style.utils} ${style.active}`
             }
-            src="DashBoardA.svg"
+            src="/public/DashBoardA.svg"
             alt="UTILS"
           />
         </NavLink>
-        <NavLink to="/questionnaire_en_attente">
+        <NavLink to="/Participant/questionnaire_en_attente">
           <img
             className={
-              location.pathname === "/questionnaire_en_attente" ||
-              location.pathname === "/questionnaire"
+              location.pathname === "/Participant/questionnaire_en_attente" ||
+              location.pathname === "/Participant/questionnaire"
                 ? style.utils
                 : `${style.utils} ${style.active}`
             }
-            src="quill_paperA.svg"
+            src="/public/quill_paperA.svg"
             alt="UTILS"
           />
         </NavLink>
-        <NavLink to="/questionnaire_non_cloture">
+        <NavLink to="/Participant/questionnaire_non_cloture">
           <img
             className={
-              location.pathname === "/questionnaire_non_cloture"
+              location.pathname === "/Participant/questionnaire_non_cloture"
                 ? style.utils
                 : `${style.utils} ${style.active}`
             }
-            src="bx_editA.svg"
+            src="/public/bx_editA.svg"
             alt="UTILS"
           />
         </NavLink>
-        <NavLink to="/questionnaire_cloture">
+        <NavLink to="/Participant/questionnaire_cloture">
           <img
             className={
-              location.pathname === "/questionnaire_cloture"
+              location.pathname === "/Participant/questionnaire_cloture"
                 ? style.utils
                 : `${style.utils} ${style.active}`
             }
-            src="iconamoon_file-closeA.svg"
+            src="/public/iconamoon_file-closeA.svg"
             alt="UTILS"
           />
         </NavLink>
-        <NavLink to="/parametre">
+        <NavLink to="/Participant/parametre">
           <img
             className={
-              location.pathname === "/parametre"
+              location.pathname === "/Participant/parametre"
                 ? style.utils
                 : `${style.utils} ${style.active}`
             }
-            src="clarity_settings-line.svg"
+            src="/public/clarity_settings-line.svg"
             alt="UTILS"
           />
         </NavLink>
       </div>
 
       <div className={style.out}>
-        {/* <NavLink> */}
-        <img src="sign-out.svg" alt="OUT" />
-        {/* </NavLink> */}
+        <NavLink to="/">
+          <img src="/public/sign-out.svg" alt="OUT" />
+        </NavLink>
       </div>
     </div>
   );

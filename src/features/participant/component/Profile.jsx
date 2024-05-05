@@ -6,7 +6,7 @@ export default function Profile() {
       <h2 className={style.title}>Profile du participant</h2>
       <div className={style.profile}>
         <div className={style.info}>
-          <img src="Mask_group.svg" alt="profile" />
+          <img src="/public/Mask_group.svg" alt="profile" />
           <h3>Mohamed Larbi</h3>
         </div>
         <div className={style.details}>

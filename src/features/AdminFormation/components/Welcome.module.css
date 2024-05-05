@@ -11,7 +11,7 @@
 .container {
   width: 75%;
   height: 100%;
-  background-image: url("Welcome.svg");
+  background-image: url("/public/Welcome.svg");
   background-size: auto;
   background-repeat: no-repeat;
   background-position: center;

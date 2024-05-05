@@ -1,4 +1,5 @@
 import React from "react";
+import { NavLink } from "react-router-dom";
 import Welcome from "./participant/component/Welcome";
 import Button from "./participant/component/Button";
 import Footer from "./participant/component/Footer";
@@ -20,9 +21,11 @@ function Authentification() {
         </label>
         <input type="password" name="" id="" className={style.input} />
 
-        <div className={style.btn}>
-          <Button content="se connecter" />
-        </div>
+        <NavLink to="/Participant">
+          <div className={style.btn}>
+            <Button content="se connecter" />
+          </div>
+        </NavLink>
       </form>
 
       <Footer />
