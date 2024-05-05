@@ -7,6 +7,7 @@ import Footer from "../components/Footer";
 import Profile from "../components/Profile";
 import EditProfile from "../components/EditProfile";
 import InfoPersonnel from "../components/InfoPersonnel";
+import AppSettings from "../components/AppSettings";
 export default function Parametre() {
   return (
     <div className={style.container}>
@@ -22,11 +23,12 @@ export default function Parametre() {
         <Header />
         <Titre />
         <ToggleProfile />
-        <div className={style.profile}>
+        <div className={style.profile} id="profile">
           <Profile />
           <EditProfile />
         </div>
         <InfoPersonnel />
+        <AppSettings />
         <Footer change />
       </div>
     </div>

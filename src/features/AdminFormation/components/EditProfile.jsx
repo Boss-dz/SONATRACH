@@ -9,7 +9,15 @@ export default function EditProfile() {
         <input type="email" className={style.input} id="email" />
         <label htmlFor="password">Mot de passe</label>
         <input type="password" className={style.input} id="password" />
-        <Button content="Enregistrer" />
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "flex-end",
+            marginRight: "15px",
+          }}
+        >
+          <Button content="Enregistrer" />
+        </div>
       </form>
     </div>
   );

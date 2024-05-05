@@ -60,14 +60,17 @@
   margin-left: 5px;
   font-size: 10px;
 }
-.btn {
+
+.btnFather {
   position: absolute;
   bottom: 10px;
-  padding: 5px 10px 5px 10px;
   cursor: pointer;
   width: auto;
   align-self: center;
   justify-self: center;
+}
+.btn {
+  padding: 5px 10px 5px 10px;
   background-color: transparent;
   border-radius: 5px;
   border: 1px solid #f29e4f;

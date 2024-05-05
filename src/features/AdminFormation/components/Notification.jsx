@@ -1,4 +1,5 @@
 import style from "./Notification.module.css";
+import { NavLink } from "react-router-dom";
 
 const data = [
   {
@@ -60,9 +61,11 @@ export default function Notification({ addStyle, btnColor }) {
             </div>
           </div>
         ))}
-        <button className={`${style.btn} ${btnColor ? btnColor : ""}`}>
-          Voir plus
-        </button>
+        <NavLink to="/formations_non_cloture" className={style.btnFather}>
+          <button className={`${style.btn} ${btnColor ? btnColor : ""}`}>
+            Voir plus
+          </button>
+        </NavLink>
       </div>
     </div>
   );

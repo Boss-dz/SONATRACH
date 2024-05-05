@@ -1,10 +1,26 @@
 import style from "./ToggleProfile.module.css";
+import { useState } from "react";
 
 export default function ToggleProfile() {
+  const [active, setActive] = useState("Profile");
   return (
     <div className={style.container}>
-      <h3 className={style.active}>Profile</h3>
-      <h3>Application</h3>
+      <a href="#profile" className={style.a}>
+        <h3
+          className={active === "Profile" && style.active}
+          onClick={() => setActive("Profile")}
+        >
+          Profile
+        </h3>
+      </a>
+      <a href="#application" className={style.a}>
+        <h3
+          className={active === "Application" && style.active}
+          onClick={() => setActive("Application")}
+        >
+          Application
+        </h3>
+      </a>
     </div>
   );
 }

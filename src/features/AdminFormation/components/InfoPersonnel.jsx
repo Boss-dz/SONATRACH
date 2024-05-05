@@ -3,7 +3,7 @@ import Button from "./Button";
 export default function InfoPersonnel() {
   return (
     <div className={style.container}>
-      <h2 className={style.title}>Modifier le profil</h2>
+      <h2 className={style.title}>Informations personnelles</h2>
       <form className={style.card} id="informations_personnel">
         <div className={style.row}>
           <div className={style.col}>
@@ -25,7 +25,14 @@ export default function InfoPersonnel() {
             <input type="text" id="service" />
           </div>
         </div>
-        <Button content="Enregistrer" />
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "flex-end",
+          }}
+        >
+          <Button content="Enregistrer" />
+        </div>
       </form>
     </div>
   );
