@@ -1,5 +1,5 @@
 .sidebar {
-  width: 20%;
+  width: 60px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -10,6 +10,7 @@
   grid-column-start: 1;
   grid-column-end: 3;
   grid-row-start: 1;
+  position: fixed;
 }
 .choices {
   display: flex;

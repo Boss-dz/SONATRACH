@@ -1,30 +1,6 @@
 import style from "./QuestDetails.module.css";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 const data = [
-  {
-    title: "Administration Microsoft Exchange Server 2016/2019",
-    company: "Administration Microsoft  Exchange Server 2016/2019",
-    debutFormation: "2021-06-27",
-    finFormation: "2021-06-27",
-    debutQestionnaire: "2021-07-13",
-    tempRestant: "2021-07-13",
-  },
-  {
-    title: "Administration Microsoft Exchange Server 2016/2019",
-    company: "Administration Microsoft  Exchange Server 2016/2019",
-    debutFormation: "2021-06-27",
-    finFormation: "2021-06-27",
-    debutQestionnaire: "2021-07-13",
-    tempRestant: "2021-07-13",
-  },
-  {
-    title: "Administration Microsoft Exchange Server 2016/2019",
-    company: "Administration Microsoft  Exchange Server 2016/2019",
-    debutFormation: "2021-06-27",
-    finFormation: "2021-06-27",
-    debutQestionnaire: "2021-07-13",
-    tempRestant: "2021-07-13",
-  },
   {
     title: "Administration Microsoft Exchange Server 2016/2019",
     company: "Administration Microsoft  Exchange Server 2016/2019",
@@ -44,6 +20,7 @@ const data = [
 ];
 export default function QuestDetails({ color }) {
   const location = useLocation();
+  const navigate = useNavigate();
   return (
     <div className={style.container}>
       <ul className={style.info}>
@@ -58,7 +35,12 @@ export default function QuestDetails({ color }) {
         </li>
       </ul>
       {data.map((e, i) => (
-        <div className={style.details} style={{ "--color": color }} key={i}>
+        <div
+          className={style.details}
+          style={{ "--color": color }}
+          key={i}
+          onClick={() => navigate("/questionnaire")}
+        >
           <div className={style.item}>
             <h3>{e.title}</h3>
           </div>
