@@ -7,7 +7,7 @@ import { faPlus } from "@fortawesome/free-solid-svg-icons";
 
 function AddButton() {
   return (
-    <NavLink to="/ajouter_une_formation">
+    <NavLink to="/AdminFormation/ajouter_une_formation">
       <button className={style.addBtn}>
         <FontAwesomeIcon icon={faPlus} size="2x" className="fa-fw" />
       </button>

@@ -10,7 +10,12 @@ function AppSettings() {
       <h2 className={style.title}>Application</h2>
       <form action="POST" className={style.form}>
         <label htmlFor="email">Role par défaut</label>
-        <select name="" id="" value={roles[1]} className={style.input}>
+        <select
+          name="dfRole"
+          id="dfRole"
+          value={roles[1]}
+          className={style.input}
+        >
           {roles.map((role) => (
             <option value={role}>{role}</option>
           ))}

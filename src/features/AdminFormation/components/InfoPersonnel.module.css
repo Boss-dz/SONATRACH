@@ -31,3 +31,8 @@
   border: 1px solid #65646a;
   border-radius: 10px;
 }
+.col input:focus {
+  border: none;
+  outline: 1.5px solid #f29e4f;
+  background-color: #fff;
+}

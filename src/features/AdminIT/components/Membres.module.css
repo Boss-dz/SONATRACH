@@ -1,0 +1,9 @@
+.container {
+  background-color: #fff;
+  border: solid #f29e4f 1.5px;
+  border-radius: 8px;
+  padding: 20px 20px 0 20px;
+  width: 600px;
+  max-width: 600px;
+  height: 340px;
+}
