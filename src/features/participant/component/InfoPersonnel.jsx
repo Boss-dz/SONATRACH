@@ -25,7 +25,7 @@ export default function InfoPersonnel() {
             <input type="text" id="service" />
           </div>
         </div>
-        <Button />
+        <Button content="Enregistrer"/>
       </form>
     </div>
   );

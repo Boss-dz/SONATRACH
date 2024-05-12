@@ -1,5 +1,6 @@
-import React from "react";
-import { NavLink } from "react-router-dom";
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import axios from "axios";
 import Welcome from "./participant/component/Welcome";
 import Button from "./participant/component/Button";
 import Footer from "./participant/component/Footer";
@@ -7,25 +8,56 @@ import Footer from "./participant/component/Footer";
 import style from "./Authentification.module.css";
 
 function Authentification() {
+  const [values, setValues] = useState({ username: "", password: "" });
+  const navigate = useNavigate();
+  const handleChange = (e) => {
+    setValues({ ...values, [e.target.name]: e.target.value });
+  };
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const response = await axios.post("http://localhost:8000/", values);
+      console.log(response.data);
+      navigate("/Participant");
+    } catch (error) {
+      console.error(error.response.data);
+    }
+  };
+
   return (
     <div className={style.container}>
-      <Welcome content="Connexion a la platform des Réponses aux questionnaire d'évaluation des formation à chaud" />
+      <Welcome
+        content="Connexion a la platform des Réponses aux questionnaire d'évaluation des formation à chaud"
+        change
+      />
 
-      <form action="" className={style.form}>
+      <form action="" className={style.form} onSubmit={handleSubmit}>
         <label htmlFor="" className={style.label}>
           Nom d'utilisateur :
         </label>
-        <input type="text" name="" id="" className={style.input} />
+        <input
+          type="text"
+          name="username"
+          id="username"
+          className={style.input}
+          onChange={handleChange}
+          value={values.username}
+        />
         <label htmlFor="" className={style.label}>
           Mot de passe :
         </label>
-        <input type="password" name="" id="" className={style.input} />
+        <input
+          type="password"
+          name="password"
+          id="password"
+          className={style.input}
+          onChange={handleChange}
+          value={values.password}
+        />
 
-        <NavLink to="/Participant">
-          <div className={style.btn}>
-            <Button content="se connecter" />
-          </div>
-        </NavLink>
+        <div className={style.btn}>
+          <Button content="se connecter" />
+        </div>
       </form>
 
       <Footer />

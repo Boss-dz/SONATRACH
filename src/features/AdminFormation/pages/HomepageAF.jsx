@@ -19,7 +19,7 @@ export default function HomepageP() {
         }}
       >
         <Header />
-        <Welcome content="Bienvenue, Name!" /> {/* Name from DataBase */}
+        <Welcome content="Bienvenue, Name!" change />
         <div className={style.notificationContainer}>
           <Graph />
           <Notification />

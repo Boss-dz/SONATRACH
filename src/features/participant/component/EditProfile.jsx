@@ -9,7 +9,7 @@ export default function EditProfile() {
         <input type="email" className={style.input} id="email" />
         <label htmlFor="password">Mot de passe</label>
         <input type="password" className={style.input} id="password" />
-        <Button/>
+        <Button content="Enregistrer" />
       </form>
     </div>
   );

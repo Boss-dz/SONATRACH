@@ -9,12 +9,11 @@ export default function HomepageP() {
     <div className={style.container}>
       <Header />
       <Sidebar />
-      <Welcome />
+      <Welcome content="Bienvenue , Rayane" />
       <div className={style.notificationContainer}>
         <Notification />
         <Notification
           addStyle={style.secondNotification}
-          btnColor={style.btnColor}
         />
       </div>
       <Footer />

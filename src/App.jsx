@@ -35,9 +35,7 @@ export default function App() {
         />
         <Route path="/Participant/questionnaire" element={<Questionnaire />} />
         <Route path="/Participant/parametre" element={<ParametreP />} />
-      </Routes>
 
-      <Routes>
         <Route path="/AdminFormation" element={<HomepageAF />} />
         <Route
           path="/AdminFormation/formations_non_cloture"
