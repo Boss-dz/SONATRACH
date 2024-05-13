@@ -28,6 +28,11 @@
   border-radius: 10px;
   border: 1px solid #65646a;
 }
+.input:focus {
+  border: none;
+  outline: 1.5px solid #f29e4f;
+  background-color: #fff;
+}
 label {
   font-weight: 600;
 }

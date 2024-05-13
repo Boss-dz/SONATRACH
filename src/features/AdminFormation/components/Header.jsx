@@ -13,7 +13,7 @@ export default function Header() {
       )}
       {location.pathname === "/AdminFormation/formations_non_cloture" && (
         <div className={style.path}>
-          <NavLink to="/" className={style.link}>
+          <NavLink to="/AdminFormation" className={style.link}>
             Acceuil
           </NavLink>
           <span>{">"} Formations non clôturé</span>
@@ -21,7 +21,7 @@ export default function Header() {
       )}
       {location.pathname === "/AdminFormation/ajouter_une_formation" && (
         <div className={style.path}>
-          <NavLink to="/" className={style.link}>
+          <NavLink to="/AdminFormation" className={style.link}>
             Acceuil
           </NavLink>
           <span>{">"} Ajouter une formation</span>
@@ -29,7 +29,7 @@ export default function Header() {
       )}
       {location.pathname === "/AdminFormation/formations_cloture" && (
         <div className={style.path}>
-          <NavLink to="/" className={style.link}>
+          <NavLink to="/AdminFormation" className={style.link}>
             Acceuil
           </NavLink>
           <span>{">"} Formations clôturé</span>
@@ -37,7 +37,7 @@ export default function Header() {
       )}
       {location.pathname === "/AdminFormation/parametre" && (
         <div className={style.path}>
-          <NavLink to="/" className={style.link}>
+          <NavLink to="/AdminFormation" className={style.link}>
             Acceuil
           </NavLink>
           <span>{">"} Parametres</span>

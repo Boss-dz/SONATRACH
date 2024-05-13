@@ -61,7 +61,10 @@ export default function Notification({ addStyle, btnColor }) {
             </div>
           </div>
         ))}
-        <NavLink to="/formations_non_cloture" className={style.btnFather}>
+        <NavLink
+          to="/AdminFormation/formations_non_cloture"
+          className={style.btnFather}
+        >
           <button className={`${style.btn} ${btnColor ? btnColor : ""}`}>
             Voir plus
           </button>

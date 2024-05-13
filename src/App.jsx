@@ -14,6 +14,14 @@ import AjouterFormation from "./features/AdminFormation/pages/AjouterFormation";
 import FormationCloture from "./features/AdminFormation/pages/FormationCloture";
 import ParametreAF from "./features/AdminFormation/pages/Parametre";
 
+import HomepageAIT from "./features/AdminIT/pages/HomepageAIT";
+import GererMembres from "./features/AdminIT/pages/GererMembres";
+import InfoMembre from "./features/AdminIT/pages/InfoMembre";
+import EditInfoMembre from "./features/AdminIT/pages/EditInfoMembre";
+import AjouterMembre from "./features/AdminIT/pages/AjouterMembre";
+import GererRoles from "./features/AdminIT/pages/GererRoles";
+import ParametreAIT from "./features/AdminIT/pages/Parametre";
+
 export default function App() {
   return (
     <BrowserRouter>
@@ -50,6 +58,22 @@ export default function App() {
           element={<FormationCloture />}
         />
         <Route path="/AdminFormation/parametre" element={<ParametreAF />} />
+      </Routes>
+
+      <Routes>
+        <Route path="/AdminIT" element={<HomepageAIT />} />
+        <Route path="/AdminIT/gerer_les_membres" element={<GererMembres />} />
+        <Route
+          path="/AdminIT/gerer_les_membres/informations_d'un_membre"
+          element={<InfoMembre />}
+        />
+        <Route
+          path="/AdminIT/gerer_les_membres/informations_d'un_membre/modifier_les_informations_d'un_membre"
+          element={<EditInfoMembre />}
+        />
+        <Route path="/AdminIT/ajouter_un_membre" element={<AjouterMembre />} />
+        <Route path="/AdminIT/gerer_les_roles" element={<GererRoles />} />
+        <Route path="/AdminIT/parametre" element={<ParametreAIT />} />
       </Routes>
     </BrowserRouter>
   );
