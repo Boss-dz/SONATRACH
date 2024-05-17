@@ -18,7 +18,25 @@ function Authentification() {
     try {
       const response = await axios.post("http://localhost:8000/", values);
       console.log(response.data);
-      navigate("/Participant");
+      const role = response.data.user.role_default;
+      localStorage.setItem("userData", JSON.stringify(response.data.user));
+      switch (role) {
+        case "Admin Formation":
+          navigate("/AdminFormation");
+          break;
+
+        case "Admin IT":
+          navigate("/AdminIT");
+          break;
+
+        case "Admin Visiteur":
+          navigate("/AdminVisiteur");
+          break;
+
+        default:
+          navigate("/Participant");
+          break;
+      }
     } catch (error) {
       console.error(error.response.data);
     }

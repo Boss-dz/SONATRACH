@@ -5,6 +5,8 @@ import Button from "./Button";
 const roles = ["Participant", "Admin Formation", "Admin IT", "Admin Visiteur"];
 
 function AppSettings() {
+  const userData = JSON.parse(localStorage.getItem("userData"));
+
   return (
     <div className={style.container} id="application">
       <h2 className={style.title}>Application</h2>
@@ -13,7 +15,7 @@ function AppSettings() {
         <select
           name="dfRole"
           id="dfRole"
-          value={roles[1]}
+          value={userData.role_default}
           className={style.input}
         >
           {roles.map((role) => (

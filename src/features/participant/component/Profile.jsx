@@ -1,26 +1,30 @@
 import style from "./Profile.module.css";
 
 export default function Profile() {
+  const userData = JSON.parse(localStorage.getItem("userData"));
+
   return (
     <div className={style.container}>
       <h2 className={style.title}>Profile du participant</h2>
       <div className={style.profile}>
         <div className={style.info}>
           <img src="/public/Mask_group.svg" alt="profile" />
-          <h3>Mohamed Larbi</h3>
+          <h3>
+            {userData.prenom} {userData.nom}
+          </h3>
         </div>
         <div className={style.details}>
           <div className={style.infoDetails}>
             <h4>Fonction :</h4>
-            <span>Ingénieur Etudes et Développement Informatique</span>
+            <span>{userData.fonction}</span>
           </div>
           <div className={style.infoDetails}>
-            <h4>Service /Direction :</h4>
-            <span>IT</span>
+            <h4>Structure :</h4>
+            <span>{userData.structureID}</span>
           </div>
           <div className={style.infoDetails}>
             <h4>Email :</h4>
-            <span>haouamoha33@gmail.com</span>
+            <span>{userData.email}</span>
           </div>
         </div>
       </div>

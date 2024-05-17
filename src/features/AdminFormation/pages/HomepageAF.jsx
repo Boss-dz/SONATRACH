@@ -5,7 +5,10 @@ import Welcome from "../components/Welcome";
 import Notification from "../components/Notification";
 import Footer from "../components/Footer";
 import Graph from "../components/Graph";
-export default function HomepageP() {
+
+export default function HomepageAF() {
+  const userData = JSON.parse(localStorage.getItem("userData"));
+
   return (
     <div className={style.container}>
       <Sidebar />
@@ -19,7 +22,7 @@ export default function HomepageP() {
         }}
       >
         <Header />
-        <Welcome content="Bienvenue, Name!" change />
+        <Welcome content={`Bienvenue, ${userData.prenom}!`} change />
         <div className={style.notificationContainer}>
           <Graph />
           <Notification />
