@@ -58,6 +58,7 @@ app.get("/AdminFormation/formations_non_cloture", (req, res) => {
     res.status(200).json(results);
   });
 });
+
 app.get("/AdminFormation/formations_cloture", (req, res) => {
   // Requête SQL pour sélectionner les formations qui ne sont pas encore terminées
   const query = "SELECT * FROM formations WHERE date_fin_questionnaire < NOW()";
@@ -71,6 +72,32 @@ app.get("/AdminFormation/formations_cloture", (req, res) => {
 
     // Retourner les formations récupérées depuis la base de données
     res.status(200).json(results);
+  });
+});
+
+app.put("/api/user", (req, res) => {
+  const { username, fieldsToUpdate } = req.body;
+
+  // Extract fields and values to update from the request body
+  const updateFields = Object.keys(fieldsToUpdate);
+  const updateValues = Object.values(fieldsToUpdate);
+
+  // Construct the SET clause for the SQL query dynamically
+  const setClause = updateFields.map((field) => `${field} = ?`).join(", ");
+
+  const query = `UPDATE utilisateur SET ${setClause} WHERE username = ?`;
+
+  updateFields.push("username");
+  updateValues.push(username);
+
+  // Execute the SQL query with the dynamically constructed SET clause and values
+  db.query(query, updateValues, (error, results) => {
+    if (error) {
+      console.error("Database query error:", error);
+      return res.status(500).json({ error: "Internal server error" });
+    }
+
+    res.status(200).json({ message: "User information updated successfully" });
   });
 });
 

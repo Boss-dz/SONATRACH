@@ -8,7 +8,10 @@ import Profile from "../components/Profile";
 import EditProfile from "../components/EditProfile";
 import InfoPersonnel from "../components/InfoPersonnel";
 import AppSettings from "../components/AppSettings";
+
 export default function Parametre() {
+  const userData = JSON.parse(localStorage.getItem("userData"));
+
   return (
     <div className={style.container}>
       <Sidebar />
@@ -25,10 +28,10 @@ export default function Parametre() {
         <ToggleProfile />
         <div className={style.profile} id="profile">
           <Profile />
-          <EditProfile />
+          <EditProfile username={userData.username} />
         </div>
-        <InfoPersonnel />
-        <AppSettings />
+        <InfoPersonnel username={userData.username} />
+        <AppSettings username={userData.username} />
         <Footer change />
       </div>
     </div>
