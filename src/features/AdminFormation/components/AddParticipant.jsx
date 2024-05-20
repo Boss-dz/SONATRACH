@@ -3,9 +3,26 @@ import Titre from "./Titre";
 import CloseBtn from "./CloseBtn";
 import QuestDetails from "./QuestDetails";
 import SearchBar from "./SearchBar";
-import { useCallback } from "react";
+
+import { useCallback, useEffect, useState } from "react";
+import axios from "axios";
 
 function AddParticipant({ active, setActive }) {
+  const [users, setUsers] = useState([]);
+
+  useEffect(() => {
+    const fetchUsers = async () => {
+      try {
+        const response = await axios.get("http://localhost:8000/allUsers");
+        setUsers(response.data);
+      } catch (error) {
+        console.error("Error fetching users:", error);
+      }
+    };
+
+    fetchUsers();
+  }, []);
+
   const handleClick = useCallback(() => {
     setActive(false);
   }, []);
@@ -47,74 +64,8 @@ function AddParticipant({ active, setActive }) {
         <QuestDetails
           color="#f29e4f"
           columns={["Nom", "Prénom", "Fonction", "Structure", "Action"]}
-          propData={[
-            {
-              nom: "MELZI",
-              prenom: "Rayane",
-              fonction: "Ingénieur Etudes et Développement Informatique",
-              structure: "IT",
-            },
-            {
-              nom: "HAOUA",
-              prenom: "Mohammed Nouredine",
-              fonction: "Ingénieur Etudes et Développement Informatique",
-              structure: "IT",
-            },
-            {
-              nom: "MELZI",
-              prenom: "Rayane",
-              fonction: "Ingénieur Etudes et Développement Informatique",
-              structure: "IT",
-            },
-            {
-              nom: "HAOUA",
-              prenom: "Mohammed Nouredine",
-              fonction: "Ingénieur Etudes et Développement Informatique",
-              structure: "IT",
-            },
-            {
-              nom: "nom",
-              prenom: "prenom",
-              fonction: "fonction",
-              structure: "structure",
-            },
-            {
-              nom: "HAOUA",
-              prenom: "Mohammed Nouredine",
-              fonction: "Ingénieur Etudes et Développement Informatique",
-              structure: "IT",
-            },
-            {
-              nom: "nom",
-              prenom: "prenom",
-              fonction: "fonction",
-              structure: "structure",
-            },
-            {
-              nom: "HAOUA",
-              prenom: "Mohammed Nouredine",
-              fonction: "Ingénieur Etudes et Développement Informatique",
-              structure: "IT",
-            },
-            {
-              nom: "nom",
-              prenom: "prenom",
-              fonction: "fonction",
-              structure: "structure",
-            },
-            {
-              nom: "HAOUA",
-              prenom: "Mohammed Nouredine",
-              fonction: "Ingénieur Etudes et Développement Informatique",
-              structure: "IT",
-            },
-            {
-              nom: "nom",
-              prenom: "prenom",
-              fonction: "fonction",
-              structure: "structure",
-            },
-          ]}
+          propData={users}
+          dataType="utilisateur"
           border={true}
           lineHeight="small"
         />
@@ -124,3 +75,72 @@ function AddParticipant({ active, setActive }) {
 }
 
 export default AddParticipant;
+
+// [
+//   {
+//     nom: "MELZI",
+//     prenom: "Rayane",
+//     fonction: "Ingénieur Etudes et Développement Informatique",
+//     structure: "IT",
+//   },
+//   {
+//     nom: "HAOUA",
+//     prenom: "Mohammed Nouredine",
+//     fonction: "Ingénieur Etudes et Développement Informatique",
+//     structure: "IT",
+//   },
+//   {
+//     nom: "MELZI",
+//     prenom: "Rayane",
+//     fonction: "Ingénieur Etudes et Développement Informatique",
+//     structure: "IT",
+//   },
+//   {
+//     nom: "HAOUA",
+//     prenom: "Mohammed Nouredine",
+//     fonction: "Ingénieur Etudes et Développement Informatique",
+//     structure: "IT",
+//   },
+//   {
+//     nom: "nom",
+//     prenom: "prenom",
+//     fonction: "fonction",
+//     structure: "structure",
+//   },
+//   {
+//     nom: "HAOUA",
+//     prenom: "Mohammed Nouredine",
+//     fonction: "Ingénieur Etudes et Développement Informatique",
+//     structure: "IT",
+//   },
+//   {
+//     nom: "nom",
+//     prenom: "prenom",
+//     fonction: "fonction",
+//     structure: "structure",
+//   },
+//   {
+//     nom: "HAOUA",
+//     prenom: "Mohammed Nouredine",
+//     fonction: "Ingénieur Etudes et Développement Informatique",
+//     structure: "IT",
+//   },
+//   {
+//     nom: "nom",
+//     prenom: "prenom",
+//     fonction: "fonction",
+//     structure: "structure",
+//   },
+//   {
+//     nom: "HAOUA",
+//     prenom: "Mohammed Nouredine",
+//     fonction: "Ingénieur Etudes et Développement Informatique",
+//     structure: "IT",
+//   },
+//   {
+//     nom: "nom",
+//     prenom: "prenom",
+//     fonction: "fonction",
+//     structure: "structure",
+//   },
+// ];

@@ -1,9 +1,9 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import style from "./InfoPersonnel.module.css";
 import Button from "./Button";
 import axios from "axios";
 
-export default function InfoPersonnel({ username }) {
+export default function InfoPersonnel({ username, structure, setStructure }) {
   const userData = JSON.parse(localStorage.getItem("userData"));
   const [formData, setFormData] = useState({
     nom: userData.nom || "",
@@ -11,6 +11,55 @@ export default function InfoPersonnel({ username }) {
     fonction: userData.fonction || "",
     structureID: userData.structureID || "",
   });
+
+  const [allStructures, setAllStructures] = useState([]);
+
+  useEffect(() => {
+    const fetchStructures = async () => {
+      try {
+        const response = await axios.get("http://localhost:8000/api/structure");
+        setAllStructures(response.data);
+      } catch (error) {
+        console.error("Error fetching structures:", error);
+      }
+    };
+
+    fetchStructures();
+  }, []);
+
+  useEffect(() => {
+    const fetchStructureName = async () => {
+      try {
+        const response = await axios.get(
+          `http://localhost:8000/api/structure/${structure.structureID}`
+        );
+        setStructure((prevStructure) => ({
+          ...prevStructure,
+          nom_structure: response.data.nom_structure,
+        }));
+      } catch (error) {
+        console.error("Error fetching structure details:", error);
+      }
+    };
+    if (structure.structureID) {
+      fetchStructureName();
+    }
+  }, [structure.structureID, structure.nom_structure]);
+
+  const handleStructureChange = (e) => {
+    const selectedStructure = allStructures.find(
+      (struct) => struct.structureID === e.target.value
+    );
+    setStructure((prevData) => ({
+      ...prevData,
+      structureID: selectedStructure ? e.target.value : "",
+      nom_structure: selectedStructure ? selectedStructure.nom_structure : "",
+    }));
+    setFormData((prevData) => ({
+      ...prevData,
+      structureID: selectedStructure ? e.target.value : "",
+    }));
+  };
 
   const handleChange = (e) => {
     const { id, value } = e.target;
@@ -24,10 +73,14 @@ export default function InfoPersonnel({ username }) {
     e.preventDefault();
     try {
       const response = await axios.put("http://localhost:8000/api/user", {
-        username: username,
+        username,
         fieldsToUpdate: formData,
       });
-      localStorage.setItem("userData", JSON.stringify(formData));
+      localStorage.setItem(
+        "userData",
+        JSON.stringify({ ...userData, ...formData })
+      );
+
       alert("Information updated successfully");
     } catch (error) {
       console.error("Error updating user information:", error);
@@ -76,12 +129,19 @@ export default function InfoPersonnel({ username }) {
           </div>
           <div className={style.col}>
             <label htmlFor="structure">Structure</label>
-            <input
+            <select
               type="text"
-              id="structureID"
-              value={formData.structureID}
-              onChange={handleChange}
-            />
+              id="structure"
+              onChange={handleStructureChange}
+              value={structure.structureID}
+              className={style.input}
+            >
+              {allStructures.map((struct) => (
+                <option key={struct.structureID} value={struct.structureID}>
+                  {struct.nom_structure}
+                </option>
+              ))}
+            </select>
           </div>
         </div>
         <div

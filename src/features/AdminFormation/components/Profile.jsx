@@ -1,7 +1,28 @@
+import React, { useEffect, useState } from "react";
 import style from "./Profile.module.css";
+import axios from "axios";
 
 export default function Profile() {
-  const userData = JSON.parse(localStorage.getItem("userData"));
+  let userData = JSON.parse(localStorage.getItem("userData"));
+
+  const [struct, setStruct] = useState("");
+
+  useEffect(() => {
+    const fetchStructureName = async () => {
+      try {
+        const response = await axios.get(
+          `http://localhost:8000/api/structure/${userData.structureID}`
+        );
+        setStruct(response.data.nom_structure);
+        // console.log(userData.structureID);
+      } catch (error) {
+        console.error("Error fetching structure details:", error);
+      }
+    };
+    if (userData.structureID) {
+      fetchStructureName();
+    }
+  }, [userData.structureID]);
 
   return (
     <div className={style.container}>
@@ -20,7 +41,7 @@ export default function Profile() {
           </div>
           <div className={style.infoDetails}>
             <h4>Structure :</h4>
-            <span>{userData.structureID}</span>
+            <span>{struct}</span>
           </div>
           <div className={style.infoDetails}>
             <h4>Email :</h4>

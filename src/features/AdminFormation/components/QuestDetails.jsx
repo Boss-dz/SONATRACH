@@ -187,6 +187,19 @@ export default function QuestDetails({
                 </div>
               </div>
             ))
+          : dataType === "utilisateur"
+          ? propData.map((user, i) => (
+              <TableRow
+                nom={user.nom}
+                prenom={user.prenom}
+                fonction={user.fonction}
+                structure={user.structureID}
+                // action={user.nom}
+                border={border}
+                lineHeight={lineHeight}
+                key={i}
+              />
+            ))
           : propData.map((e, i) => (
               <TableRow
                 nom={Object.values(e)[0]}

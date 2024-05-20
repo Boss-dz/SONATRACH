@@ -9,8 +9,15 @@ import EditProfile from "../components/EditProfile";
 import InfoPersonnel from "../components/InfoPersonnel";
 import AppSettings from "../components/AppSettings";
 
+import { useState } from "react";
+
 export default function Parametre() {
   const userData = JSON.parse(localStorage.getItem("userData"));
+
+  const [structure, setStructure] = useState({
+    structureID: userData.structureID || "",
+    nom_structure: "",
+  });
 
   return (
     <div className={style.container}>
@@ -27,10 +34,14 @@ export default function Parametre() {
         <Titre />
         <ToggleProfile />
         <div className={style.profile} id="profile">
-          <Profile />
+          <Profile structure={structure} />
           <EditProfile username={userData.username} />
         </div>
-        <InfoPersonnel username={userData.username} />
+        <InfoPersonnel
+          username={userData.username}
+          structure={structure}
+          setStructure={setStructure}
+        />
         <AppSettings username={userData.username} />
         <Footer change />
       </div>

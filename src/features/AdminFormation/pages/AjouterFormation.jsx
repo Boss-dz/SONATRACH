@@ -34,7 +34,11 @@ export default function QuestNonClot() {
         <Titre
           titre="Membre concené"
           component={
-            <Button content="Ajouter un Participant" onClick={handleClick} />
+            <Button
+              content="Ajouter un Participant"
+              onClick={handleClick}
+              btnStyle="white"
+            />
           }
         />
         <QuestDetails
@@ -79,6 +83,16 @@ export default function QuestNonClot() {
         />
 
         <AddParticipant active={active} setActive={setActive} />
+
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "flex-end",
+            padding: "20px 80px",
+          }}
+        >
+          <Button content="Ajouter la formation" />
+        </div>
 
         <Footer />
       </div>

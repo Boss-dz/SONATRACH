@@ -10,7 +10,7 @@ const db = mysql.createConnection({
   host: "localhost",
   user: "root",
   password: "",
-  database: "for-eval",
+  database: "form-eval",
   port: 3306,
 });
 
@@ -45,7 +45,7 @@ app.post("/", (req, res) => {
 
 app.get("/AdminFormation/formations_non_cloture", (req, res) => {
   // Requête SQL pour sélectionner les formations qui ne sont pas encore terminées
-  const query = "SELECT * FROM formations WHERE date_fin_questionnaire > NOW()";
+  const query = "SELECT * FROM formation WHERE date_fin_questionnaire > NOW()";
 
   // Exécuter la requête SQL
   db.query(query, (error, results) => {
@@ -61,7 +61,7 @@ app.get("/AdminFormation/formations_non_cloture", (req, res) => {
 
 app.get("/AdminFormation/formations_cloture", (req, res) => {
   // Requête SQL pour sélectionner les formations qui ne sont pas encore terminées
-  const query = "SELECT * FROM formations WHERE date_fin_questionnaire < NOW()";
+  const query = "SELECT * FROM formation WHERE date_fin_questionnaire < NOW()";
 
   // Exécuter la requête SQL
   db.query(query, (error, results) => {
@@ -96,8 +96,49 @@ app.put("/api/user", (req, res) => {
       console.error("Database query error:", error);
       return res.status(500).json({ error: "Internal server error" });
     }
-
     res.status(200).json({ message: "User information updated successfully" });
+  });
+});
+
+app.get("/api/structure/:id?", (req, res) => {
+  const structureID = req.params.id;
+
+  if (structureID) {
+    // If ID is defined, perform its usual work
+    db.query(
+      "SELECT * FROM structure WHERE structureID = ?",
+      [structureID],
+      (error, results) => {
+        if (error) {
+          console.error("Database query error:", error);
+          return res.status(500).json({ error: "Internal server error" });
+        }
+        if (results.length === 0) {
+          return res.status(404).json({ error: "Structure not found" });
+        }
+
+        res.status(200).json(results[0]);
+      }
+    );
+  } else {
+    // If ID is undefined, fetch all structures
+    db.query("SELECT * FROM structure", (error, results) => {
+      if (error) {
+        console.error("Database query error:", error);
+        return res.status(500).json({ error: "Internal server error" });
+      }
+      res.status(200).json(results);
+    });
+  }
+});
+
+app.get("/allUsers", (req, res) => {
+  db.query("SELECT * FROM utilisateur", (error, results) => {
+    if (error) {
+      console.error("Database query error:", error);
+      return res.status(500).json({ error: "Internal server error" });
+    }
+    res.status(200).json(results);
   });
 });
 
