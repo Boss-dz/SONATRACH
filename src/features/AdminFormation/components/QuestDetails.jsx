@@ -74,6 +74,8 @@ export default function QuestDetails({
   dataType,
   border,
   lineHeight,
+  membresConcernes,
+  setMembresConcernes,
 }) {
   const location = useLocation();
 
@@ -190,14 +192,17 @@ export default function QuestDetails({
           : dataType === "utilisateur"
           ? propData.map((user, i) => (
               <TableRow
+                userID={user.utilisateurID}
                 nom={user.nom}
                 prenom={user.prenom}
                 fonction={user.fonction}
                 structure={user.structureID}
-                // action={user.nom}
+                action={user.action}
                 border={border}
                 lineHeight={lineHeight}
                 key={i}
+                membresConcernes={membresConcernes}
+                setMembresConcernes={setMembresConcernes}
               />
             ))
           : propData.map((e, i) => (

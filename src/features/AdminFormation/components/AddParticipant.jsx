@@ -7,20 +7,40 @@ import SearchBar from "./SearchBar";
 import { useCallback, useEffect, useState } from "react";
 import axios from "axios";
 
-function AddParticipant({ active, setActive }) {
+function AddParticipant({
+  active,
+  setActive,
+  membresConcernes,
+  setMembresConcernes,
+}) {
   const [users, setUsers] = useState([]);
+  const [structures, setStructures] = useState({});
 
   useEffect(() => {
-    const fetchUsers = async () => {
+    const fetchUsersAndStructures = async () => {
       try {
-        const response = await axios.get("http://localhost:8000/allUsers");
-        setUsers(response.data);
+        const userResponse = await axios.get("http://localhost:8000/allUsers");
+        const structureResponse = await axios.get(
+          "http://localhost:8000/api/structure"
+        );
+
+        const structureMap = structureResponse.data.reduce((map, structure) => {
+          map[structure.structureID] = structure.nom_structure;
+          return map;
+        }, {});
+
+        const usersWithStructureNames = userResponse.data.map((user) => ({
+          ...user,
+          structureID: structureMap[user.structureID] || "Unknown Structure",
+        }));
+
+        setUsers(usersWithStructureNames);
       } catch (error) {
-        console.error("Error fetching users:", error);
+        console.error("Error fetching users or structures:", error);
       }
     };
 
-    fetchUsers();
+    fetchUsersAndStructures();
   }, []);
 
   const handleClick = useCallback(() => {
@@ -68,6 +88,8 @@ function AddParticipant({ active, setActive }) {
           dataType="utilisateur"
           border={true}
           lineHeight="small"
+          setMembresConcernes={setMembresConcernes}
+          membresConcernes={membresConcernes}
         />
       </div>
     </div>

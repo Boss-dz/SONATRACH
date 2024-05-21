@@ -142,6 +142,65 @@ app.get("/allUsers", (req, res) => {
   });
 });
 
+// Create a new formation
+app.post("/api/formation", (req, res) => {
+  const {
+    intitule,
+    org_formateur,
+    nom_formateur,
+    lieu,
+    date_debut,
+    date_fin,
+    date_debut_questionnaire,
+    date_fin_questionnaire,
+  } = req.body;
+
+  const query = `
+    INSERT INTO formation (intitule, org_formateur, nom_formateur, lieu, date_debut, date_fin, date_debut_questionnaire, date_fin_questionnaire)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+  `;
+
+  db.query(
+    query,
+    [
+      intitule,
+      org_formateur,
+      nom_formateur,
+      lieu,
+      date_debut,
+      date_fin,
+      date_debut_questionnaire,
+      date_fin_questionnaire,
+    ],
+    (error, results) => {
+      if (error) {
+        console.error("Database query error:", error);
+        return res.status(500).json({ error: "Internal server error" });
+      }
+      const formationID = results.insertId;
+      res.status(201).json({ formationID });
+    }
+  );
+});
+
+app.post("/api/participation", (req, res) => {
+  const { formationID, utilisateurID } = req.body;
+
+  const query = `
+    INSERT INTO participation (formationID, utilisateurID)
+    VALUES (?, ?)`;
+
+  const values = [formationID, utilisateurID];
+
+  db.query(query, values, (error, results) => {
+    if (error) {
+      console.error("Erreur lors de l'ajout du participant:", error);
+      return res.status(500).json({ error: "Erreur serveur interne" });
+    }
+    res.status(201).json({ message: "Participant ajouté avec succès" });
+  });
+});
+
 app.listen(8000, () => {
   console.log("listening");
 });

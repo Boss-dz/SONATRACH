@@ -1,11 +1,10 @@
-import React from "react";
 import style from "./TableRow.module.css";
 import BtnAjoute from "./BtnAjoute";
 
-import { useState } from "react";
-import CloseBtn from "./CloseBtn";
+import React, { useState, useEffect } from "react";
 
 function TableRow({
+  userID,
   nom,
   prenom,
   fonction,
@@ -13,8 +12,33 @@ function TableRow({
   action,
   border,
   lineHeight,
+  membresConcernes,
+  setMembresConcernes,
 }) {
   const [ajoute, setAjoute] = useState(false);
+  useEffect(() => {
+    if (setMembresConcernes !== undefined) {
+      if (ajoute === true) {
+        setMembresConcernes((prev) => [
+          ...prev,
+          { userID, nom, prenom, fonction, structureID: structure },
+        ]);
+      } else {
+        setMembresConcernes((prev) =>
+          prev.filter((membre) => membre.userID !== userID)
+        );
+      }
+    }
+  }, [ajoute]);
+
+  useEffect(() => {
+    if (membresConcernes !== undefined) {
+      if (!membresConcernes.find((membre) => membre.userID === userID)) {
+        setAjoute(false);
+      }
+    }
+  }, [membresConcernes]);
+
   return (
     <div
       className={style.details}
