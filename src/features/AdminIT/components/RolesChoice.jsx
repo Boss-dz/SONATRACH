@@ -1,17 +1,18 @@
 import style from "./RolesChoice.module.css";
 import React from "react";
 
-function RolesChoice() {
+function RolesChoice({ onChange }) {
   return (
-    <form className={style.container}>
+    <div className={style.container}>
       <input
         className={style.input}
         type="checkbox"
         id="Participant"
         name="roles"
         value="Participant"
+        onChange={onChange}
       />
-      <label className={style.label} for="Participant">
+      <label className={style.label} htmlFor="Participant">
         Participant
       </label>
 
@@ -20,9 +21,10 @@ function RolesChoice() {
         type="checkbox"
         id="AdminFormation"
         name="roles"
-        value="AdminFormation"
+        value="Admin Formation"
+        onChange={onChange}
       />
-      <label className={style.label} for="AdminFormation">
+      <label className={style.label} htmlFor="AdminFormation">
         Admin Formation
       </label>
 
@@ -31,9 +33,10 @@ function RolesChoice() {
         type="checkbox"
         id="AdminIT"
         name="roles"
-        value="AdminIT"
+        value="Admin IT"
+        onChange={onChange}
       />
-      <label className={style.label} for="AdminIT">
+      <label className={style.label} htmlFor="AdminIT">
         Admin IT
       </label>
 
@@ -42,12 +45,13 @@ function RolesChoice() {
         type="checkbox"
         id="AdminVisiteur"
         name="roles"
-        value="AdminVisiteur"
+        value="Admin Visiteur"
+        onChange={onChange}
       />
-      <label className={style.label} for="AdminVisiteur">
+      <label className={style.label} htmlFor="AdminVisiteur">
         Admin Visiteur
       </label>
-    </form>
+    </div>
   );
 }
 

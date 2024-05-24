@@ -20,6 +20,16 @@ function Authentification() {
       console.log(response.data);
       const role = response.data.user.role_default;
       localStorage.setItem("userData", JSON.stringify(response.data.user));
+
+      // Fetch all users with their structures
+      const userResponse = await axios.get(
+        "http://localhost:8000/allUsers-structure"
+      );
+
+      // Store the full user data with structures in local storage
+      localStorage.setItem("fullUsersData", JSON.stringify(userResponse.data));
+      console.log(userResponse.data);
+
       switch (role) {
         case "Admin Formation":
           navigate("/AdminFormation");

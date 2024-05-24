@@ -1,5 +1,9 @@
 import style from "./FormModule.module.css";
 import Button from "./Button";
+
+import React, { useEffect, useState } from "react";
+import axios from "axios";
+
 export default function FormModule({
   title,
   inputs,
@@ -11,82 +15,182 @@ export default function FormModule({
   secondBtnOnClick,
   inputIsActif,
 }) {
+  const [usersRoles, setUsersRoles] = useState([]);
+  const [formData, setFormData] = useState({
+    password: "",
+    nom: "",
+    prenom: "",
+    fonction: "",
+    structureID: "1",
+    email: "",
+    role_default: "",
+  });
+  const [structures, setStructures] = useState({});
+  useEffect(() => {
+    const fetchStructures = async () => {
+      try {
+        const response = await axios.get("http://localhost:8000/api/structure");
+        // const structureArray = Array.from(
+        //   new Set(response.data.map((structure) => structure.nom_structure))
+        // );
+        setStructures(response.data);
+      } catch (error) {
+        console.error("Error fetching formations:", error);
+      }
+    };
+    fetchStructures();
+  }, []);
+
+  useEffect(() => {
+    setFormData((prev) => {
+      return { ...prev, fonction: inputs[1][0].options[0] };
+    });
+  }, [inputs[1][0].options[0]]);
+  useEffect(() => {
+    console.log(formData);
+  }, [formData]);
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prevData) => ({ ...prevData, [name]: value }));
+  };
+
+  const handleStructureChange = (e) => {
+    //seach for the structureID of e.target.value
+    const structureID = structures.find(
+      (structure) => structure.nom_structure === e.target.value
+    ).structureID;
+    setFormData((prevData) => ({ ...prevData, structureID }));
+  };
+
+  const handleRolesChange = (e) => {
+    const { value, checked } = e.target;
+
+    setUsersRoles((prevData) => {
+      const roles = checked
+        ? [...prevData, value]
+        : prevData.filter((role) => role !== value);
+      console.log(roles);
+      return roles;
+    });
+    setFormData((prev) => {
+      return { ...prev, role_default: usersRoles[0] };
+    });
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      await axios.post("http://localhost:8000/api/newUser", {
+        formData,
+        usersRoles,
+      });
+      alert("User added successfully");
+    } catch (error) {
+      console.error("Error adding user:", error);
+      alert("Error adding user");
+    }
+  };
+
   return (
     <div className={style.container}>
-      {title !== undefined && <h2 className={style.title}>{title}</h2>}
-      <form className={style.card} id="informations_personnel">
+      {title && <h2 className={style.title}>{title}</h2>}
+      <form
+        className={style.card}
+        id="informations_personnel"
+        onSubmit={handleSubmit}
+      >
         {inputs.map((input, index) => (
           <div className={style.row} key={index}>
-            <div className={style.col}>
-              <label htmlFor={input[0].label}>{input[0].label}</label>
-              {input[0].type === "select" ? (
-                <select
-                  className={style.input}
-                  disabled={inputIsActif !== undefined && !inputIsActif}
-                >
-                  {input[0].options.map((option) => (
-                    <option value={option}>{option}</option>
-                  ))}
-                </select>
-              ) : input[0].type === "custom" ? (
-                input[0].component
-              ) : (
-                <input
-                  disabled={inputIsActif !== undefined && !inputIsActif}
-                  type={input[0].type}
-                  id={input[0].label}
-                  className={
-                    input[1] !== undefined ? style.input : style.oneColInput
-                  }
-                />
-              )}
-            </div>
-            {input[1] !== undefined && (
-              <div className={style.col}>
-                <label htmlFor={input[1].label}>{input[1].label}</label>
-                {input[1].type === "select" ? (
+            {input.map((field) => (
+              <div className={style.col} key={field.name}>
+                <label htmlFor={field.label}>{field.label}</label>
+                {field.type === "select" && field.name === "fonction" ? (
+                  <>
+                    <input
+                      list="fonction-options"
+                      className={style.input}
+                      name={field.name}
+                      // value={formData[field.name]}
+                      onChange={handleChange}
+                      disabled={inputIsActif !== undefined && !inputIsActif}
+                    />
+                    <datalist id="fonction-options">
+                      {field.options.map(
+                        (option, index) =>
+                          option !== "" && (
+                            <option key={index} value={option}>
+                              {option}
+                            </option>
+                          )
+                      )}
+                    </datalist>
+                  </>
+                ) : field.type === "select" ? (
                   <select
                     className={style.input}
+                    name={field.name}
+                    value={formData[field.name]}
+                    defaultValue={field.options[0]}
+                    onChange={
+                      field.optionsType !== undefined &&
+                      field.optionsType === "structures"
+                        ? handleStructureChange
+                        : handleChange
+                    }
                     disabled={inputIsActif !== undefined && !inputIsActif}
                   >
-                    {input[1].options.map((option) => (
-                      <option value={option}>{option}</option>
-                    ))}
+                    {field.options.map(
+                      (option, index) =>
+                        option !== "" && (
+                          <option key={index} value={option}>
+                            {option}
+                          </option>
+                        )
+                    )}
                   </select>
-                ) : input[1].type === "custom" ? (
-                  input[1].component
+                ) : field.type === "custom" ? (
+                  React.cloneElement(field.component, {
+                    onChange:
+                      field.optionsType !== undefined &&
+                      field.optionsType === "roles"
+                        ? handleRolesChange
+                        : null,
+                  })
                 ) : (
                   <input
-                    disabled={inputIsActif !== undefined && !inputIsActif}
-                    type={input[1].type}
-                    id={input[1].label}
+                    name={field.name}
+                    value={formData[field.name]}
+                    onChange={handleChange}
+                    type={field.type}
+                    id={field.label}
                     className={style.input}
+                    disabled={inputIsActif !== undefined && !inputIsActif}
                   />
                 )}
               </div>
-            )}
+            ))}
           </div>
         ))}
-
         <div
           style={{
             display: "flex",
-            justifyContent: "flex-end",
+            flexDirection: "row-reverse",
             gap: "10px",
           }}
         >
-          {secondBtn !== undefined && (
+          <Button
+            content={mainBtn || "Enregistrer"}
+            btnStyle={mainBtnStyle !== undefined && mainBtnStyle}
+            onClick={mainBtnOnClick || null}
+          />
+          {secondBtn && (
             <Button
               content={secondBtn}
               btnStyle={secondBtnStyle !== undefined && secondBtnStyle}
-              onClick={secondBtnOnClick !== undefined && secondBtnOnClick}
+              onClick={secondBtnOnClick || null}
             />
           )}
-          <Button
-            content={mainBtn !== undefined ? mainBtn : "Enregistrer"}
-            btnStyle={mainBtnStyle !== undefined && mainBtnStyle}
-            onClick={mainBtnOnClick !== undefined && mainBtnOnClick}
-          />
         </div>
       </form>
     </div>
