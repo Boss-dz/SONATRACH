@@ -7,10 +7,37 @@ import FormModule from "../components/FormModule";
 import RolesChoice from "../components/RolesChoice";
 import { useNavigate } from "react-router-dom";
 
-import React from "react";
+import React, { useEffect, useState } from "react";
+import axios from "axios";
 
 export default function AjouterMembre() {
   const navigate = useNavigate();
+
+  const [fonctions, setFonctions] = useState([]);
+  const [structures, setStructures] = useState([]);
+
+  useEffect(() => {
+    const fullUsersData = JSON.parse(localStorage.getItem("fullUsersData"));
+    const fonctionArray = Array.from(
+      new Set(fullUsersData.map((user) => user.fonction))
+    );
+    setFonctions(fonctionArray);
+
+    const fetchStructures = async () => {
+      try {
+        const response = await axios.get("http://localhost:8000/api/structure");
+        const structureArray = Array.from(
+          new Set(response.data.map((structure) => structure.nom_structure))
+        );
+        setStructures(structureArray);
+      } catch (error) {
+        console.error("Error fetching formations:", error);
+      }
+    };
+
+    fetchStructures();
+  }, []);
+
   return (
     <div className={style.container}>
       <Sidebar />
@@ -27,26 +54,41 @@ export default function AjouterMembre() {
         <FormModule
           inputs={[
             [
-              { label: "Nom :", type: "text" },
-              { label: "Prénom :", type: "text" },
+              { name: "nom", label: "Nom", type: "text" },
+              { name: "prenom", label: "Prénom", type: "text" },
             ],
             [
-              { label: "Fonction :", type: "select", options: ["A", "A", "A"] },
               {
-                label: "Structure :",
+                name: "fonction",
+                label: "Fonction",
                 type: "select",
-                options: ["A", "A", "A"],
+                optionsType: "fonctions",
+                options: fonctions,
+              },
+              {
+                name: "nom_structure",
+                label: "Structure",
+                type: "select",
+                optionsType: "structures",
+                options: structures,
               },
             ],
-            [{ label: "Roles :", type: "custom", component: <RolesChoice /> }],
-            [{ label: "Email :", type: "email" }],
-            [{ label: "Mot de passe :", type: "text" }],
+            [
+              {
+                name: "roles",
+                label: "Roles",
+                type: "custom",
+                optionsType: "roles",
+                component: <RolesChoice />,
+              },
+            ],
+            [{ name: "email", label: "Email", type: "email" }],
+            [{ name: "password", label: "Mot de passe", type: "text" }],
           ]}
           secondBtn="Annuler"
           secondBtnStyle="minimal"
           secondBtnOnClick={() => navigate("/AdminIT/gerer_les_membres")}
         />
-
         <Footer />
       </div>
     </div>

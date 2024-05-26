@@ -7,7 +7,7 @@ export default function ToggleProfile() {
     <div className={style.container}>
       <a href="#profile" className={style.a}>
         <h3
-          className={active === "Profile" && style.active}
+          className={active === "Profile" ? style.active : null}
           onClick={() => setActive("Profile")}
         >
           Profile
@@ -15,7 +15,7 @@ export default function ToggleProfile() {
       </a>
       <a href="#application" className={style.a}>
         <h3
-          className={active === "Application" && style.active}
+          className={active === "Application" ? style.active : null}
           onClick={() => setActive("Application")}
         >
           Application

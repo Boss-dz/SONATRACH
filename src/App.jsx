@@ -58,9 +58,7 @@ export default function App() {
           element={<FormationCloture />}
         />
         <Route path="/AdminFormation/parametre" element={<ParametreAF />} />
-      </Routes>
 
-      <Routes>
         <Route path="/AdminIT" element={<HomepageAIT />} />
         <Route path="/AdminIT/gerer_les_membres" element={<GererMembres />} />
         <Route
