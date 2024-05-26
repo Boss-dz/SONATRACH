@@ -38,3 +38,11 @@ th {
 .color {
   background-color: #fad8b9;
 }
+.saveButton {
+  background-color: #f29e4f;
+  border: none;
+  color: #fff;
+  width: fit-content;
+  padding: 10px;
+  margin-bottom: 10px;
+}

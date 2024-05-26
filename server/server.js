@@ -10,7 +10,7 @@ const db = mysql.createConnection({
   host: "localhost",
   user: "root",
   password: "root123",
-  database: "sonatrach",
+  database: "form_eval",
   port: 3307,
 });
 db.connect((err) => {
