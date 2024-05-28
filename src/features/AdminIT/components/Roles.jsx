@@ -35,10 +35,9 @@ function Roles({ roleFilter, setRoleFilter }) {
             Tous
           </li>
           {roles.map((role, i) => (
-            <>
+            <React.Fragment key={i}>
               <hr style={{ opacity: "20%" }} />
               <li
-                key={i}
                 onClick={() => setRoleFilter(role)}
                 style={
                   roleFilter === role
@@ -50,7 +49,7 @@ function Roles({ roleFilter, setRoleFilter }) {
               >
                 {role}
               </li>
-            </>
+            </React.Fragment>
           ))}
         </ul>
       </div>

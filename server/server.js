@@ -372,6 +372,112 @@ app.put("/api/user/:username", (req, res) => {
   );
 });
 
+app.get("/api/users/details", (req, res) => {
+  // Query to get all user details
+  const usersQuery = `
+    SELECT utilisateur.*, structure.nom_structure 
+    FROM utilisateur 
+    LEFT JOIN structure ON utilisateur.structureID = structure.structureID`;
+
+  // Query to get all roles
+  const rolesQuery = `
+    SELECT userrole.utilisateurID, role.nom_role 
+    FROM userrole 
+    JOIN role ON userrole.roleID = role.roleID`;
+
+  // Execute the queries in parallel
+  db.query(usersQuery, (usersError, usersResults) => {
+    if (usersError) {
+      console.error("Database query error:", usersError);
+      return res.status(500).json({ error: "Internal server error" });
+    }
+
+    db.query(rolesQuery, (rolesError, rolesResults) => {
+      if (rolesError) {
+        console.error("Database query error:", rolesError);
+        return res.status(500).json({ error: "Internal server error" });
+      }
+
+      // Create a map to associate user IDs with their roles
+      const rolesMap = {};
+      rolesResults.forEach((role) => {
+        if (!rolesMap[role.utilisateurID]) {
+          rolesMap[role.utilisateurID] = [];
+        }
+        rolesMap[role.utilisateurID].push(role.nom_role);
+      });
+
+      // Combine user details with their roles
+      const usersWithRoles = usersResults.map((user) => {
+        return {
+          ...user,
+          roles: rolesMap[user.utilisateurID] || [],
+        };
+      });
+
+      return res.status(200).json(usersWithRoles);
+    });
+  });
+});
+
+app.post("/api/user/addRole", (req, res) => {
+  const { userID, role } = req.body;
+
+  // Convert role name to roleID
+  const roleQuery = "SELECT roleID FROM role WHERE nom_role = ?";
+  db.query(roleQuery, [role], (roleErr, roleResults) => {
+    if (roleErr) {
+      console.error("Database query error:", roleErr);
+      return res.status(500).json({ error: "Internal server error" });
+    }
+
+    if (roleResults.length === 0) {
+      return res.status(404).json({ error: "Role not found" });
+    }
+
+    const roleID = roleResults[0].roleID;
+
+    // Add the role to the user
+    const query = "INSERT INTO userrole (utilisateurID, roleID) VALUES (?, ?)";
+    db.query(query, [userID, roleID], (err) => {
+      if (err) {
+        console.error("Database insert error:", err);
+        return res.status(500).json({ error: "Internal server error" });
+      }
+      res.status(201).json({ message: "Role added successfully" });
+    });
+  });
+});
+
+app.delete("/api/user/removeRole", (req, res) => {
+  const { userID, role } = req.body;
+
+  // Convert role name to roleID
+  const roleQuery = "SELECT roleID FROM role WHERE nom_role = ?";
+  db.query(roleQuery, [role], (roleErr, roleResults) => {
+    if (roleErr) {
+      console.error("Database query error:", roleErr);
+      return res.status(500).json({ error: "Internal server error" });
+    }
+
+    if (roleResults.length === 0) {
+      return res.status(404).json({ error: "Role not found" });
+    }
+
+    const roleID = roleResults[0].roleID;
+
+    // Remove the role from the user
+    const query = "DELETE FROM userrole WHERE utilisateurID = ? AND roleID = ?";
+    db.query(query, [userID, roleID], (err) => {
+      if (err) {
+        console.error("Database delete error:", err);
+        return res.status(500).json({ error: "Internal server error" });
+      }
+      res.status(200).json({ message: "Role removed successfully" });
+    });
+  });
+});
+
 app.listen(8000, () => {
   console.log("listening");
 });
