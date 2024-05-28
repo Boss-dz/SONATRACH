@@ -1,7 +1,9 @@
 import style from "./FormModule.module.css";
 import Button from "./Button";
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
+import { useLocation, useParams } from "react-router-dom";
+
 import axios from "axios";
 
 export default function FormModule({
@@ -15,14 +17,26 @@ export default function FormModule({
   secondBtnOnClick,
   inputIsActif,
 }) {
+  const { userName } = useParams();
+  const location = useLocation();
+
   const [usersRoles, setUsersRoles] = useState([]);
+
+  // Initialize formData with default values from inputs (if available)
+  const initialFormData = inputs.reduce((acc, row) => {
+    row.forEach((field) => {
+      acc[field.name] = field.value || "";
+    });
+    return acc;
+  }, {});
+
   const [formData, setFormData] = useState({
-    password: "",
-    nom: "",
-    prenom: "",
-    fonction: "",
+    password: initialFormData.password || "",
+    nom: initialFormData.nom || "",
+    prenom: initialFormData.prenom || "",
+    fonction: initialFormData.fonction || "",
     structureID: "1",
-    email: "",
+    email: initialFormData.email || "",
     role_default: "",
   });
   const [structures, setStructures] = useState({});
@@ -30,9 +44,6 @@ export default function FormModule({
     const fetchStructures = async () => {
       try {
         const response = await axios.get("http://localhost:8000/api/structure");
-        // const structureArray = Array.from(
-        //   new Set(response.data.map((structure) => structure.nom_structure))
-        // );
         setStructures(response.data);
       } catch (error) {
         console.error("Error fetching formations:", error);
@@ -41,11 +52,19 @@ export default function FormModule({
     fetchStructures();
   }, []);
 
+  const fct = inputs[1][0].options[0];
   useEffect(() => {
-    setFormData((prev) => {
-      return { ...prev, fonction: inputs[1][0].options[0] };
-    });
-  }, [inputs[1][0].options[0]]);
+    if (
+      !location.pathname.startsWith(
+        "/AdminIT/gerer_les_membres/informations_d'un_membre/modifier_les_informations_d'un_membre"
+      )
+    ) {
+      setFormData((prev) => {
+        return { ...prev, fonction: inputs[1][0].options[0] };
+      });
+    }
+  }, [fct]);
+
   useEffect(() => {
     console.log(formData);
   }, [formData]);
@@ -80,15 +99,29 @@ export default function FormModule({
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    try {
-      await axios.post("http://localhost:8000/api/newUser", {
-        formData,
-        usersRoles,
-      });
-      alert("User added successfully");
-    } catch (error) {
-      console.error("Error adding user:", error);
-      alert("Error adding user");
+    if (
+      !location.pathname.startsWith(
+        "/AdminIT/gerer_les_membres/informations_d'un_membre/modifier_les_informations_d'un_membre"
+      )
+    ) {
+      try {
+        await axios.post("http://localhost:8000/api/newUser", {
+          formData,
+          usersRoles,
+        });
+        alert("User added successfully");
+      } catch (error) {
+        console.error("Error adding user:", error);
+        alert("Error adding user");
+      }
+    } else {
+      try {
+        await axios.put(`http://localhost:8000/api/user/${userName}`, formData);
+        alert("User added successfully");
+      } catch (error) {
+        console.error("Error adding user:", error);
+        alert("Error adding user");
+      }
     }
   };
 
@@ -104,14 +137,14 @@ export default function FormModule({
           <div className={style.row} key={index}>
             {input.map((field) => (
               <div className={style.col} key={field.name}>
-                <label htmlFor={field.label}>{field.label}</label>
+                <label htmlFor={field.label}>{field.label} :</label>
                 {field.type === "select" && field.name === "fonction" ? (
                   <>
                     <input
                       list="fonction-options"
                       className={style.input}
                       name={field.name}
-                      // value={formData[field.name]}
+                      value={formData[field.name]}
                       onChange={handleChange}
                       disabled={inputIsActif !== undefined && !inputIsActif}
                     />
@@ -130,8 +163,8 @@ export default function FormModule({
                   <select
                     className={style.input}
                     name={field.name}
-                    value={formData[field.name]}
-                    defaultValue={field.options[0]}
+                    // value={formData[field.name]  || field.value}
+                    defaultValue={field.value || field.options[0]}
                     onChange={
                       field.optionsType !== undefined &&
                       field.optionsType === "structures"

@@ -299,6 +299,79 @@ app.get("/allUsers-structure", (req, res) => {
   });
 });
 
+app.get("/api/user/:userName", (req, res) => {
+  const userName = req.params.userName;
+
+  db.query(
+    "SELECT utilisateur.*, structure.nom_structure FROM utilisateur LEFT JOIN structure ON utilisateur.structureID = structure.structureID WHERE username = ?",
+    [userName],
+    (error, results) => {
+      if (error) {
+        console.error("Database query error:", error);
+        return res.status(500).json({ error: "Internal server error" });
+      }
+
+      if (results.length === 0) {
+        return res.status(404).json({ error: "User not found" });
+      }
+
+      const user = results[0];
+      return res.status(200).json(user);
+    }
+  );
+});
+
+// Get all roles for a specific user by userID
+app.get("/api/user/:userID/roles", (req, res) => {
+  const { userID } = req.params;
+
+  const query = `
+    SELECT role.nom_role
+    FROM userrole
+    JOIN role ON userrole.roleID = role.roleID
+    WHERE userrole.utilisateurID = ?
+  `;
+
+  db.query(query, [userID], (error, results) => {
+    if (error) {
+      console.error("Database query error:", error);
+      return res.status(500).json({ error: "Internal server error" });
+    }
+    res.status(200).json(results);
+  });
+});
+
+// Update user information based on username
+app.put("/api/user/:username", (req, res) => {
+  const { username } = req.params;
+  const { password, nom, prenom, email, fonction, structureID } = req.body;
+
+  const query = `
+    UPDATE utilisateur
+    SET password = ?, nom = ?, prenom = ?, email = ?, fonction = ?, structureID = ?
+    WHERE username = ?
+  `;
+
+  db.query(
+    query,
+    [password, nom, prenom, email, fonction, structureID, username],
+    (error, results) => {
+      if (error) {
+        console.error("Database query error:", error);
+        return res.status(500).json({ error: "Internal server error" });
+      }
+
+      if (results.affectedRows === 0) {
+        return res.status(404).json({ error: "User not found" });
+      }
+
+      res
+        .status(200)
+        .json({ message: "User information updated successfully" });
+    }
+  );
+});
+
 app.listen(8000, () => {
   console.log("listening");
 });

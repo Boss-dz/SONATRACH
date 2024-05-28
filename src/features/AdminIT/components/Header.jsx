@@ -19,21 +19,9 @@ export default function Header() {
           <span>{">"} Gérer les membres</span>
         </div>
       )}
-      {location.pathname ===
-        "/AdminIT/gerer_les_membres/informations_d'un_membre" && (
-        <div className={style.path}>
-          <NavLink to="/AdminIT" className={style.link}>
-            Acceuil
-          </NavLink>
-          <span>{">"} </span>
-          <NavLink to="/AdminIT/gerer_les_membres" className={style.link}>
-            Gérer les membres
-          </NavLink>
-          <span>{">"} Informations d'un membre</span>
-        </div>
-      )}
-      {location.pathname ===
-        "/AdminIT/gerer_les_membres/informations_d'un_membre/modifier_les_informations_d'un_membre" && (
+      {location.pathname.startsWith(
+        "/AdminIT/gerer_les_membres/informations_d'un_membre/modifier_les_informations_d'un_membre"
+      ) ? (
         <div className={style.path}>
           <NavLink to="/AdminIT" className={style.link}>
             Acceuil
@@ -51,6 +39,21 @@ export default function Header() {
           </NavLink>
           <span>{">"} Modifier les informations</span>
         </div>
+      ) : (
+        location.pathname.startsWith(
+          "/AdminIT/gerer_les_membres/informations_d'un_membre"
+        ) && (
+          <div className={style.path}>
+            <NavLink to="/AdminIT" className={style.link}>
+              Acceuil
+            </NavLink>
+            <span>{">"} </span>
+            <NavLink to="/AdminIT/gerer_les_membres" className={style.link}>
+              Gérer les membres
+            </NavLink>
+            <span>{">"} Informations d'un membre</span>
+          </div>
+        )
       )}
       {location.pathname === "/AdminIT/ajouter_un_membre" && (
         <div className={style.path}>

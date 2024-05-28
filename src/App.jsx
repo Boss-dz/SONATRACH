@@ -62,11 +62,11 @@ export default function App() {
         <Route path="/AdminIT" element={<HomepageAIT />} />
         <Route path="/AdminIT/gerer_les_membres" element={<GererMembres />} />
         <Route
-          path="/AdminIT/gerer_les_membres/informations_d'un_membre"
+          path="/AdminIT/gerer_les_membres/informations_d'un_membre/:userName"
           element={<InfoMembre />}
         />
         <Route
-          path="/AdminIT/gerer_les_membres/informations_d'un_membre/modifier_les_informations_d'un_membre"
+          path="/AdminIT/gerer_les_membres/informations_d'un_membre/modifier_les_informations_d'un_membre/:userName"
           element={<EditInfoMembre />}
         />
         <Route path="/AdminIT/ajouter_un_membre" element={<AjouterMembre />} />
