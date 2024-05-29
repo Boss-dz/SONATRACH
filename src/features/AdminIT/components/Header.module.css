@@ -68,6 +68,7 @@
 .dropMenu ul li {
   padding: 5px;
   border-radius: 10px;
+  width: 114px;
 }
 .dropMenu ul li:hover {
   background-color: #f5f5f5;

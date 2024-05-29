@@ -1,11 +1,38 @@
 import style from "./Header.module.css";
 import { NavLink, useLocation } from "react-router-dom";
-import { useState } from "react";
+
+import { useEffect, useState } from "react";
+import axios from "axios";
 
 export default function Header() {
+  // const roles = JSON.parse(localStorage.getItem("fullUsersData"));
+  // console.log(roles);
+
   const [menuDroped, setMenuDroped] = useState(false);
   const [subMenuDroped, setSubMenuDroped] = useState(false);
+  const [roles, setRoles] = useState([]);
   const location = useLocation();
+
+  useEffect(() => {
+    const fetchRoles = async () => {
+      try {
+        const response = await axios.get(
+          `http://localhost:8000/api/user/${
+            JSON.parse(localStorage.getItem("userData")).utilisateurID
+          }/roles`
+        );
+        const formatedData = response.data.map((role) => role.nom_role);
+        setRoles(formatedData);
+        console.log(formatedData);
+      } catch (error) {
+        console.error(error.response.data);
+      }
+    };
+
+    fetchRoles();
+  }, []);
+
+  // /api/user/:userID/roles
   return (
     <div className={style.container}>
       {location.pathname === "/AdminIT" && (
@@ -101,7 +128,14 @@ export default function Header() {
           <ul
             style={subMenuDroped ? { display: "block" } : { display: "none" }}
           >
-            <NavLink to="/Participant">
+            {roles.map((role, i) => {
+              return (
+                <NavLink to={`/${role.replace(/\s/g, "")}`} key={i}>
+                  <li>{role}</li>
+                </NavLink>
+              );
+            })}
+            {/* <NavLink to="/Participant">
               <li>Participant</li>
             </NavLink>
             <NavLink to="/AdminFormation">
@@ -112,7 +146,7 @@ export default function Header() {
             </NavLink>
             <NavLink to="/AdminVisiteur">
               <li>Admin Visiteur</li>
-            </NavLink>
+            </NavLink> */}
           </ul>
           <NavLink to="/" style={{ width: "100%", textAlign: "center" }}>
             <p>Se Deconecter</p>

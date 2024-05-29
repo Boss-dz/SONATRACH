@@ -23,7 +23,7 @@ function Authentification() {
 
       // Fetch all users with their structures
       const userResponse = await axios.get(
-        "http://localhost:8000/allUsers-structure"
+        "http://localhost:8000/api/users/details"
       );
 
       // Store the full user data with structures in local storage
