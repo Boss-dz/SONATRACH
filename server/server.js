@@ -10,9 +10,8 @@ const db = mysql.createConnection({
   host: "localhost",
   user: "root",
   password: "root123",
-  database: "form_eval",
+  database: "form-eval",
   port: 3307,
-
 });
 
 db.connect((err) => {
@@ -297,6 +296,88 @@ app.get("/allUsers-structure", (req, res) => {
       return res.status(500).json({ error: "Internal server error" });
     }
     res.status(200).json(results);
+  });
+});
+
+// const questions = [];
+// for (let i = 1; i <= 22; i++) {
+//   const key = `0-${i - 1}`;
+//   questions.push(selectedOptions[key] || null);
+// }
+// const questions = [];
+// for (let i = 1; i <=22; i++) {
+//   const key = `${i - 1}-${i % 5}`;
+//   questions.push(selectedOptions[key] );
+// }
+// const questions = [];
+// for (const key in selectedOptions) {
+//   questions.push(selectedOptions[key]);
+// }
+app.post("/api/Responses", (req, res) => {
+  const { formationID, userID, selectedOptions, satisfactionRate } = req.body;
+
+  const currentDate = new Date().toISOString().slice(0, 19).replace("T", " ");
+
+  const questions = [];
+  // for (let i = 0; i < 22; i++) {
+  //   const key = `${Math.floor(i / 5)}-${i % 5}`;
+  //   const value = selectedOptions[key];
+  //   questions.push(value !== undefined ? value : null); // Use null for missing keys
+  // }
+  // for (let i = 0; i < 22; i++) {
+  //   const sectionIndex = Math.floor(i / 5);
+  //   const rowIndex = i % 5;
+  //   const key = `${sectionIndex}-${rowIndex}`;
+  //   const value = selectedOptions[key];
+  //   questions.push(value !== undefined ? value : null); // Use null for missing keys
+  // }
+  for (let i = 0; i < 22; i++) {
+    let key;
+    if (i < 6) {
+      key = `0-${i}`;
+    } else if (i < 11) {
+      key = `1-${i - 6}`;
+    } else if (i < 16) {
+      key = `2-${i - 11}`;
+    } else if (i < 18) {
+      key = `3-${i - 16}`;
+    } else {
+      key = `4-${i - 18}`;
+    }
+    const value = selectedOptions[key];
+    questions.push(value !== undefined ? value : null);
+  }
+  console.log(questions);
+
+  const query = `
+    INSERT INTO reponse (
+      date_reponse,
+      taux_satisfaction,
+      formationID,
+      utilisateurID,
+      question1, question2, question3, question4, question5,
+      question6, question7, question8, question9, question10,
+      question11, question12, question13, question14, question15,
+      question16, question17, question18, question19, question20,
+      question21, question22
+    )
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+  `;
+
+  const values = [
+    currentDate,
+    satisfactionRate,
+    formationID,
+    userID,
+    ...questions,
+  ];
+
+  db.query(query, values, (error, results) => {
+    if (error) {
+      console.error("Database query error:", error);
+      return res.status(500).json({ error: "Internal server error" });
+    }
+    res.status(201).json({ message: "Responses saved successfully" });
   });
 });
 

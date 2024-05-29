@@ -29,7 +29,7 @@ export default function TableDevaluation() {
       });
     }
   };
-
+  console.log(selectedOptions);
   const renderCell = (sectionIndex, rowIndex, colIndex, emoji, altText) => (
     <td
       key={`${sectionIndex}-${rowIndex}-${colIndex}`}
@@ -56,7 +56,7 @@ export default function TableDevaluation() {
     return satisfactionRate.toFixed(2);
   };
 
-  const handleSave = () => {
+  const handleSave = async () => {
     if (!validateSelections()) {
       alert("Please select an option in each row.");
       return;
@@ -64,14 +64,31 @@ export default function TableDevaluation() {
 
     try {
       const satisfactionRate = calculateSatisfactionRate();
-      // Simulate saving to a database
-      console.log("Saving data to database...");
-      console.log("Selected Options:", selectedOptions);
-      console.log("Satisfaction Rate:", satisfactionRate);
-      alert("Bien enregistré");
+      const formationID = 1; // Replace with actual formationID
+      const userID = 1; // Replace with actual userID
+      const response = await fetch("http://localhost:8000/api/Responses", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          formationID,
+          userID,
+          selectedOptions,
+          satisfactionRate,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to save responses");
+      }
+
+      console.log("Responses saved successfully");
+      alert("Responses saved successfully");
       setSelectedOptions({});
     } catch (error) {
-      alert("Erreur lors de l'enregistrement");
+      console.error("Error saving responses:", error);
+      alert("Error saving responses. Please try again.");
     }
   };
 
