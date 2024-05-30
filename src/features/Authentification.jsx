@@ -17,7 +17,6 @@ function Authentification() {
     e.preventDefault();
     try {
       const response = await axios.post("http://localhost:8000/", values);
-      console.log(response.data);
       const role = response.data.user.role_default;
       localStorage.setItem("userData", JSON.stringify(response.data.user));
 

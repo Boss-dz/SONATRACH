@@ -46,3 +46,12 @@ th {
   padding: 10px;
   margin-bottom: 10px;
 }
+.textField{
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding-bottom: 10px;
+}
+textarea{
+  padding: 10px;
+}

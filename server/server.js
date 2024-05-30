@@ -182,6 +182,34 @@ app.post("/api/formation", (req, res) => {
     }
   );
 });
+app.get("/api/formation/:formationID", (req, res) => {
+  const { formationID } = req.params;
+
+  const query = `
+    SELECT
+      intitule,
+      nom_formateur,
+      org_formateur,
+      lieu,
+      date_debut,
+      date_fin
+    FROM formation
+    WHERE formationID = ?
+  `;
+
+  db.query(query, [formationID], (error, results) => {
+    if (error) {
+      console.error("Database query error:", error);
+      return res.status(500).json({ error: "Internal server error" });
+    }
+
+    if (results.length === 0) {
+      return res.status(404).json({ error: "Formation not found" });
+    }
+
+    res.status(200).json(results[0]);
+  });
+});
 
 app.post("/api/participation", (req, res) => {
   const { formationID, utilisateurID } = req.body;
@@ -299,38 +327,35 @@ app.get("/allUsers-structure", (req, res) => {
   });
 });
 
-// const questions = [];
-// for (let i = 1; i <= 22; i++) {
-//   const key = `0-${i - 1}`;
-//   questions.push(selectedOptions[key] || null);
-// }
-// const questions = [];
-// for (let i = 1; i <=22; i++) {
-//   const key = `${i - 1}-${i % 5}`;
-//   questions.push(selectedOptions[key] );
-// }
-// const questions = [];
-// for (const key in selectedOptions) {
-//   questions.push(selectedOptions[key]);
-// }
+
 app.post("/api/Responses", (req, res) => {
-  const { formationID, userID, selectedOptions, satisfactionRate } = req.body;
+  const {
+    formationID,
+    userID,
+    selectedOptions,
+    satisfactionRate,
+    pointsForts,
+    pointsAmeliorer,
+    partiesInteressantes,
+    recommandations,
+    commentaires,
+  } = req.body;
+
+  // Check if required fields are present
+  if (
+    !pointsForts ||
+    !pointsAmeliorer ||
+    !partiesInteressantes 
+  ) {
+    return res
+      .status(400)
+      .json({ error: "All required fields must be filled" });
+  }
 
   const currentDate = new Date().toISOString().slice(0, 19).replace("T", " ");
 
   const questions = [];
-  // for (let i = 0; i < 22; i++) {
-  //   const key = `${Math.floor(i / 5)}-${i % 5}`;
-  //   const value = selectedOptions[key];
-  //   questions.push(value !== undefined ? value : null); // Use null for missing keys
-  // }
-  // for (let i = 0; i < 22; i++) {
-  //   const sectionIndex = Math.floor(i / 5);
-  //   const rowIndex = i % 5;
-  //   const key = `${sectionIndex}-${rowIndex}`;
-  //   const value = selectedOptions[key];
-  //   questions.push(value !== undefined ? value : null); // Use null for missing keys
-  // }
+
   for (let i = 0; i < 22; i++) {
     let key;
     if (i < 6) {
@@ -347,10 +372,9 @@ app.post("/api/Responses", (req, res) => {
     const value = selectedOptions[key];
     questions.push(value !== undefined ? value : null);
   }
-  console.log(questions);
 
   const query = `
-    INSERT INTO reponse (
+    INSERT INTO Reponse (
       date_reponse,
       taux_satisfaction,
       formationID,
@@ -359,9 +383,11 @@ app.post("/api/Responses", (req, res) => {
       question6, question7, question8, question9, question10,
       question11, question12, question13, question14, question15,
       question16, question17, question18, question19, question20,
-      question21, question22
+      question21, question22,
+      points_forts, points_ameliorer, parties_interessantes,
+      recommandations, commentaires
     )
-    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
   `;
 
   const values = [
@@ -370,6 +396,11 @@ app.post("/api/Responses", (req, res) => {
     formationID,
     userID,
     ...questions,
+    pointsForts,
+    pointsAmeliorer,
+    partiesInteressantes,
+    recommandations || null,
+    commentaires || null,
   ];
 
   db.query(query, values, (error, results) => {

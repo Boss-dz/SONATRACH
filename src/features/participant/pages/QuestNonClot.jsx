@@ -10,7 +10,7 @@ export default function QuestNonClot() {
       <Header />
       <Sidebar />
       <Titre />
-      <QuestDetails color="#302CD780" />
+      <QuestDetails color="#302CD780" isCloture={false}/>
       <Footer />
     </div>
   );
