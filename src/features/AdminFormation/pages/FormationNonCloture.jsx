@@ -84,7 +84,11 @@ export default function FormationNonCloture() {
       >
         <Header />
         <Titre />
-        <QuestDetails propData={formations} dataType="formation" />
+        <QuestDetails
+          propData={formations}
+          dataType="formation"
+          link="/AdminFormation/formations_non_cloture/reponses_formation"
+        />
         <AddButton />
         <Footer />
       </div>

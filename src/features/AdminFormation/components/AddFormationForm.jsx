@@ -4,7 +4,7 @@ import TextInput from "../components/TextInput.jsx";
 
 import axios from "axios";
 
-function AddFormationForm({ formation, setFormation }) {
+function AddFormationForm({ formation, setFormation, isDisabled }) {
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormation((prevFormation) => ({
@@ -32,12 +32,14 @@ function AddFormationForm({ formation, setFormation }) {
           name="intitule"
           value={formation.intitule}
           onChange={handleChange}
+          isDisabled={isDisabled}
         />
         <TextInput
           label="Organisme Formateur :"
           name="org_formateur"
           value={formation.org_formateur}
           onChange={handleChange}
+          isDisabled={isDisabled}
         />
         <TextInput
           label="Période de formation : "
@@ -46,6 +48,7 @@ function AddFormationForm({ formation, setFormation }) {
           name="date_debut"
           value={formation.date_debut}
           onChange={handleChange}
+          isDisabled={isDisabled}
         />
         <TextInput
           label="Période du questionnaire :"
@@ -54,6 +57,7 @@ function AddFormationForm({ formation, setFormation }) {
           name="date_debut_questionnaire"
           value={formation.date_debut_questionnaire}
           onChange={handleChange}
+          isDisabled={isDisabled}
         />
       </div>
       <div>
@@ -62,12 +66,14 @@ function AddFormationForm({ formation, setFormation }) {
           name="nom_formateur"
           value={formation.nom_formateur}
           onChange={handleChange}
+          isDisabled={isDisabled}
         />
         <TextInput
           label="Lieu :"
           name="lieu"
           value={formation.lieu}
           onChange={handleChange}
+          isDisabled={isDisabled}
         />
         <TextInput
           label="&#8203;"
@@ -76,6 +82,7 @@ function AddFormationForm({ formation, setFormation }) {
           name="date_fin"
           value={formation.date_fin}
           onChange={handleChange}
+          isDisabled={isDisabled}
         />
         <TextInput
           label="&#8203;"
@@ -84,6 +91,7 @@ function AddFormationForm({ formation, setFormation }) {
           name="date_fin_questionnaire"
           value={formation.date_fin_questionnaire}
           onChange={handleChange}
+          isDisabled={isDisabled}
         />
       </div>
     </div>

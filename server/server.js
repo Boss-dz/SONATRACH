@@ -478,6 +478,31 @@ app.delete("/api/user/removeRole", (req, res) => {
   });
 });
 
+// Get formation information
+app.get("/api/formations/:id?", (req, res) => {
+  const formationID = req.params.id;
+
+  // Construct the SQL query based on whether ID is provided or not
+  let query;
+  let queryParams;
+  if (formationID) {
+    query = "SELECT * FROM formation WHERE formationID = ?";
+    queryParams = [formationID];
+  } else {
+    query = "SELECT * FROM formation";
+    queryParams = [];
+  }
+
+  // Execute the SQL query
+  db.query(query, queryParams, (error, results) => {
+    if (error) {
+      console.error("Database query error:", error);
+      return res.status(500).json({ error: "Internal server error" });
+    }
+    res.status(200).json(results);
+  });
+});
+
 app.listen(8000, () => {
   console.log("listening");
 });
