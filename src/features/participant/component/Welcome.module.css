@@ -1,6 +1,6 @@
 .welcome {
   grid-column-start: 2;
-  grid-column-end: 9;
+  grid-column-end: 8;
   grid-row-start: 2;
   grid-row-end: 4;
   display: flex;
@@ -8,12 +8,10 @@
   align-items: center;
   margin-top: 10px;
   margin-right: 20px;
-  width: 90%;
+  width: 100%;
+  padding-left: 20px;
 }
-.welcome.change {
-  width: 75%;
-  height: 200px;
-}
+
 
 .container {
   width: 100%;

@@ -20,7 +20,7 @@ const data = [
 
 ];
 
-export default function Notification({ addStyle, btnColor }) {
+export default function Notification({ addStyle}) {
   const length = data.length;
   const list = data.slice(0, 3);
   const date = new Date().toLocaleDateString();
@@ -39,7 +39,7 @@ export default function Notification({ addStyle, btnColor }) {
             <p className={style.date}>Créer le {date}</p>
           </div>
         ))}
-        <button className={`${style.btn} ${btnColor ? btnColor : ""}`}>
+        <button className={`${style.btn}`}>
           Voir plus
         </button>
       </div>

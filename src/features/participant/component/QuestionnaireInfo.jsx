@@ -27,12 +27,18 @@ export default function QuestionnaireInfo() {
   if (!formation) {
     return <div>Loading...</div>;
   }
+    const truncateText = (text, maxLength) => {
+      if (text.length > maxLength) {
+        return text.slice(0, maxLength) + "...";
+      }
+      return text;
+    };
   return (
     <div className={style.container}>
       <div className={style.card}>
         <div className={style.col}>
           <h2>Intitulé de la formation :</h2>
-          <span>{formation.intitule}</span>
+          <span>{truncateText(formation.intitule,40)}</span>
         </div>
         <div className={style.col}>
           <h2>Nom du formateur :</h2>

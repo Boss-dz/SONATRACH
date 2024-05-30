@@ -37,61 +37,6 @@ import axios from "axios";
   };
 
 
-// export default function QuestDetails({ color }) {
-//   const location = useLocation();
-//   const navigate = useNavigate();
-//   const [formations, setFormations] = useState([]);
-//     useEffect(() => {
-//       axios
-//         .get("http://localhost:8000/AdminFormation/formations_non_cloture")
-//         .then((response) => {
-//           setFormations(response.data);
-//         })
-//         .catch((error) => {
-//           console.error("Error fetching formation data:", error);
-//         });
-//     }, []);
-//     console.log(formations)
-//   return (
-//     <div className={style.container}>
-//       <ul className={style.info}>
-//         <li>Intitulé de la formation</li>
-//         <li>Organisme Formateur</li>
-//         <li>Duré du formation</li>
-//         <li>Début de questionnaire</li>
-//         <li>
-//           {location.pathname === "/Participant/questionnaire_cloture"
-//             ? "Fin du questionnaire"
-//             : "Temps restant"}
-//         </li>
-//       </ul>
-//       {formations.map((e, i) => (
-//         <div
-//           className={style.details}
-//           style={{ "--color": color }}
-//           key={i}
-//           onClick={() => navigate("/Participant/questionnaire")}
-//         >
-//           <div className={style.item}>
-//             <h3>{e.intitule}</h3>
-//           </div>
-//           <div className={style.item}>
-//             <h5>{e.org_formateur}</h5>
-//           </div>
-//           <div className={`${style.item} ${style.span}`}>
-//             <span>du {formatDate(e.date_debut)}</span>
-//             <span>au {formatDate(e.date_fin)}</span>
-//           </div>
-//           <div className={style.item}>{formatDate(e.date_debut_questionnaire)}</div>
-//           <div className={style.item}>{calculateTimeRemaining(e.date_fin_questionnaire)}</div>
-//         </div>
-//       ))}
-//     </div>
-//   );
-// }
-
-
-
 export default function QuestDetails({ color, isCloture }) {
   const location = useLocation();
   const navigate = useNavigate();
@@ -124,33 +69,37 @@ export default function QuestDetails({ color, isCloture }) {
             : "Temps restant"}
         </li>
       </ul>
-      {formations.map((formation, i) => (
-        <div
-          className={style.details}
-          style={{ "--color": color }}
-          key={i}
-          onClick={() => navigate(`/Participant/questionnaire/${formation.formationID}`)}
-        >
-          <div className={style.item}>
-            <h3>{formation.intitule}</h3>
+      <div className={style.wrapper}>
+        {formations.map((formation, i) => (
+          <div
+            className={style.details}
+            style={{ "--color": color }}
+            key={i}
+            onClick={() =>
+              navigate(`/Participant/questionnaires/${formation.formationID}`)
+            }
+          >
+            <div className={style.item}>
+              <h3>{formation.intitule}</h3>
+            </div>
+            <div className={style.item}>
+              <h5>{formation.org_formateur}</h5>
+            </div>
+            <div className={`${style.item} ${style.span}`}>
+              <span>du {formatDate(formation.date_debut)}</span>
+              <span>au {formatDate(formation.date_fin)}</span>
+            </div>
+            <div className={style.item}>
+              {formatDate(formation.date_debut_questionnaire)}
+            </div>
+            <div className={style.item}>
+              {isCloture
+                ? formatDate(formation.date_fin_questionnaire)
+                : calculateTimeRemaining(formation.date_fin_questionnaire)}
+            </div>
           </div>
-          <div className={style.item}>
-            <h5>{formation.org_formateur}</h5>
-          </div>
-          <div className={`${style.item} ${style.span}`}>
-            <span>du {formatDate(formation.date_debut)}</span>
-            <span>au {formatDate(formation.date_fin)}</span>
-          </div>
-          <div className={style.item}>
-            {formatDate(formation.date_debut_questionnaire)}
-          </div>
-          <div className={style.item}>
-            {isCloture
-              ? formatDate(formation.date_fin_questionnaire)
-              : calculateTimeRemaining(formation.date_fin_questionnaire)}
-          </div>
-        </div>
-      ))}
+        ))}
+      </div>
     </div>
   );
 }

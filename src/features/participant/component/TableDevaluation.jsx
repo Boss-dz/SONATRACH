@@ -76,48 +76,6 @@ export default function TableDevaluation() {
     console.log(`Satisfaction Rate: ${satisfactionRate.toFixed(2)}%`);
     return satisfactionRate.toFixed(2);
   };
-
-  // const handleSave = async () => {
-  //   if (!validateSelections()) {
-  //     alert("Please select an option in each row.");
-  //     return;
-  //   }
-
-  //   try {
-  //     const satisfactionRate = calculateSatisfactionRate();
-  //     const response = await fetch("http://localhost:8000/api/Responses", {
-  //       method: "POST",
-  //       headers: {
-  //         "Content-Type": "application/json",
-  //       },
-  //       body: JSON.stringify({
-  //         formationID,
-  //         userID,
-  //         selectedOptions,
-  //         satisfactionRate,
-  //         ...formText,
-  //       }),
-  //     });
-
-  //     if (!response.ok) {
-  //       throw new Error("Failed to save responses");
-  //     }
-
-  //     console.log("Responses saved successfully");
-  //     alert("Responses saved successfully");
-  //     setSelectedOptions({});
-  //     setFormText({
-  //       pointsForts: "",
-  //       pointsAmeliorer: "",
-  //       partiesInteressantes: "",
-  //       recommandations: "",
-  //       commentaires: "",
-  //     });
-  //   } catch (error) {
-  //     console.error("Error saving responses:", error);
-  //     alert("Error saving responses. Please try again.");
-  //   }
-  // };
   const handleSave = async () => {
     if (!validateSelections()) {
       alert("Please select an option in each row.");
