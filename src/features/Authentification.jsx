@@ -27,7 +27,6 @@ function Authentification() {
 
       // Store the full user data with structures in local storage
       localStorage.setItem("fullUsersData", JSON.stringify(userResponse.data));
-      console.log(userResponse.data);
 
       switch (role) {
         case "Admin Formation":
@@ -47,7 +46,7 @@ function Authentification() {
           break;
       }
     } catch (error) {
-      console.error(error.response.data);
+      alert(`Nom d'utilisateur ou mot de passe invalide`);
     }
   };
 
