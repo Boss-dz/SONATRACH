@@ -1,46 +1,46 @@
-import { useState,useEffect } from "react";
+import { useState, useEffect } from "react";
 import style from "./QuestDetails.module.css";
 import { useLocation, useNavigate } from "react-router-dom";
 import axios from "axios";
 
+// Function to format date to yyyy-mm-dd
+const formatDate = (dateString) => {
+  const date = new Date(dateString);
+  // Adjust date by adding one day
+  date.setDate(date.getDate());
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
+  return `${year}-${month}-${day}`;
+};
 
-  // Function to format date to yyyy-mm-dd
-  const formatDate = (dateString) => {
-    const date = new Date(dateString);
-    // Adjust date by adding one day
-    date.setDate(date.getDate());
-    const year = date.getFullYear();
-    const month = String(date.getMonth() + 1).padStart(2, "0");
-    const day = String(date.getDate()).padStart(2, "0");
-    return `${year}-${month}-${day}`;
-  };
+const calculateTimeRemaining = (endDate) => {
+  const end = new Date(endDate);
+  const now = new Date();
+  const difference = end - now;
 
-  const calculateTimeRemaining = (endDate) => {
-    const end = new Date(endDate);
-    const now = new Date();
-    const difference = end - now;
+  const minutes = Math.floor(difference / (1000 * 60));
+  const hours = Math.floor(difference / (1000 * 60 * 60));
+  const days = Math.floor(difference / (1000 * 60 * 60 * 24));
+  const weeks = Math.floor(difference / (1000 * 60 * 60 * 24 * 7));
 
-    const minutes = Math.floor(difference / (1000 * 60));
-    const hours = Math.floor(difference / (1000 * 60 * 60));
-    const days = Math.floor(difference / (1000 * 60 * 60 * 24));
-    const weeks = Math.floor(difference / (1000 * 60 * 60 * 24 * 7));
-
-    if (weeks > 0) {
-      return `${weeks} week${weeks > 1 ? "s" : ""}`;
-    } else if (days > 0) {
-      return `${days} day${days > 1 ? "s" : ""}`;
-    } else if (hours > 0) {
-      return `${hours} hour${hours > 1 ? "s" : ""}`;
-    } else {
-      return `${minutes} minute${minutes > 1 ? "s" : ""}`;
-    }
-  };
-
+  if (weeks > 0) {
+    return `${weeks} week${weeks > 1 ? "s" : ""}`;
+  } else if (days > 0) {
+    return `${days} day${days > 1 ? "s" : ""}`;
+  } else if (hours > 0) {
+    return `${hours} hour${hours > 1 ? "s" : ""}`;
+  } else {
+    return `${minutes} minute${minutes > 1 ? "s" : ""}`;
+  }
+};
 
 export default function QuestDetails({ color, isCloture }) {
   const location = useLocation();
   const navigate = useNavigate();
   const [formations, setFormations] = useState([]);
+    const userData = JSON.parse(localStorage.getItem("userData"));
+    const userID = userData.utilisateurID;
 
   useEffect(() => {
     const endpoint = isCloture
@@ -49,12 +49,38 @@ export default function QuestDetails({ color, isCloture }) {
     axios
       .get(endpoint)
       .then((response) => {
-        setFormations(response.data);
+        const formations = response.data;
+        const formationPromises = formations.map((formation) =>
+          axios
+            .get(
+              `http://localhost:8000/api/hasResponded/${formation.formationID}/${userID}`
+            )
+            .then((response) => ({
+              ...formation,
+              hasResponded: response.data.hasResponded,
+            }))
+        );
+
+        Promise.all(formationPromises).then((formationResults) => {
+          setFormations(formationResults);
+        });
       })
       .catch((error) => {
         console.error("Error fetching formation data:", error);
       });
-  }, [isCloture]);
+  }, [isCloture, userID]);
+
+  const filterFormations = () => {
+    if (location.pathname === "/Participant/questionnaire_cloture") {
+      return formations.filter((formation) => formation.hasResponded);
+    } else if (location.pathname === "/Participant/questionnaire_non_cloture") {
+      return formations.filter(
+        (formation) => formation.hasResponded && !isCloture
+      );
+    } else {
+      return formations.filter((formation) => !formation.hasResponded);
+    }
+  };
 
   return (
     <div className={style.container}>
@@ -70,7 +96,7 @@ export default function QuestDetails({ color, isCloture }) {
         </li>
       </ul>
       <div className={style.wrapper}>
-        {formations.map((formation, i) => (
+        {filterFormations().map((formation, i) => (
           <div
             className={style.details}
             style={{ "--color": color }}

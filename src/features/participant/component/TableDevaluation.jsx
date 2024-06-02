@@ -1,8 +1,8 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import style from "./TableDevaluation.module.css";
 import { useParams } from "react-router-dom";
 
-export default function TableDevaluation() {
+export default function TableDevaluation({isCloture}) {
   const [selectedOptions, setSelectedOptions] = useState({});
   const [section3Visible, setSection3Visible] = useState(false);
   const { formationID } = useParams();
@@ -16,6 +16,7 @@ export default function TableDevaluation() {
   });
 
   const handleOptionChange = (sectionIndex, rowIndex, colIndex) => {
+    if(isCloture) return;
     setSelectedOptions((prevState) => ({
       ...prevState,
       [`${sectionIndex}-${rowIndex}`]: colIndex,
@@ -23,6 +24,8 @@ export default function TableDevaluation() {
   };
 
   const handleSection3VisibilityChange = (event) => {
+    if (isCloture) return;
+
     const isVisible = event.target.value === "yes";
     setSection3Visible(isVisible);
 
@@ -49,7 +52,6 @@ export default function TableDevaluation() {
 
   const userData = JSON.parse(localStorage.getItem("userData"));
   const userID = userData.utilisateurID;
-
   const renderCell = (sectionIndex, rowIndex, colIndex, emoji, altText) => (
     <td
       key={`${sectionIndex}-${rowIndex}-${colIndex}`}
@@ -73,7 +75,6 @@ export default function TableDevaluation() {
       counts[1] * 0.25 + counts[2] * 0.5 + counts[3] * 0.75 + counts[4] * 1;
     const divisor = section3Visible ? 22 : 17;
     const satisfactionRate = (N / divisor) * 100;
-    console.log(`Satisfaction Rate: ${satisfactionRate.toFixed(2)}%`);
     return satisfactionRate.toFixed(2);
   };
   const handleSave = async () => {
@@ -83,16 +84,8 @@ export default function TableDevaluation() {
     }
 
     // Validate text areas
-    const {
-      pointsForts,
-      pointsAmeliorer,
-      partiesInteressantes
-    } = formText;
-    if (
-      !pointsForts ||
-      !pointsAmeliorer ||
-      !partiesInteressantes
-    ) {
+    const { pointsForts, pointsAmeliorer, partiesInteressantes } = formText;
+    if (!pointsForts || !pointsAmeliorer || !partiesInteressantes) {
       alert("Please fill in all required fields.");
       return;
     }
@@ -117,7 +110,6 @@ export default function TableDevaluation() {
         throw new Error("Failed to save responses");
       }
 
-      console.log("Responses saved successfully");
       alert("Responses saved successfully");
       setSelectedOptions({});
       setFormText({
@@ -128,7 +120,6 @@ export default function TableDevaluation() {
         commentaires: "",
       });
     } catch (error) {
-      console.error("Error saving responses:", error);
       alert("Error saving responses. Please try again.");
     }
   };
@@ -152,6 +143,66 @@ export default function TableDevaluation() {
     }
     return true;
   };
+  const fetchSavedData = async (formationID, userID) => {
+    try {
+      const response = await fetch(
+        `http://localhost:8000/api/evaluation/${formationID}/${userID}`
+      );
+      if (!response.ok) {
+        throw new Error("Network response was not ok");
+      }
+      const data = await response.json();
+      return {
+        selectedOptions: {
+          "0-0": parseInt(data.question1),
+          "0-1": parseInt(data.question2),
+          "0-2": parseInt(data.question3),
+          "0-3": parseInt(data.question4),
+          "0-4": parseInt(data.question5),
+          "0-5": parseInt(data.question6),
+          "1-0": parseInt(data.question7),
+          "1-1": parseInt(data.question8),
+          "1-2": parseInt(data.question9),
+          "1-3": parseInt(data.question10),
+          "1-4": parseInt(data.question11),
+          "2-0": parseInt(data.question12),
+          "2-1": parseInt(data.question13),
+          "2-2": parseInt(data.question14),
+          "2-3": parseInt(data.question15),
+          "2-4": parseInt(data.question16),
+          "3-0": parseInt(data.question17),
+          "3-1": parseInt(data.question18),
+          "4-0": parseInt(data.question19),
+          "4-1": parseInt(data.question20),
+          "4-2": parseInt(data.question21),
+          "4-3": parseInt(data.question22),
+        },
+        formText: {
+          pointsForts: data.points_forts,
+          pointsAmeliorer: data.points_ameliorer,
+          partiesInteressantes: data.parties_interessantes,
+          recommandations: data.recommandations,
+          commentaires: data.commentaires,
+        },
+        // section3Visible: true,
+      };
+    } catch (error) {
+      console.error("Failed to fetch saved data:", error);
+      return null;
+    }
+  };
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const savedData = await fetchSavedData(formationID, userID);
+      if (savedData) {
+        setSelectedOptions(savedData.selectedOptions || {});
+        setFormText(savedData.formText || {});
+        setSection3Visible(savedData.section3Visible !== false);
+      }
+    };
+    fetchData();
+  }, [formationID, userID]);
 
   const tableData = [
     {
@@ -299,6 +350,7 @@ export default function TableDevaluation() {
           onChange={handleTextChange}
           required
           rows={5}
+          disabled={isCloture}
         />
         <label htmlFor="pointsAmeliorer">Les points à améliorer *</label>
         <textarea
@@ -308,6 +360,7 @@ export default function TableDevaluation() {
           onChange={handleTextChange}
           required
           rows={5}
+          disabled={isCloture}
         />
         <label htmlFor="partiesInteressantes">
           Quels sont les parties/modules du programme de formation que vous
@@ -320,6 +373,7 @@ export default function TableDevaluation() {
           onChange={handleTextChange}
           required
           rows={5}
+          disabled={isCloture}
         />
         <label htmlFor="recommandations">
           Recommandations et/ou suggestions :
@@ -327,23 +381,26 @@ export default function TableDevaluation() {
         <textarea
           name="recommandations"
           id="recommandations"
-          value={formText.recommandations}
+          value={formText.recommandations || ""}
           onChange={handleTextChange}
-          required
           rows={5}
+          disabled={isCloture}
         />
         <label htmlFor="commentaires">Commentaires/Divers :</label>
         <textarea
           name="commentaires"
           id="commentaires"
-          value={formText.commentaires}
+          value={formText.commentaires || ""}
           onChange={handleTextChange}
           rows={5}
+          disabled={isCloture}
         />
       </div>
-      <button onClick={handleSave} className={style.saveButton}>
-        Enregistrer
-      </button>
+      {!isCloture && (
+        <button className={style.saveButton} onClick={handleSave}>
+          Enregistrer
+        </button>
+      )}
     </div>
   );
 }

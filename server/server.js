@@ -192,7 +192,9 @@ app.get("/api/formation/:formationID", (req, res) => {
       org_formateur,
       lieu,
       date_debut,
-      date_fin
+      date_fin,
+      date_debut_questionnaire,
+      date_fin_questionnaire
     FROM formation
     WHERE formationID = ?
   `;
@@ -327,7 +329,6 @@ app.get("/allUsers-structure", (req, res) => {
   });
 });
 
-
 app.post("/api/Responses", (req, res) => {
   const {
     formationID,
@@ -341,12 +342,7 @@ app.post("/api/Responses", (req, res) => {
     commentaires,
   } = req.body;
 
-  // Check if required fields are present
-  if (
-    !pointsForts ||
-    !pointsAmeliorer ||
-    !partiesInteressantes 
-  ) {
+  if (!pointsForts || !pointsAmeliorer || !partiesInteressantes) {
     return res
       .status(400)
       .json({ error: "All required fields must be filled" });
@@ -373,7 +369,12 @@ app.post("/api/Responses", (req, res) => {
     questions.push(value !== undefined ? value : null);
   }
 
-  const query = `
+  const selectQuery = `
+    SELECT * FROM Reponse
+    WHERE formationID = ? AND utilisateurID = ?
+  `;
+
+  const insertQuery = `
     INSERT INTO Reponse (
       date_reponse,
       taux_satisfaction,
@@ -390,11 +391,18 @@ app.post("/api/Responses", (req, res) => {
     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
   `;
 
+  const updateQuery = `
+    UPDATE Reponse
+    SET date_reponse = ?, taux_satisfaction = ?, question1 = ?, question2 = ?, question3 = ?, question4 = ?, question5 = ?,
+        question6 = ?, question7 = ?, question8 = ?, question9 = ?, question10 = ?, question11 = ?, question12 = ?, question13 = ?,
+        question14 = ?, question15 = ?, question16 = ?, question17 = ?, question18 = ?, question19 = ?, question20 = ?, question21 = ?,
+        question22 = ?, points_forts = ?, points_ameliorer = ?, parties_interessantes = ?, recommandations = ?, commentaires = ?
+    WHERE formationID = ? AND utilisateurID = ?
+  `;
+
   const values = [
     currentDate,
     satisfactionRate,
-    formationID,
-    userID,
     ...questions,
     pointsForts,
     pointsAmeliorer,
@@ -403,14 +411,105 @@ app.post("/api/Responses", (req, res) => {
     commentaires || null,
   ];
 
-  db.query(query, values, (error, results) => {
+  db.query(selectQuery, [formationID, userID], (error, results) => {
     if (error) {
       console.error("Database query error:", error);
       return res.status(500).json({ error: "Internal server error" });
     }
-    res.status(201).json({ message: "Responses saved successfully" });
+
+    if (results.length > 0) {
+      // Update the existing response
+      db.query(updateQuery, [...values, formationID, userID], (updateError) => {
+        if (updateError) {
+          console.error("Database update error:", updateError);
+          return res.status(500).json({ error: "Internal server error" });
+        }
+        res.status(200).json({ message: "Responses updated successfully" });
+      });
+    } else {
+      // Insert a new response
+      db.query(
+        insertQuery,
+        [
+          currentDate,
+          satisfactionRate,
+          formationID,
+          userID,
+          ...questions,
+          pointsForts,
+          pointsAmeliorer,
+          partiesInteressantes,
+          recommandations || null,
+          commentaires || null,
+        ],
+        (insertError) => {
+          if (insertError) {
+            console.error("Database insert error:", insertError);
+            return res.status(500).json({ error: "Internal server error" });
+          }
+          res.status(201).json({ message: "Responses saved successfully" });
+        }
+      );
+    }
   });
 });
+
+// Check if a user has responded to a specific formation
+app.get("/api/hasResponded/:formationID/:userID", (req, res) => {
+  const { formationID, userID } = req.params;
+
+  const query = `
+    SELECT COUNT(*) as count
+    FROM Reponse
+    WHERE formationID = ? AND utilisateurID = ?
+  `;
+
+  db.query(query, [formationID, userID], (error, results) => {
+    if (error) {
+      console.error("Database query error:", error);
+      return res.status(500).json({ error: "Internal server error" });
+    }
+
+    const hasResponded = results[0].count > 0;
+    res.status(200).json({ hasResponded });
+  });
+});
+
+
+app.get("/api/evaluation/:formationID/:userID", (req, res) => {
+  const { formationID, userID } = req.params;
+  
+  const query = `
+    SELECT
+      taux_satisfaction,
+      question1, question2, question3, question4, question5,
+      question6, question7, question8, question9, question10,
+      question11, question12, question13, question14, question15,
+      question16, question17, question18, question19, question20,
+      question21, question22,
+      points_forts, points_ameliorer, parties_interessantes,
+      recommandations, commentaires
+    FROM Reponse
+    WHERE formationID = ? AND utilisateurID = ?
+    ORDER BY date_reponse DESC
+    LIMIT 1
+  `;
+
+  db.query(query, [formationID, userID], (error, results) => {
+    if (error) {
+      console.error("Database query error:", error);
+      return res.status(500).json({ error: "Internal server error" });
+    }
+
+    if (results.length === 0) {
+      return res.status(404).json({ error: "No evaluation data found" });
+    }
+
+    res.status(200).json(results[0]);
+  });
+});
+
+
 
 app.listen(8000, () => {
   console.log("listening");
