@@ -14,9 +14,6 @@
   cursor: pointer;
 }
 .img .one:first-child {
-  width: 13px;
-}
-.img .one:nth-child(2) {
   width: 30px;
 }
 .container input {

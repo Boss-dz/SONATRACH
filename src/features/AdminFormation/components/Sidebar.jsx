@@ -9,9 +9,6 @@ export default function Sidebar() {
         <NavLink to="/AdminFormation">
           <img className={style.logo} src="/public/Logo_Mask.svg" alt="LOGO" />
         </NavLink>
-        {/* <NavLink to="/">
-          <img className={style.utils} src="DashBoardA.svg" alt="UTILS" />
-        </NavLink> */}
         <NavLink to="/AdminFormation">
           <img
             className={
@@ -26,7 +23,9 @@ export default function Sidebar() {
         <NavLink to="/AdminFormation/formations_non_cloture">
           <img
             className={
-              location.pathname === "/AdminFormation/formations_non_cloture"
+              location.pathname.startsWith(
+                "/AdminFormation/formations_non_cloture"
+              )
                 ? style.utils
                 : `${style.utils} ${style.active}`
             }
@@ -37,7 +36,9 @@ export default function Sidebar() {
         <NavLink to="/AdminFormation/ajouter_une_formation">
           <img
             className={
-              location.pathname === "/AdminFormation/ajouter_une_formation"
+              location.pathname.startsWith(
+                "/AdminFormation/ajouter_une_formation"
+              )
                 ? style.utils
                 : `${style.utils} ${style.active}`
             }
@@ -48,7 +49,7 @@ export default function Sidebar() {
         <NavLink to="/AdminFormation/formations_cloture">
           <img
             className={
-              location.pathname === "/AdminFormation/formations_cloture"
+              location.pathname.startsWith("/AdminFormation/formations_cloture")
                 ? style.utils
                 : `${style.utils} ${style.active}`
             }

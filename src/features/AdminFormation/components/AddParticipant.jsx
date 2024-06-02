@@ -46,6 +46,7 @@ function AddParticipant({
   const handleClick = useCallback(() => {
     setActive(false);
   }, []);
+
   return (
     <div
       className={style.blurredBackground}

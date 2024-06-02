@@ -503,6 +503,142 @@ app.get("/api/formations/:id?", (req, res) => {
   });
 });
 
+app.get("/api/formations/:id/participations", (req, res) => {
+  const formationID = req.params.id;
+
+  const query = `
+    SELECT utilisateur.*, structure.nom_structure
+    FROM participation
+    JOIN utilisateur ON participation.utilisateurID = utilisateur.utilisateurID
+    LEFT JOIN structure ON utilisateur.structureID = structure.structureID
+    WHERE participation.formationID = ?
+  `;
+
+  db.query(query, [formationID], (error, results) => {
+    if (error) {
+      console.error("Database query error:", error);
+      return res.status(500).json({ error: "Internal server error" });
+    }
+    res.status(200).json(results);
+  });
+});
+
+app.put("/api/formation/:id", (req, res) => {
+  const formationID = req.params.id;
+  const {
+    intitule,
+    org_formateur,
+    nom_formateur,
+    lieu,
+    date_debut,
+    date_fin,
+    date_debut_questionnaire,
+    date_fin_questionnaire,
+  } = req.body;
+
+  const updateFormationQuery = `
+    UPDATE formation
+    SET intitule = ?, org_formateur = ?, nom_formateur = ?, lieu = ?, date_debut = ?, date_fin = ?, date_debut_questionnaire = ?, date_fin_questionnaire = ?
+    WHERE formationID = ?`;
+
+  db.query(
+    updateFormationQuery,
+    [
+      intitule,
+      org_formateur,
+      nom_formateur,
+      lieu,
+      date_debut,
+      date_fin,
+      date_debut_questionnaire,
+      date_fin_questionnaire,
+      formationID,
+    ],
+    (err, result) => {
+      if (err) {
+        console.error("Error updating formation:", err);
+        return res.status(500).json({ error: "Error updating formation" });
+      }
+      res.status(200).json({ message: "Formation updated successfully" });
+    }
+  );
+});
+
+// Update participations for a formation
+app.put("/api/participations/:formationID", (req, res) => {
+  const formationID = req.params.formationID;
+  const { participations } = req.body;
+
+  // Start a transaction
+  db.beginTransaction((err) => {
+    if (err) {
+      console.error("Transaction error:", err);
+      return res.status(500).json({ error: "Transaction error" });
+    }
+
+    // Delete existing participations for the formation
+    const deleteParticipationsQuery =
+      "DELETE FROM participation WHERE formationID = ?";
+    db.query(deleteParticipationsQuery, [formationID], (err, result) => {
+      if (err) {
+        return db.rollback(() => {
+          console.error("Error deleting participations:", err);
+          res.status(500).json({ error: "Error deleting participations" });
+        });
+      }
+
+      // If no new participations are provided, commit the transaction and return
+      if (!participations || participations.length === 0) {
+        return db.commit((err) => {
+          if (err) {
+            return db.rollback(() => {
+              console.error("Transaction commit error:", err);
+              res.status(500).json({ error: "Transaction commit error" });
+            });
+          }
+          res
+            .status(200)
+            .json({ message: "Participations updated successfully" });
+        });
+      }
+
+      // Insert new participations
+      const insertParticipationQuery =
+        "INSERT INTO participation (formationID, utilisateurID) VALUES ?";
+      const participationValues = participations.map((part) => [
+        formationID,
+        part.utilisateurID,
+      ]);
+
+      db.query(
+        insertParticipationQuery,
+        [participationValues],
+        (err, result) => {
+          if (err) {
+            return db.rollback(() => {
+              console.error("Error inserting participations:", err);
+              res.status(500).json({ error: "Error inserting participations" });
+            });
+          }
+
+          // Commit transaction
+          db.commit((err) => {
+            if (err) {
+              return db.rollback(() => {
+                console.error("Transaction commit error:", err);
+                res.status(500).json({ error: "Transaction commit error" });
+              });
+            }
+            res
+              .status(200)
+              .json({ message: "Participations updated successfully" });
+          });
+        }
+      );
+    });
+  });
+});
+
 app.listen(8000, () => {
   console.log("listening");
 });

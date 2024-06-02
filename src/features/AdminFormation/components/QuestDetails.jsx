@@ -159,7 +159,7 @@ export default function QuestDetails({
           ? propData.map((formation, index) =>
               link ? (
                 <NavLink
-                  to={`${link}/:${formation.formationID}`}
+                  to={`${link}/${formation.formationID}`}
                   style={{ color: "#000", textDecoration: "none" }}
                   key={index}
                 >

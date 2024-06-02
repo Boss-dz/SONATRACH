@@ -5,9 +5,6 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 
 export default function Header() {
-  // const roles = JSON.parse(localStorage.getItem("fullUsersData"));
-  // console.log(roles);
-
   const [menuDroped, setMenuDroped] = useState(false);
   const [subMenuDroped, setSubMenuDroped] = useState(false);
   const [roles, setRoles] = useState([]);
@@ -32,7 +29,6 @@ export default function Header() {
     fetchRoles();
   }, []);
 
-  // /api/user/:userID/roles
   return (
     <div className={style.container}>
       {location.pathname === "/AdminIT" && (
@@ -107,10 +103,9 @@ export default function Header() {
         </div>
       )}
       <div className={style.img}>
-        <img className={style.one} src="/public/bell.svg" alt="bell" />
         <img
           className={style.one}
-          src="/public/Mask_group.svg"
+          src="/Mask_group.svg"
           alt="profile"
           onClick={() => setMenuDroped((drop) => !drop)}
         />
@@ -135,18 +130,6 @@ export default function Header() {
                 </NavLink>
               );
             })}
-            {/* <NavLink to="/Participant">
-              <li>Participant</li>
-            </NavLink>
-            <NavLink to="/AdminFormation">
-              <li>Admin Formation</li>
-            </NavLink>
-            <NavLink to="/AdminIT">
-              <li>Admin It</li>
-            </NavLink>
-            <NavLink to="/AdminVisiteur">
-              <li>Admin Visiteur</li>
-            </NavLink> */}
           </ul>
           <NavLink to="/" style={{ width: "100%", textAlign: "center" }}>
             <p>Se Deconecter</p>

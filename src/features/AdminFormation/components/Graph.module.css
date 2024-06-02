@@ -9,6 +9,8 @@
   border-radius: 20px;
   display: grid;
   padding-bottom: 5px;
+  padding-top: 5px;
+  padding-left: 7px;
   height: 200px;
   width: 400px;
 }

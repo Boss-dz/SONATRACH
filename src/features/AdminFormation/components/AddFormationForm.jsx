@@ -13,17 +13,6 @@ function AddFormationForm({ formation, setFormation, isDisabled }) {
     }));
   };
 
-  // const handleSubmit = async (e) => {
-  //   e.preventDefault();
-  //   try {
-  //     await axios.post("http://localhost:8000/api/formation", formation);
-  //     alert("Formation ajoutée avec succès");
-  //   } catch (error) {
-  //     console.error("Erreur lors de l'ajout de la formation:", error);
-  //     alert("Erreur lors de l'ajout de la formation");
-  //   }
-  // };
-
   return (
     <div className={style.container}>
       <div>

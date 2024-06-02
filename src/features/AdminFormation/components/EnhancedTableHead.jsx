@@ -34,7 +34,16 @@ function createData(id, name, calories, fat, carbs, protein) {
 }
 
 const rows = [
-  createData(1, "Cupcake", 305, 3.7, 67, 4.3),
+  createData(
+    1,
+    "10-05-2024",
+    "MELZI",
+    "Rayane",
+    "Developeur",
+    "IT",
+    "90%",
+    "details  /  imprimer"
+  ),
   createData(2, "Donut", 452, 25.0, 51, 4.9),
   createData(3, "Eclair", 262, 16.0, 24, 6.0),
   createData(4, "Frozen yoghurt", 159, 6.0, 24, 4.0),
@@ -83,34 +92,46 @@ function stableSort(array, comparator) {
 
 const headCells = [
   {
-    id: "name",
+    id: "date",
     numeric: false,
-    disablePadding: true,
-    label: "Dessert (100g serving)",
+    disablePadding: false,
+    label: "Date reponse",
   },
   {
-    id: "calories",
-    numeric: true,
+    id: "nom",
+    numeric: false,
     disablePadding: false,
-    label: "Calories",
+    label: "nom",
   },
   {
-    id: "fat",
-    numeric: true,
+    id: "prenom",
+    numeric: false,
     disablePadding: false,
-    label: "Fat (g)",
+    label: "prenom",
   },
   {
-    id: "carbs",
-    numeric: true,
+    id: "fonction",
+    numeric: false,
     disablePadding: false,
-    label: "Carbs (g)",
+    label: "fonction",
   },
   {
-    id: "protein",
+    id: "structure",
+    numeric: false,
+    disablePadding: false,
+    label: "structure",
+  },
+  {
+    id: "TdS",
     numeric: true,
     disablePadding: false,
-    label: "Protein (g)",
+    label: "taux de satisfaction",
+  },
+  {
+    id: "D/I",
+    numeric: false,
+    disablePadding: false,
+    label: "details / impression",
   },
 ];
 
@@ -200,7 +221,7 @@ function EnhancedTableToolbar(props) {
           variant="subtitle1"
           component="div"
         >
-          {numSelected} selected
+          {numSelected} sélectionnés
         </Typography>
       ) : (
         <Typography
@@ -209,7 +230,7 @@ function EnhancedTableToolbar(props) {
           id="tableTitle"
           component="div"
         >
-          Nutrition
+          Reponses
         </Typography>
       )}
 
@@ -347,6 +368,7 @@ export default function EnhancedTable() {
                         }}
                       />
                     </TableCell>
+
                     <TableCell
                       component="th"
                       id={labelId}
@@ -358,6 +380,9 @@ export default function EnhancedTable() {
                     <TableCell align="right">{row.calories}</TableCell>
                     <TableCell align="right">{row.fat}</TableCell>
                     <TableCell align="right">{row.carbs}</TableCell>
+                    <TableCell align="right">{row.protein}</TableCell>
+
+                    <TableCell align="right">{row.protein}</TableCell>
                     <TableCell align="right">{row.protein}</TableCell>
                   </TableRow>
                 );

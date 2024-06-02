@@ -1,7 +1,10 @@
 import style from "./TableRow.module.css";
 import BtnAjoute from "./BtnAjoute";
+import CloseBtn from "../components/CloseBtn";
 
 import React, { useState, useEffect } from "react";
+// import { useParams } from "react-router-dom";
+// import axios from "axios";
 
 function TableRow({
   userID,
@@ -15,7 +18,10 @@ function TableRow({
   membresConcernes,
   setMembresConcernes,
 }) {
+  // const { formationID } = useParams();
+
   const [ajoute, setAjoute] = useState(false);
+
   useEffect(() => {
     if (setMembresConcernes !== undefined) {
       if (ajoute === true) {
@@ -33,8 +39,11 @@ function TableRow({
 
   useEffect(() => {
     if (membresConcernes !== undefined) {
-      if (!membresConcernes.find((membre) => membre.userID === userID)) {
-        setAjoute(false);
+      // if (!membresConcernes.find((membre) => membre.userID === userID)) {
+      //   setAjoute(false);
+      // }
+      if (membresConcernes.find((membre) => membre.userID === userID)) {
+        setAjoute(true);
       }
     }
   }, [membresConcernes]);
