@@ -43,6 +43,7 @@ app.post("/", (req, res) => {
   );
 });
 
+
 app.get("/AdminFormation/formations_non_cloture", (req, res) => {
   // Requête SQL pour sélectionner les formations qui ne sont pas encore terminées
   const query = "SELECT * FROM formation WHERE date_fin_questionnaire > NOW()";
@@ -475,10 +476,9 @@ app.get("/api/hasResponded/:formationID/:userID", (req, res) => {
   });
 });
 
-
 app.get("/api/evaluation/:formationID/:userID", (req, res) => {
   const { formationID, userID } = req.params;
-  
+
   const query = `
     SELECT
       taux_satisfaction,
@@ -508,8 +508,6 @@ app.get("/api/evaluation/:formationID/:userID", (req, res) => {
     res.status(200).json(results[0]);
   });
 });
-
-
 
 app.listen(8000, () => {
   console.log("listening");
