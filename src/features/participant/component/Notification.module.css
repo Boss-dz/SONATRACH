@@ -19,6 +19,9 @@
 .text span {
   color: red;
 }
+.text .span {
+  color: #302CD780;
+}
 
 .title {
   font-size: 10px;
@@ -37,7 +40,6 @@
   border-bottom: 1px solid #d6dbde;
   padding: 10px;
   height: 70px;
-  cursor: pointer;
 }
 .details::before {
   content: "";
@@ -45,7 +47,7 @@
   border-style: solid;
   border-radius: 5px;
   height: 10px;
-  border-color: #dc354680;
+  border-color: var(--color,#dc354680) ;
   position: absolute;
 }
 .date {

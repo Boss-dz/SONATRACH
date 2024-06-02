@@ -1,47 +1,83 @@
+import { useEffect, useState } from "react";
 import style from "./Notification.module.css";
+import axios from "axios";
 
-const data = [
-  {
-    title: "Adm Microsoft",
-    company: "Microsoft",
-  },
-  {
-    title: "Adm Microsoft",
-    company: "Microsoft",
-  },
-  {
-    title: "Admrezrezrezrzrzrrezrze Microsoft",
-    company: "Microsoft",
-  },
-  {
-    title: "Adm Microsoft",
-    company: "Microsoft",
-  },
+const formatDate = (dateString) => {
+  const date = new Date(dateString);
+  date.setDate(date.getDate());
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
+  return `${year}-${month}-${day}`;
+};
 
-];
+export default function Notification({ addStyle , color }) {
 
-export default function Notification({ addStyle, btnColor }) {
-  const length = data.length;
-  const list = data.slice(0, 3);
-  const date = new Date().toLocaleDateString();
+  const isCloture = false;
+  const [data , setData] = useState([]);
+
+  const userData = JSON.parse(localStorage.getItem("userData"));
+  const userID = userData.utilisateurID;
+
+  useEffect(() => {
+    const endpoint = isCloture
+      ? "http://localhost:8000/AdminFormation/formations_cloture"
+      : "http://localhost:8000/AdminFormation/formations_non_cloture";
+    axios
+      .get(endpoint)
+      .then((response) => {
+        const formations = response.data;
+        const formationPromises = formations.map((formation) =>
+          axios
+            .get(
+              `http://localhost:8000/api/hasResponded/${formation.formationID}/${userID}`
+            )
+            .then((response) => ({
+              ...formation,
+              hasResponded: response.data.hasResponded,
+            }))
+        );
+
+        Promise.all(formationPromises).then((formationResults) => {
+          setData(formationResults);
+        });
+      })
+      .catch((error) => {
+        console.error("Error fetching formation data:", error);
+      });
+  }, [isCloture, userID]);
+   const filterFormations = () => {
+       return data.filter((formation) => (!formation.hasResponded));
+   };
+   const filterNonClot = () => {
+    return data.filter(
+      (formation) => formation.hasResponded && !isCloture
+    );
+   }
+
+
+  const length = !addStyle ? filterFormations().length : filterNonClot().length;
+  const list = !addStyle ? filterFormations().slice(0, 3) : filterNonClot().slice(0,3);
+
+
   return (
     <div className={`${style.container} ${addStyle ? addStyle : ""}`}>
       <p className={style.text}>
-        Vous avez <span>{length}</span> questionnaire a remplir !
+        Vous avez <span className={addStyle ? style.span : ""}>{length}</span> questionnaire a remplir !
       </p>
       <div className={style.card}>
         {list.map((e, i) => (
-          <div key={i} className={style.details}>
+          <div key={i} className={style.details} style={{ "--color": color }}>
             <div className={style.title}>
-              <h2>{e.title}</h2>
-              <h4>{e.company}</h4>
+              <h2>{e.intitule}</h2>
+              <h4>{e.org_formateur}</h4>
             </div>
-            <p className={style.date}>Créer le {date}</p>
+            <p className={style.date}>
+              Créer le {formatDate(e.date_debut_questionnaire)}
+            </p>
           </div>
         ))}
-        <button className={`${style.btn} ${btnColor ? btnColor : ""}`}>
-          Voir plus
-        </button>
+        <button className={`${style.btn}`}>Voir plus</button>
       </div>
     </div>
   );

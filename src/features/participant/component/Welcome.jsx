@@ -1,6 +1,6 @@
 import style from "./Welcome.module.css";
 
-export default function Welcome({ content , change }) {
+export default function Welcome({ content,change }) {
   return (
     <div className={`${style.welcome} ${change ? style.change : ""}`}>
       <div className={style.container}>

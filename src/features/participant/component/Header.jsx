@@ -94,7 +94,7 @@ export default function Header() {
           </span>
         </div>
       )}
-      {location.pathname === "/Participant/questionnaire" && (
+      {location.pathname.startsWith(`/Participant/questionnaires`) && (
         <div className={style.path}>
           <NavLink to="/Participant" className={style.link}>
             Acceuil

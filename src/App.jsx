@@ -43,7 +43,7 @@ export default function App() {
           path="/Participant/questionnaire_cloture"
           element={<QuestClot />}
         />
-        <Route path="/Participant/questionnaire" element={<Questionnaire />} />
+        <Route path="/Participant/questionnaires/:formationID" element={<Questionnaire />} />
         <Route path="/Participant/parametre" element={<ParametreP />} />
 
         <Route path="/AdminFormation" element={<HomepageAF />} />
