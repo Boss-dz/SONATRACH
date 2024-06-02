@@ -7,14 +7,39 @@ import Table from "../components/EnhancedTableHead";
 import AddFormationForm from "../components/AddFormationForm";
 import Button from "../components/Button";
 
+import AddBoxRoundedIcon from "@mui/icons-material/AddBoxRounded";
+import LocalPrintshopIcon from "@mui/icons-material/LocalPrintshop";
+
 import { useState, useEffect } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams, NavLink } from "react-router-dom";
 import axios from "axios";
 import React from "react";
+
+function DI({ reponseID }) {
+  const { formationID } = useParams();
+
+  return (
+    <div
+      style={{
+        display: "flex",
+        justifyContent: "space-around",
+      }}
+    >
+      <NavLink
+        to={`/AdminFormation/formations_non_cloture/reponses_formation/:${formationID}/details_reponse/:${reponseID}`}
+        style={{ color: "#007FFF", opacity: "70%" }}
+      >
+        <AddBoxRoundedIcon />
+      </NavLink>
+      <LocalPrintshopIcon color="action" />
+    </div>
+  );
+}
 
 function ReponsesFormation() {
   let navigate = useNavigate();
   const { formationID } = useParams();
+  const [reponses, setReponses] = useState([]);
   const [formation, setFormation] = useState({
     intitule: "",
     org_formateur: "",
@@ -69,15 +94,50 @@ function ReponsesFormation() {
     fetchFormationInfo();
   }, [formationID]);
 
-  useEffect(() => {
-    console.log(formation);
-  }, [formation]);
+  // useEffect(() => {
+  //   console.log(formation);
+  // }, [formation]);
 
   const handleClick = () => {
     navigate(
       `/AdminFormation/formations_non_cloture/reponses_formation/modifier_formation/${formationID}`
     );
   };
+
+  useEffect(() => {
+    const fetchResponses = async () => {
+      try {
+        const response = await axios.get(
+          `http://localhost:8000/api/reponses/${formationID}`
+        );
+        const formatedData = response.data.map((rep) => {
+          return {
+            // id: 1,
+            id: rep.reponseID,
+            // date: "Rayan",
+            date: formatDate(rep.date_reponse),
+            // nom: "MELZI",
+            nom: rep.nom,
+            // prenom: "Rayan",
+            prenom: rep.prenom,
+            // fonction: "Dev",
+            fonction: rep.fonction,
+            // structure: "IT",
+            structure: rep.nom_structure,
+            // TdS: "90%",
+            TdS: `${rep.taux_satisfaction}%`,
+            // DI: "Rayan",
+            DI: <DI reponseID={rep.reponseID} />,
+          };
+        });
+        setReponses(formatedData);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    };
+
+    fetchResponses();
+  }, []);
 
   return (
     <div className={style.container}>
@@ -117,7 +177,7 @@ function ReponsesFormation() {
             padding: "20px 40px",
           }}
         >
-          <Table />
+          <Table rows={reponses} />
         </div>
 
         <Footer />

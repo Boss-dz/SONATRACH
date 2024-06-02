@@ -20,7 +20,6 @@ export default function Header() {
         );
         const formatedData = response.data.map((role) => role.nom_role);
         setRoles(formatedData);
-        console.log(formatedData);
       } catch (error) {
         console.error(error.response.data);
       }

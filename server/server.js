@@ -639,6 +639,65 @@ app.put("/api/participations/:formationID", (req, res) => {
   });
 });
 
+app.get("/api/reponses/:formationID?", (req, res) => {
+  const { formationID } = req.params;
+  let query = `
+    SELECT
+      r.reponseID,
+      r.date_reponse,
+      r.taux_satisfaction,
+      r.question1,
+      r.question2,
+      r.question3,
+      r.question4,
+      r.question5,
+      r.question6,
+      r.question7,
+      r.question8,
+      r.question9,
+      r.question10,
+      r.question11,
+      r.question12,
+      r.question13,
+      r.question14,
+      r.question15,
+      r.question16,
+      r.question17,
+      r.question18,
+      r.question19,
+      r.question20,
+      r.question21,
+      r.question22,
+      f.formationID,
+      u.utilisateurID,
+      u.nom,
+      u.prenom,
+      u.fonction,
+      s.nom_structure
+    FROM
+      reponse r
+    JOIN
+      formation f ON r.formationID = f.formationID
+    JOIN
+      utilisateur u ON r.utilisateurID = u.utilisateurID
+    JOIN
+      structure s ON u.structureID = s.structureID
+  `;
+
+  if (formationID) {
+    query += ` WHERE r.formationID = ?`;
+  }
+
+  db.query(query, [formationID].filter(Boolean), (err, results) => {
+    if (err) {
+      console.error("Error fetching data:", err);
+      res.status(500).json({ error: "Failed to fetch data" });
+    } else {
+      res.json(results);
+    }
+  });
+});
+
 app.listen(8000, () => {
   console.log("listening");
 });
