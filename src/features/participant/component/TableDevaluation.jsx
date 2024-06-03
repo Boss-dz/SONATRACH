@@ -1,8 +1,8 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import style from "./TableDevaluation.module.css";
 import { useParams } from "react-router-dom";
 
-export default function TableDevaluation({isCloture}) {
+export default function TableDevaluation({ isCloture }) {
   const [selectedOptions, setSelectedOptions] = useState({});
   const [section3Visible, setSection3Visible] = useState(false);
   const { formationID } = useParams();
@@ -16,7 +16,7 @@ export default function TableDevaluation({isCloture}) {
   });
 
   const handleOptionChange = (sectionIndex, rowIndex, colIndex) => {
-    if(isCloture) return;
+    if (isCloture) return;
     setSelectedOptions((prevState) => ({
       ...prevState,
       [`${sectionIndex}-${rowIndex}`]: colIndex,
@@ -269,7 +269,7 @@ export default function TableDevaluation({isCloture}) {
           </thead>
           <tbody>
             {tableData.map((section, sectionIndex) => (
-              <>
+              <React.Fragment key={sectionIndex}>
                 <tr key={`section-${sectionIndex}`}>
                   <td colSpan={1} className={style.color}>
                     {section.section}
@@ -336,7 +336,7 @@ export default function TableDevaluation({isCloture}) {
                       )}
                     </tr>
                   ))}
-              </>
+              </React.Fragment>
             ))}
           </tbody>
         </table>
@@ -397,9 +397,17 @@ export default function TableDevaluation({isCloture}) {
         />
       </div>
       {!isCloture && (
-        <button className={style.saveButton} onClick={handleSave}>
-          Enregistrer
-        </button>
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "flex-end",
+            margin: "10px 0",
+          }}
+        >
+          <button className={style.saveButton} onClick={handleSave}>
+            Enregistrer
+          </button>
+        </div>
       )}
     </div>
   );

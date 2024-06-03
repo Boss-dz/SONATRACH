@@ -9,7 +9,6 @@ import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import axios from "axios";
 
-
 const formatDate = (dateString) => {
   const date = new Date(dateString);
   // Adjust date by adding one day
@@ -24,19 +23,19 @@ export default function Questionnaire() {
   const { formationID } = useParams();
   const [isCloture, setIsCloture] = useState(false);
 
-   useEffect(() => {
-  axios
-    .get(`http://localhost:8000/api/formation/${formationID}`)
-    .then((response) => {
-      const formation = response.data;
-      const now = formatDate(new Date());
-      const endDate = formation.date_fin_questionnaire;
-      setIsCloture(now > endDate);
-    })
-    .catch((error) => {
-      console.error("Error fetching formation details:", error);
-    });
-   });
+  useEffect(() => {
+    axios
+      .get(`http://localhost:8000/api/formation/${formationID}`)
+      .then((response) => {
+        const formation = response.data;
+        const now = formatDate(new Date());
+        const endDate = formation.date_fin_questionnaire;
+        setIsCloture(now > endDate);
+      })
+      .catch((error) => {
+        console.error("Error fetching formation details:", error);
+      });
+  });
 
   return (
     <div className={style.container}>
@@ -45,7 +44,7 @@ export default function Questionnaire() {
       <BienvenueText />
       <QuestionnaireInfo />
       <Satisfaction />
-      <TableDevaluation isCloture={isCloture}/>
+      <TableDevaluation isCloture={isCloture} />
     </div>
   );
 }

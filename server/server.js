@@ -848,8 +848,8 @@ app.put("/api/participations/:formationID", (req, res) => {
   });
 });
 
-app.get("/api/reponses/:formationID?", (req, res) => {
-  const { formationID } = req.params;
+app.get("/api/reponses/:formationID?/:responseID?", (req, res) => {
+  const { formationID, responseID } = req.params;
   let query = `
     SELECT
       r.reponseID,
@@ -877,6 +877,11 @@ app.get("/api/reponses/:formationID?", (req, res) => {
       r.question20,
       r.question21,
       r.question22,
+      r.points_forts, 
+      r.points_ameliorer, 
+      r.parties_interessantes,
+      r.recommandations, 
+      r.commentaires,
       f.formationID,
       u.utilisateurID,
       u.nom,
@@ -893,11 +898,70 @@ app.get("/api/reponses/:formationID?", (req, res) => {
       structure s ON u.structureID = s.structureID
   `;
 
+  const conditions = [];
+  const params = [];
+
   if (formationID) {
-    query += ` WHERE r.formationID = ?`;
+    conditions.push("r.formationID = ?");
+    params.push(formationID);
   }
 
-  db.query(query, [formationID].filter(Boolean), (err, results) => {
+  if (responseID) {
+    conditions.push("r.reponseID = ?");
+    params.push(responseID);
+  }
+
+  if (conditions.length > 0) {
+    query += " WHERE " + conditions.join(" AND ");
+  }
+
+  db.query(query, params, (err, results) => {
+    if (err) {
+      console.error("Error fetching data:", err);
+      res.status(500).json({ error: "Failed to fetch data" });
+    } else {
+      res.json(results);
+    }
+  });
+});
+
+app.get("/api/userReponses/:reponseID?", (req, res) => {
+  const { reponseID } = req.params;
+  let query = `SELECT * FROM reponse`;
+
+  if (reponseID) {
+    query += ` WHERE reponseID = ?`;
+  }
+
+  db.query(query, reponseID ? [reponseID] : [], (err, results) => {
+    if (err) {
+      console.error("Error fetching data:", err);
+      res.status(500).json({ error: "Failed to fetch data" });
+    } else {
+      res.json(results);
+    }
+  });
+});
+
+app.get("/api/adminFormationStatistics", (req, res) => {
+  const query = `
+    SELECT 
+      f.formationID,
+      f.intitule AS title,
+      COUNT(DISTINCT p.participationID) AS participants,
+      COUNT(DISTINCT r.reponseID) AS reponses,
+      AVG(r.taux_satisfaction) AS tauxSatis
+    FROM 
+      formation f
+    LEFT JOIN 
+      participation p ON f.formationID = p.formationID
+    LEFT JOIN 
+      reponse r ON f.formationID = r.formationID
+    GROUP BY 
+      f.formationID, f.intitule;
+  `;
+
+  db.query(query, (err, results) => {
     if (err) {
       console.error("Error fetching data:", err);
       res.status(500).json({ error: "Failed to fetch data" });

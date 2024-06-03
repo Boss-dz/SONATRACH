@@ -65,6 +65,7 @@ export default function FormationCloture() {
           color="#68676E80"
           propData={formations}
           dataType="formation"
+          link="/AdminFormation/formations_cloture/reponses_formation"
         />
         <Footer />
       </div>

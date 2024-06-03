@@ -6,8 +6,31 @@ import Notification from "../components/Notification";
 import Footer from "../components/Footer";
 import Graph from "../components/Graph";
 
+import axios from "axios";
+import { useState, useEffect } from "react";
+
 export default function HomepageAF() {
   const userData = JSON.parse(localStorage.getItem("userData"));
+  const [statistics, setStatistics] = useState([]);
+
+  useEffect(() => {
+    const fetchStats = async () => {
+      try {
+        const response = await axios.get(
+          "http://localhost:8000/api/adminFormationStatistics"
+        );
+        setStatistics(response.data);
+      } catch (error) {
+        console.error("Error fetching formations statistics:", error);
+      }
+    };
+
+    fetchStats();
+  }, []);
+
+  // useEffect(() => {
+  //   console.log(statistics);
+  // }, [statistics]);
 
   return (
     <div className={style.container}>
@@ -24,8 +47,9 @@ export default function HomepageAF() {
         <Header />
         <Welcome content={`Bienvenue, ${userData.prenom}!`} change />
         <div className={style.notificationContainer}>
+          {/* render the statistics on the graph */}
           <Graph />
-          <Notification />
+          <Notification statistics={statistics} />
         </div>
         <Footer />
       </div>

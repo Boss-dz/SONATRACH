@@ -1,10 +1,11 @@
 import style from "./Header.module.css";
-import { NavLink, useLocation } from "react-router-dom";
+import { NavLink, useLocation, useParams } from "react-router-dom";
 
 import { useEffect, useState } from "react";
 import axios from "axios";
 
 export default function Header() {
+  const { formationID } = useParams();
   const [menuDroped, setMenuDroped] = useState(false);
   const [subMenuDroped, setSubMenuDroped] = useState(false);
   const [roles, setRoles] = useState([]);
@@ -42,9 +43,7 @@ export default function Header() {
           <span>{">"} Formations non clôturé</span>
         </div>
       )}
-      {location.pathname.startsWith(
-        "/AdminFormation/formations_non_cloture/reponses_formation"
-      ) && (
+      {location.pathname.includes("/modifier_formation") ? (
         <div className={style.path}>
           <NavLink to="/AdminFormation" className={style.link}>
             Acceuil
@@ -57,8 +56,61 @@ export default function Header() {
           >
             Formations non clôturé
           </NavLink>
-          <span>{">"} Reponses de la Formation</span>
+
+          <span>{"> "}</span>
+
+          <NavLink
+            to={`/AdminFormation/formations_non_cloture/reponses_formation/${formationID}`}
+            className={style.link}
+          >
+            Reponses de la Formation
+          </NavLink>
+          <span>{">"} Modifier la formation</span>
         </div>
+      ) : location.pathname.includes("/formations_non_cloture") &&
+        location.pathname.includes("/details_reponse") ? (
+        <div className={style.path}>
+          <NavLink to="/AdminFormation" className={style.link}>
+            Acceuil
+          </NavLink>
+          <span>{"> "}</span>
+
+          <NavLink
+            to="/AdminFormation/formations_non_cloture"
+            className={style.link}
+          >
+            Formations non clôturé
+          </NavLink>
+
+          <span>{"> "}</span>
+
+          <NavLink
+            to={`/AdminFormation/formations_non_cloture/reponses_formation/${formationID}`}
+            className={style.link}
+          >
+            Reponses de la Formation
+          </NavLink>
+          <span>{">"} Details de la Reponse</span>
+        </div>
+      ) : (
+        location.pathname.startsWith(
+          "/AdminFormation/formations_non_cloture/reponses_formation"
+        ) && (
+          <div className={style.path}>
+            <NavLink to="/AdminFormation" className={style.link}>
+              Acceuil
+            </NavLink>
+            <span>{"> "}</span>
+
+            <NavLink
+              to="/AdminFormation/formations_non_cloture"
+              className={style.link}
+            >
+              Formations non clôturé
+            </NavLink>
+            <span>{">"} Reponses de la Formation</span>
+          </div>
+        )
       )}
       {location.pathname === "/AdminFormation/ajouter_une_formation" && (
         <div className={style.path}>
@@ -75,6 +127,51 @@ export default function Header() {
           </NavLink>
           <span>{">"} Formations clôturé</span>
         </div>
+      )}
+      {location.pathname.includes("/formations_cloture") &&
+      location.pathname.includes("/details_reponse") ? (
+        <div className={style.path}>
+          <NavLink to="/AdminFormation" className={style.link}>
+            Acceuil
+          </NavLink>
+          <span>{"> "}</span>
+
+          <NavLink
+            to="/AdminFormation/formations_cloture"
+            className={style.link}
+          >
+            Formations clôturé
+          </NavLink>
+
+          <span>{"> "}</span>
+
+          <NavLink
+            to={`/AdminFormation/formations_cloture/reponses_formation/${formationID}`}
+            className={style.link}
+          >
+            Reponses de la Formation
+          </NavLink>
+          <span>{">"} Details de la Reponse</span>
+        </div>
+      ) : (
+        location.pathname.startsWith(
+          "/AdminFormation/formations_cloture/reponses_formation"
+        ) && (
+          <div className={style.path}>
+            <NavLink to="/AdminFormation" className={style.link}>
+              Acceuil
+            </NavLink>
+            <span>{"> "}</span>
+
+            <NavLink
+              to="/AdminFormation/formations_cloture"
+              className={style.link}
+            >
+              Formations clôturé
+            </NavLink>
+            <span>{">"} Reponses de la Formation</span>
+          </div>
+        )
       )}
       {location.pathname === "/AdminFormation/parametre" && (
         <div className={style.path}>

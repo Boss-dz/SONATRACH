@@ -11,6 +11,7 @@ import HomepageAF from "./features/AdminFormation/pages/HomepageAF";
 import FormationNonCloture from "./features/AdminFormation/pages/FormationNonCloture";
 import ReponsesFormation from "./features/AdminFormation/pages/ReponsesFormation";
 import ModifierFormation from "./features/AdminFormation/pages/ModifierFormation";
+import DetailsReponse from "./features/AdminFormation/pages/DetailsReponse";
 import AjouterFormation from "./features/AdminFormation/pages/AjouterFormation";
 import FormationCloture from "./features/AdminFormation/pages/FormationCloture";
 import ParametreAF from "./features/AdminFormation/pages/Parametre";
@@ -67,12 +68,24 @@ export default function App() {
           element={<ModifierFormation />}
         />
         <Route
+          path="/AdminFormation/formations_non_cloture/reponses_formation/:formationID/details_reponse/:reponseID"
+          element={<DetailsReponse />}
+        />
+        <Route
           path="/AdminFormation/ajouter_une_formation"
           element={<AjouterFormation />}
         />
         <Route
           path="/AdminFormation/formations_cloture"
           element={<FormationCloture />}
+        />
+        <Route
+          path="/AdminFormation/formations_cloture/reponses_formation/:formationID"
+          element={<ReponsesFormation />}
+        />
+        <Route
+          path="/AdminFormation/formations_cloture/reponses_formation/:formationID/details_reponse/:reponseID"
+          element={<DetailsReponse />}
         />
         <Route path="/AdminFormation/parametre" element={<ParametreAF />} />
         <Route path="/AdminVisiteur" element={<HomepageAV />} />

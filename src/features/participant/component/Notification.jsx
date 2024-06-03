@@ -12,11 +12,12 @@ const formatDate = (dateString) => {
   return `${year}-${month}-${day}`;
 };
 
-export default function Notification({ addStyle , color }) {
-
+export default function Notification({ addStyle, color }) {
+  const navigate = useNavigate();
   const isCloture = false;
   const [data , setData] = useState([]);
-  const navigate = useNavigate();
+
+
   const userData = JSON.parse(localStorage.getItem("userData"));
   const userID = userData.utilisateurID;
 
@@ -47,19 +48,24 @@ export default function Notification({ addStyle , color }) {
         console.error("Error fetching formation data:", error);
       });
   }, [isCloture, userID]);
-   const filterFormations = () => {
-       return data.filter((formation) => (!formation.hasResponded));
-   };
-   const filterNonClot = () => {
-    return data.filter(
-      (formation) => formation.hasResponded && !isCloture
-    );
-   }
-
+  const filterFormations = () => {
+    return data.filter((formation) => !formation.hasResponded);
+  };
+  const filterNonClot = () => {
+    return data.filter((formation) => formation.hasResponded && !isCloture);
+  };
 
   const length = !addStyle ? filterFormations().length : filterNonClot().length;
   const list = !addStyle ? filterFormations().slice(0, 3) : filterNonClot().slice(0,3);
    const render = length > 0 ;
+
+  const handleClick = () => {
+    if (color === "#302CD780") {
+      navigate("/Participant/questionnaire_non_cloture");
+    } else {
+      navigate("/Participant/questionnaire_en_attente");
+    }
+  };
 
   return (
     <div className={`${style.container} ${addStyle ? addStyle : ""}`}>
@@ -85,6 +91,9 @@ export default function Notification({ addStyle , color }) {
         >
           Voir plus
         </button>}
+        <button className={`${style.btn}`} onClick={handleClick}>
+          Voir plus
+        </button>
       </div>
     </div>
   );
