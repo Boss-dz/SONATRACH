@@ -7,7 +7,7 @@ export default function ToggleProfile() {
     <div className={style.container}>
       <a href="#Profil" className={style.a}>
         <h3
-          className={active === "Profil" && style.active}
+          className={active === "Profil" ? style.active : null}
           onClick={() => setActive("Profil")}
         >
           Profil
@@ -16,7 +16,7 @@ export default function ToggleProfile() {
 
       <a href="#AuthLDAP" className={style.a}>
         <h3
-          className={active === "AuthLDAP" && style.active}
+          className={active === "AuthLDAP" ? style.active : null}
           onClick={() => setActive("AuthLDAP")}
         >
           Authentification LDAP
@@ -25,7 +25,7 @@ export default function ToggleProfile() {
 
       <a href="#Messagerie" className={style.a}>
         <h3
-          className={active === "Messagerie" && style.active}
+          className={active === "Messagerie" ? style.active : null}
           onClick={() => setActive("Messagerie")}
         >
           Messagerie
@@ -34,7 +34,7 @@ export default function ToggleProfile() {
 
       <a href="#Synchronisation" className={style.a}>
         <h3
-          className={active === "Synchronisation" && style.active}
+          className={active === "Synchronisation" ? style.active : null}
           onClick={() => setActive("Synchronisation")}
         >
           Synchronisation

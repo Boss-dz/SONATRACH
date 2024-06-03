@@ -971,6 +971,55 @@ app.get("/api/adminFormationStatistics", (req, res) => {
   });
 });
 
+app.get("/api/parametres", (req, res) => {
+  const query = "SELECT * FROM parametres_de_base";
+
+  db.query(query, (err, results) => {
+    if (err) {
+      console.error("Error fetching data:", err);
+      res.status(500).json({ error: "Failed to fetch data" });
+    } else {
+      const parameters = {};
+      results.forEach((row) => {
+        parameters[row.param_key] = row.param_value;
+      });
+      res.json(parameters);
+    }
+  });
+});
+
+app.put("/api/parametres", (req, res) => {
+  const parameters = req.body;
+
+  const queries = Object.keys(parameters).map((key) => {
+    return new Promise((resolve, reject) => {
+      const query = `
+        INSERT INTO parametres_de_base (param_key, param_value)
+        VALUES (?, ?)
+        ON DUPLICATE KEY UPDATE param_value = VALUES(param_value)
+      `;
+      const values = [key, parameters[key]];
+
+      db.query(query, values, (err, results) => {
+        if (err) {
+          reject(err);
+        } else {
+          resolve(results);
+        }
+      });
+    });
+  });
+
+  Promise.all(queries)
+    .then(() => {
+      res.json({ message: "Parameters updated successfully" });
+    })
+    .catch((err) => {
+      console.error("Error updating data:", err);
+      res.status(500).json({ error: "Failed to update data" });
+    });
+});
+
 app.listen(8000, () => {
   console.log("listening");
 });
