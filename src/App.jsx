@@ -22,48 +22,36 @@ import EditInfoMembre from "./features/AdminIT/pages/EditInfoMembre";
 import AjouterMembre from "./features/AdminIT/pages/AjouterMembre";
 import GererRoles from "./features/AdminIT/pages/GererRoles";
 import ParametreAIT from "./features/AdminIT/pages/Parametre";
+
+import HomepageAV from './features/AdminVisiteur/pages/HomepageAV'
+import FormationNonClotureAV from "./features/AdminVisiteur/pages/FormationNonClotureAV";
+import FormationClotureAV from "./features/AdminVisiteur/pages/FormationClotureAV";
+import ParametreAV from "./features/AdminVisiteur/pages/ParametreAV";
+
 export default function App() {
   return (
     <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<Authentification />} />
-          <Route
-            path="/Participant"
-            element={
-                <HomepageP />
-            }
-          />
+      <Routes>
+        <Route path="/" element={<Authentification />} />
+        <Route path="/Participant" element={<HomepageP />} />
 
-          <Route
-            path="/Participant/questionnaire_en_attente"
-            element={
-                <QuestEnAttente />
-            }
-          />
-          <Route
-            path="/Participant/questionnaire_non_cloture"
-            element={
-                <QuestNonClot />
-            }
-          />
-          <Route
-            path="/Participant/questionnaire_cloture"
-            element={
-                <QuestClot />
-            }
-          />
-          <Route
-            path="/Participant/questionnaires/:formationID"
-            element={
-                <Questionnaire />
-            }
-          />
-          <Route
-            path="/Participant/parametre"
-            element={
-                <ParametreP />
-            }
-          />
+        <Route
+          path="/Participant/questionnaire_en_attente"
+          element={<QuestEnAttente />}
+        />
+        <Route
+          path="/Participant/questionnaire_non_cloture"
+          element={<QuestNonClot />}
+        />
+        <Route
+          path="/Participant/questionnaire_cloture"
+          element={<QuestClot />}
+        />
+        <Route
+          path="/Participant/questionnaires/:formationID"
+          element={<Questionnaire />}
+        />
+        <Route path="/Participant/parametre" element={<ParametreP />} />
 
         <Route path="/AdminFormation" element={<HomepageAF />} />
         <Route
@@ -87,7 +75,16 @@ export default function App() {
           element={<FormationCloture />}
         />
         <Route path="/AdminFormation/parametre" element={<ParametreAF />} />
-
+        <Route path="/AdminVisiteur" element={<HomepageAV />} />
+        <Route
+          path="/AdminVisiteur/formations_non_cloture"
+          element={<FormationNonClotureAV />}
+        />
+        <Route
+          path="/AdminVisiteur/formations_cloture"
+          element={<FormationClotureAV />}
+        />
+        <Route path="/AdminVisiteur/parametre" element={<ParametreAV />} />
         <Route path="/AdminIT" element={<HomepageAIT />} />
         <Route path="/AdminIT/gerer_les_membres" element={<GererMembres />} />
         <Route

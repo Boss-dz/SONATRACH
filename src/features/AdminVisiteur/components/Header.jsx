@@ -30,29 +30,28 @@ export default function Header() {
 
   return (
     <div className={style.container}>
-      {(location.pathname === "/AdminFormation" ||
-        location.pathname === "/AdminVisiteur") && (
+      {location.pathname === "/AdminVisiteur" && (
         <input type="search" placeholder="Search Here" />
       )}
-      {location.pathname === "/AdminFormation/formations_non_cloture" && (
+      {location.pathname === "/AdminVisiteur/formations_non_cloture" && (
         <div className={style.path}>
-          <NavLink to="/AdminFormation" className={style.link}>
+          <NavLink to="/AdminVisiteur" className={style.link}>
             Acceuil
           </NavLink>
           <span>{">"} Formations non clôturé</span>
         </div>
       )}
       {location.pathname.startsWith(
-        "/AdminFormation/formations_non_cloture/reponses_formation"
+        "/AdminVisiteur/formations_non_cloture/reponses_formation"
       ) && (
         <div className={style.path}>
-          <NavLink to="/AdminFormation" className={style.link}>
+          <NavLink to="/AdminVisiteur" className={style.link}>
             Acceuil
           </NavLink>
           <span>{"> "}</span>
 
           <NavLink
-            to="/AdminFormation/formations_non_cloture"
+            to="/AdminVisiteur/formations_non_cloture"
             className={style.link}
           >
             Formations non clôturé
@@ -60,25 +59,18 @@ export default function Header() {
           <span>{">"} Reponses de la Formation</span>
         </div>
       )}
-      {location.pathname === "/AdminFormation/ajouter_une_formation" && (
+
+      {location.pathname === "/AdminVisiteur/formations_cloture" && (
         <div className={style.path}>
-          <NavLink to="/AdminFormation" className={style.link}>
-            Acceuil
-          </NavLink>
-          <span>{">"} Ajouter une formation</span>
-        </div>
-      )}
-      {location.pathname === "/AdminFormation/formations_cloture" && (
-        <div className={style.path}>
-          <NavLink to="/AdminFormation" className={style.link}>
+          <NavLink to="/AdminVisiteur" className={style.link}>
             Acceuil
           </NavLink>
           <span>{">"} Formations clôturé</span>
         </div>
       )}
-      {location.pathname === "/AdminFormation/parametre" && (
+      {location.pathname === "/AdminVisiteur/parametre" && (
         <div className={style.path}>
-          <NavLink to="/AdminFormation" className={style.link}>
+          <NavLink to="/AdminVisiteur" className={style.link}>
             Acceuil
           </NavLink>
           <span>{">"} Parametres</span>
