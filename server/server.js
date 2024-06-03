@@ -943,6 +943,34 @@ app.get("/api/userReponses/:reponseID?", (req, res) => {
   });
 });
 
+app.get("/api/adminFormationStatistics", (req, res) => {
+  const query = `
+    SELECT 
+      f.formationID,
+      f.intitule AS title,
+      COUNT(DISTINCT p.participationID) AS participants,
+      COUNT(DISTINCT r.reponseID) AS reponses,
+      AVG(r.taux_satisfaction) AS tauxSatis
+    FROM 
+      formation f
+    LEFT JOIN 
+      participation p ON f.formationID = p.formationID
+    LEFT JOIN 
+      reponse r ON f.formationID = r.formationID
+    GROUP BY 
+      f.formationID, f.intitule;
+  `;
+
+  db.query(query, (err, results) => {
+    if (err) {
+      console.error("Error fetching data:", err);
+      res.status(500).json({ error: "Failed to fetch data" });
+    } else {
+      res.json(results);
+    }
+  });
+});
+
 app.listen(8000, () => {
   console.log("listening");
 });

@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import style from "./Notification.module.css";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 const formatDate = (dateString) => {
   const date = new Date(dateString);
@@ -11,10 +12,10 @@ const formatDate = (dateString) => {
   return `${year}-${month}-${day}`;
 };
 
-export default function Notification({ addStyle , color }) {
-
+export default function Notification({ addStyle, color }) {
+  const navigate = useNavigate();
   const isCloture = false;
-  const [data , setData] = useState([]);
+  const [data, setData] = useState([]);
 
   const userData = JSON.parse(localStorage.getItem("userData"));
   const userID = userData.utilisateurID;
@@ -46,24 +47,31 @@ export default function Notification({ addStyle , color }) {
         console.error("Error fetching formation data:", error);
       });
   }, [isCloture, userID]);
-   const filterFormations = () => {
-       return data.filter((formation) => (!formation.hasResponded));
-   };
-   const filterNonClot = () => {
-    return data.filter(
-      (formation) => formation.hasResponded && !isCloture
-    );
-   }
-
+  const filterFormations = () => {
+    return data.filter((formation) => !formation.hasResponded);
+  };
+  const filterNonClot = () => {
+    return data.filter((formation) => formation.hasResponded && !isCloture);
+  };
 
   const length = !addStyle ? filterFormations().length : filterNonClot().length;
-  const list = !addStyle ? filterFormations().slice(0, 3) : filterNonClot().slice(0,3);
+  const list = !addStyle
+    ? filterFormations().slice(0, 3)
+    : filterNonClot().slice(0, 3);
 
+  const handleClick = () => {
+    if (color === "#302CD780") {
+      navigate("/Participant/questionnaire_non_cloture");
+    } else {
+      navigate("/Participant/questionnaire_en_attente");
+    }
+  };
 
   return (
     <div className={`${style.container} ${addStyle ? addStyle : ""}`}>
       <p className={style.text}>
-        Vous avez <span className={addStyle ? style.span : ""}>{length}</span> questionnaire a remplir !
+        Vous avez <span className={addStyle ? style.span : ""}>{length}</span>{" "}
+        questionnaire a remplir !
       </p>
       <div className={style.card}>
         {list.map((e, i) => (
@@ -77,7 +85,9 @@ export default function Notification({ addStyle , color }) {
             </p>
           </div>
         ))}
-        <button className={`${style.btn}`}>Voir plus</button>
+        <button className={`${style.btn}`} onClick={handleClick}>
+          Voir plus
+        </button>
       </div>
     </div>
   );
