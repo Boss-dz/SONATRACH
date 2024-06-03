@@ -186,23 +186,6 @@ export default function ModifierFormation() {
     console.log(membresConcernes);
   }, [membresConcernes]);
 
-  // useEffect(() => {
-  //   const fetchParticipations = async () => {
-  //     try {
-  //       const response = await axios.get(
-  //         `http://localhost:8000/api/formations/${formationID}/participations`
-  //       );
-  //       setParticipations(response.data);
-  //       setLoading(false);
-  //     } catch (err) {
-  //       setError(err);
-  //       setLoading(false);
-  //     }
-  //   };
-
-  //   fetchParticipations();
-  // }, [formationID]);
-
   return (
     <div className={style.container}>
       <Sidebar />
@@ -215,7 +198,7 @@ export default function ModifierFormation() {
         }}
       >
         <Header />
-        <Titre searchbar={false} />
+        <Titre searchbar={false} titre="Modifier la formation" />
         <AddFormationForm formation={formation} setFormation={setFormation} />
         <Titre
           titre="Membre concené"

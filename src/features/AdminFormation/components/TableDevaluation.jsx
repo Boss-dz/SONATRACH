@@ -1,11 +1,13 @@
 import React, { useEffect, useState } from "react";
 import style from "./TableDevaluation.module.css";
 import { useParams } from "react-router-dom";
+import axios from "axios";
 
 export default function TableDevaluation({ isCloture }) {
   const [selectedOptions, setSelectedOptions] = useState({});
   const [section3Visible, setSection3Visible] = useState(false);
   const { formationID } = useParams();
+  const { reponseID } = useParams();
 
   const [formText, setFormText] = useState({
     pointsForts: "",
@@ -77,6 +79,7 @@ export default function TableDevaluation({ isCloture }) {
     const satisfactionRate = (N / divisor) * 100;
     return satisfactionRate.toFixed(2);
   };
+
   const handleSave = async () => {
     if (!validateSelections()) {
       alert("Please select an option in each row.");
@@ -143,15 +146,16 @@ export default function TableDevaluation({ isCloture }) {
     }
     return true;
   };
-  const fetchSavedData = async (formationID, userID) => {
+
+  const fetchSavedData = async (reponseID) => {
     try {
-      const response = await fetch(
-        `http://localhost:8000/api/evaluation/${formationID}/${userID}`
+      const response = await axios.get(
+        `http://localhost:8000/api/userReponses/${reponseID}`
       );
-      if (!response.ok) {
-        throw new Error("Network response was not ok");
-      }
-      const data = await response.json();
+      console.log(response.data);
+
+      const data = response.data[0];
+
       return {
         selectedOptions: {
           "0-0": parseInt(data.question1),
@@ -184,7 +188,7 @@ export default function TableDevaluation({ isCloture }) {
           recommandations: data.recommandations,
           commentaires: data.commentaires,
         },
-        // section3Visible: true,
+        // section3Visible: true, // Uncomment if needed
       };
     } catch (error) {
       console.error("Failed to fetch saved data:", error);
@@ -194,7 +198,7 @@ export default function TableDevaluation({ isCloture }) {
 
   useEffect(() => {
     const fetchData = async () => {
-      const savedData = await fetchSavedData(formationID, userID);
+      const savedData = await fetchSavedData(reponseID);
       if (savedData) {
         setSelectedOptions(savedData.selectedOptions || {});
         setFormText(savedData.formText || {});
@@ -202,7 +206,7 @@ export default function TableDevaluation({ isCloture }) {
       }
     };
     fetchData();
-  }, [formationID, userID]);
+  }, [reponseID]);
 
   const tableData = [
     {
