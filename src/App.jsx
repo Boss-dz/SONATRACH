@@ -9,6 +9,8 @@ import ParametreP from "./features/participant/pages/Parametre";
 
 import HomepageAF from "./features/AdminFormation/pages/HomepageAF";
 import FormationNonCloture from "./features/AdminFormation/pages/FormationNonCloture";
+import ReponsesFormation from "./features/AdminFormation/pages/ReponsesFormation";
+import ModifierFormation from "./features/AdminFormation/pages/ModifierFormation";
 import AjouterFormation from "./features/AdminFormation/pages/AjouterFormation";
 import FormationCloture from "./features/AdminFormation/pages/FormationCloture";
 import ParametreAF from "./features/AdminFormation/pages/Parametre";
@@ -63,54 +65,43 @@ export default function App() {
             }
           />
 
-          <Route
-            path="/AdminFormation"
-            element={
-                <HomepageAF />
-            }
-          />
-          <Route
-            path="/AdminFormation/formations_non_cloture"
-            element={
-                <FormationNonCloture />
-            }
-          />
-          <Route
-            path="/AdminFormation/ajouter_une_formation"
-            element={
-                <AjouterFormation />
-            }
-          />
-          <Route
-            path="/AdminFormation/formations_cloture"
-            element={
-                <FormationCloture />
-            }
-          />
-          <Route
-            path="/AdminFormation/parametre"
-            element={
-                <ParametreAF />
-            }
-          />
+        <Route path="/AdminFormation" element={<HomepageAF />} />
+        <Route
+          path="/AdminFormation/formations_non_cloture"
+          element={<FormationNonCloture />}
+        />
+        <Route
+          path="/AdminFormation/formations_non_cloture/reponses_formation/:formationID"
+          element={<ReponsesFormation />}
+        />
+        <Route
+          path="/AdminFormation/formations_non_cloture/reponses_formation/modifier_formation/:formationID"
+          element={<ModifierFormation />}
+        />
+        <Route
+          path="/AdminFormation/ajouter_une_formation"
+          element={<AjouterFormation />}
+        />
+        <Route
+          path="/AdminFormation/formations_cloture"
+          element={<FormationCloture />}
+        />
+        <Route path="/AdminFormation/parametre" element={<ParametreAF />} />
 
-          <Route path="/AdminIT" element={<HomepageAIT />} />
-          <Route path="/AdminIT/gerer_les_membres" element={<GererMembres />} />
-          <Route
-            path="/AdminIT/gerer_les_membres/informations_d'un_membre"
-            element={<InfoMembre />}
-          />
-          <Route
-            path="/AdminIT/gerer_les_membres/informations_d'un_membre/modifier_les_informations_d'un_membre"
-            element={<EditInfoMembre />}
-          />
-          <Route
-            path="/AdminIT/ajouter_un_membre"
-            element={<AjouterMembre />}
-          />
-          <Route path="/AdminIT/gerer_les_roles" element={<GererRoles />} />
-          <Route path="/AdminIT/parametre" element={<ParametreAIT />} />
-        </Routes>
+        <Route path="/AdminIT" element={<HomepageAIT />} />
+        <Route path="/AdminIT/gerer_les_membres" element={<GererMembres />} />
+        <Route
+          path="/AdminIT/gerer_les_membres/informations_d'un_membre/:userName"
+          element={<InfoMembre />}
+        />
+        <Route
+          path="/AdminIT/gerer_les_membres/informations_d'un_membre/modifier_les_informations_d'un_membre/:userName"
+          element={<EditInfoMembre />}
+        />
+        <Route path="/AdminIT/ajouter_un_membre" element={<AjouterMembre />} />
+        <Route path="/AdminIT/gerer_les_roles" element={<GererRoles />} />
+        <Route path="/AdminIT/parametre" element={<ParametreAIT />} />
+      </Routes>
     </BrowserRouter>
   );
 }

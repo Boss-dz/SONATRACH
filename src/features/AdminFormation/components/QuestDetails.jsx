@@ -1,5 +1,5 @@
 import style from "./QuestDetails.module.css";
-import { useLocation } from "react-router-dom";
+import { NavLink, useLocation } from "react-router-dom";
 import TableRow from "./TableRow";
 const data = [
   {
@@ -76,6 +76,7 @@ export default function QuestDetails({
   lineHeight,
   membresConcernes,
   setMembresConcernes,
+  link,
 }) {
   const location = useLocation();
 
@@ -155,40 +156,80 @@ export default function QuestDetails({
               </div>
             ))
           : dataType !== undefined && dataType === "formation"
-          ? propData.map((formation, index) => (
-              <div
-                className={style.details}
-                style={{
-                  "--color": color,
-                  border:
-                    border !== undefined && border === true
-                      ? `solid ${color} 1px`
-                      : null,
-                  padding:
-                    lineHeight !== undefined && lineHeight === "small"
-                      ? "5px 10px"
-                      : "20px 10px",
-                }}
-                key={index}
-              >
-                <div className={style.item}>
-                  <h3>{formation.intitule}</h3>
+          ? propData.map((formation, index) =>
+              link ? (
+                <NavLink
+                  to={`${link}/${formation.formationID}`}
+                  style={{ color: "#000", textDecoration: "none" }}
+                  key={index}
+                >
+                  <div
+                    className={style.details}
+                    style={{
+                      "--color": color,
+                      border:
+                        border !== undefined && border === true
+                          ? `solid ${color} 1px`
+                          : null,
+                      padding:
+                        lineHeight !== undefined && lineHeight === "small"
+                          ? "5px 10px"
+                          : "20px 10px",
+                    }}
+                  >
+                    <div className={style.item}>
+                      <h3>{formation.intitule}</h3>
+                    </div>
+                    <div className={style.item}>
+                      <h5>{formation.org_formateur}</h5>
+                    </div>
+                    <div className={`${style.item} ${style.span}`}>
+                      <span>du {formation.date_debut}</span>
+                      <span>au {formation.date_fin}</span>
+                    </div>
+                    <div className={style.item}>
+                      {formation.date_debut_questionnaire}
+                    </div>
+                    <div className={style.item}>
+                      {formation.date_fin_questionnaire}
+                    </div>
+                  </div>
+                </NavLink>
+              ) : (
+                <div
+                  className={style.details}
+                  style={{
+                    "--color": color,
+                    border:
+                      border !== undefined && border === true
+                        ? `solid ${color} 1px`
+                        : null,
+                    padding:
+                      lineHeight !== undefined && lineHeight === "small"
+                        ? "5px 10px"
+                        : "20px 10px",
+                  }}
+                  key={index}
+                >
+                  <div className={style.item}>
+                    <h3>{formation.intitule}</h3>
+                  </div>
+                  <div className={style.item}>
+                    <h5>{formation.org_formateur}</h5>
+                  </div>
+                  <div className={`${style.item} ${style.span}`}>
+                    <span>du {formation.date_debut}</span>
+                    <span>au {formation.date_fin}</span>
+                  </div>
+                  <div className={style.item}>
+                    {formation.date_debut_questionnaire}
+                  </div>
+                  <div className={style.item}>
+                    {formation.date_fin_questionnaire}
+                  </div>
                 </div>
-                <div className={style.item}>
-                  <h5>{formation.org_formateur}</h5>
-                </div>
-                <div className={`${style.item} ${style.span}`}>
-                  <span>du {formation.date_debut}</span>
-                  <span>au {formation.date_fin}</span>
-                </div>
-                <div className={style.item}>
-                  {formation.date_debut_questionnaire}
-                </div>
-                <div className={style.item}>
-                  {formation.date_fin_questionnaire}
-                </div>
-              </div>
-            ))
+              )
+            )
           : dataType === "utilisateur"
           ? propData.map((user, i) => (
               <TableRow
@@ -222,3 +263,67 @@ export default function QuestDetails({
   );
 }
 
+// : dataType === "utilisateur"
+//           ? propData.map((user, i) =>
+//               link ? (
+//                 <NavLink to={link}>
+//                   <TableRow
+//                     userID={user.utilisateurID}
+//                     nom={user.nom}
+//                     prenom={user.prenom}
+//                     fonction={user.fonction}
+//                     structure={user.structureID}
+//                     action={user.action}
+//                     border={border}
+//                     lineHeight={lineHeight}
+//                     key={i}
+//                     membresConcernes={membresConcernes}
+//                     setMembresConcernes={setMembresConcernes}
+//                   />
+//                 </NavLink>
+//               ) : (
+//                 <TableRow
+//                   userID={user.utilisateurID}
+//                   nom={user.nom}
+//                   prenom={user.prenom}
+//                   fonction={user.fonction}
+//                   structure={user.structureID}
+//                   action={user.action}
+//                   border={border}
+//                   lineHeight={lineHeight}
+//                   key={i}
+//                   membresConcernes={membresConcernes}
+//                   setMembresConcernes={setMembresConcernes}
+//                 />
+//               )
+//             )
+//           : propData.map((e, i) =>
+//               link ? (
+//                 <NavLink to={link}>
+//                   <TableRow
+//                     nom={Object.values(e)[0]}
+//                     prenom={Object.values(e)[1]}
+//                     fonction={Object.values(e)[2]}
+//                     structure={Object.values(e)[3]}
+//                     action={Object.values(e)[4]}
+//                     border={border}
+//                     lineHeight={lineHeight}
+//                     key={i}
+//                   />
+//                 </NavLink>
+//               ) : (
+//                 <TableRow
+//                   userID={user.utilisateurID}
+//                   nom={user.nom}
+//                   prenom={user.prenom}
+//                   fonction={user.fonction}
+//                   structure={user.structureID}
+//                   action={user.action}
+//                   border={border}
+//                   lineHeight={lineHeight}
+//                   key={i}
+//                   membresConcernes={membresConcernes}
+//                   setMembresConcernes={setMembresConcernes}
+//                 />
+//               )
+//             )}

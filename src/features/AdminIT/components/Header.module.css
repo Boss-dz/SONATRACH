@@ -14,9 +14,6 @@
   cursor: pointer;
 }
 .img .one:first-child {
-  width: 13px;
-}
-.img .one:nth-child(2) {
   width: 30px;
 }
 .container input {
@@ -68,6 +65,7 @@
 .dropMenu ul li {
   padding: 5px;
   border-radius: 10px;
+  width: 114px;
 }
 .dropMenu ul li:hover {
   background-color: #f5f5f5;

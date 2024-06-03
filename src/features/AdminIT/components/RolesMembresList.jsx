@@ -1,5 +1,6 @@
 import style from "./RolesMembresList.module.css";
 import TableRow from "./TableRow";
+import React from "react";
 
 export default function RolesMembresList({ columns, propData }) {
   return (
@@ -7,8 +8,8 @@ export default function RolesMembresList({ columns, propData }) {
       <ul className={style.info} style={{ "--number": columns.length + 1 }}>
         {columns === undefined ? null : (
           <>
-            {columns.map((col) => (
-              <li>{col}</li>
+            {columns.map((col, i) => (
+              <li key={i}>{col}</li>
             ))}
           </>
         )}
@@ -39,10 +40,10 @@ export default function RolesMembresList({ columns, propData }) {
                     return i === 0 ? (
                       role
                     ) : (
-                      <>
+                      <React.Fragment key={i}>
                         <br />
                         {role}
-                      </>
+                      </React.Fragment>
                     );
                   })}
                 </div>

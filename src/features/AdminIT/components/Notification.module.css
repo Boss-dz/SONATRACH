@@ -36,9 +36,9 @@
 }
 .details,
 .notLastDetails {
-  display: flex;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
   align-items: center;
-  justify-content: space-between;
   padding: 10px;
   cursor: pointer;
 }
@@ -59,6 +59,7 @@
   white-space: nowrap;
   margin-left: 5px;
   font-size: 10px;
+  text-align: center;
 }
 
 .btnFather {
@@ -68,6 +69,8 @@
   width: auto;
   align-self: center;
   justify-self: center;
+
+  position: relative;
 }
 .btn {
   padding: 5px 10px 5px 10px;

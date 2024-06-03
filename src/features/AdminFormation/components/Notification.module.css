@@ -68,6 +68,8 @@
   width: auto;
   align-self: center;
   justify-self: center;
+
+  position: relative;
 }
 .btn {
   padding: 5px 10px 5px 10px;

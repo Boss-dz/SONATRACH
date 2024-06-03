@@ -26,11 +26,7 @@ export default function Sidebar() {
         <NavLink to="/AdminIT/gerer_les_membres">
           <img
             className={
-              location.pathname === "/AdminIT/gerer_les_membres" ||
-              location.pathname ===
-                "/AdminIT/gerer_les_membres/informations_d'un_membre" ||
-              location.pathname ===
-                "/AdminIT/gerer_les_membres/informations_d'un_membre/modifier_les_informations_d'un_membre"
+              location.pathname.startsWith("/AdminIT/gerer_les_membres")
                 ? style.utils
                 : `${style.utils} ${style.active}`
             }

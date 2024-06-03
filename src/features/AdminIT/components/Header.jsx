@@ -1,11 +1,33 @@
 import style from "./Header.module.css";
 import { NavLink, useLocation } from "react-router-dom";
-import { useState } from "react";
+
+import { useEffect, useState } from "react";
+import axios from "axios";
 
 export default function Header() {
   const [menuDroped, setMenuDroped] = useState(false);
   const [subMenuDroped, setSubMenuDroped] = useState(false);
+  const [roles, setRoles] = useState([]);
   const location = useLocation();
+
+  useEffect(() => {
+    const fetchRoles = async () => {
+      try {
+        const response = await axios.get(
+          `http://localhost:8000/api/user/${
+            JSON.parse(localStorage.getItem("userData")).utilisateurID
+          }/roles`
+        );
+        const formatedData = response.data.map((role) => role.nom_role);
+        setRoles(formatedData);
+      } catch (error) {
+        console.error(error.response.data);
+      }
+    };
+
+    fetchRoles();
+  }, []);
+
   return (
     <div className={style.container}>
       {location.pathname === "/AdminIT" && (
@@ -19,21 +41,9 @@ export default function Header() {
           <span>{">"} Gérer les membres</span>
         </div>
       )}
-      {location.pathname ===
-        "/AdminIT/gerer_les_membres/informations_d'un_membre" && (
-        <div className={style.path}>
-          <NavLink to="/AdminIT" className={style.link}>
-            Acceuil
-          </NavLink>
-          <span>{">"} </span>
-          <NavLink to="/AdminIT/gerer_les_membres" className={style.link}>
-            Gérer les membres
-          </NavLink>
-          <span>{">"} Informations d'un membre</span>
-        </div>
-      )}
-      {location.pathname ===
-        "/AdminIT/gerer_les_membres/informations_d'un_membre/modifier_les_informations_d'un_membre" && (
+      {location.pathname.startsWith(
+        "/AdminIT/gerer_les_membres/informations_d'un_membre/modifier_les_informations_d'un_membre"
+      ) ? (
         <div className={style.path}>
           <NavLink to="/AdminIT" className={style.link}>
             Acceuil
@@ -51,6 +61,21 @@ export default function Header() {
           </NavLink>
           <span>{">"} Modifier les informations</span>
         </div>
+      ) : (
+        location.pathname.startsWith(
+          "/AdminIT/gerer_les_membres/informations_d'un_membre"
+        ) && (
+          <div className={style.path}>
+            <NavLink to="/AdminIT" className={style.link}>
+              Acceuil
+            </NavLink>
+            <span>{">"} </span>
+            <NavLink to="/AdminIT/gerer_les_membres" className={style.link}>
+              Gérer les membres
+            </NavLink>
+            <span>{">"} Informations d'un membre</span>
+          </div>
+        )
       )}
       {location.pathname === "/AdminIT/ajouter_un_membre" && (
         <div className={style.path}>
@@ -77,10 +102,9 @@ export default function Header() {
         </div>
       )}
       <div className={style.img}>
-        <img className={style.one} src="/public/bell.svg" alt="bell" />
         <img
           className={style.one}
-          src="/public/Mask_group.svg"
+          src="/Mask_group.svg"
           alt="profile"
           onClick={() => setMenuDroped((drop) => !drop)}
         />
@@ -98,18 +122,13 @@ export default function Header() {
           <ul
             style={subMenuDroped ? { display: "block" } : { display: "none" }}
           >
-            <NavLink to="/Participant">
-              <li>Participant</li>
-            </NavLink>
-            <NavLink to="/AdminFormation">
-              <li>Admin Formation</li>
-            </NavLink>
-            <NavLink to="/AdminIT">
-              <li>Admin It</li>
-            </NavLink>
-            <NavLink to="/AdminVisiteur">
-              <li>Admin Visiteur</li>
-            </NavLink>
+            {roles.map((role, i) => {
+              return (
+                <NavLink to={`/${role.replace(/\s/g, "")}`} key={i}>
+                  <li>{role}</li>
+                </NavLink>
+              );
+            })}
           </ul>
           <NavLink to="/" style={{ width: "100%", textAlign: "center" }}>
             <p>Se Deconecter</p>

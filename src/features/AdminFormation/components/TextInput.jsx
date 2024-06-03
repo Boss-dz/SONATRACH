@@ -1,7 +1,16 @@
 import React from "react";
 import style from "./TextInput.module.css";
 
-function TextInput({ label, isPeriode, isPrdLabel, name, value, onChange }) {
+function TextInput({
+  label,
+  isPeriode,
+  isPrdLabel,
+  name,
+  value,
+  onChange,
+  isDisabled,
+}) {
+  // console.log(isDisabled);
   return (
     <div className={style.container}>
       <label className={style.label} htmlFor={name ? name : null}>
@@ -20,6 +29,7 @@ function TextInput({ label, isPeriode, isPrdLabel, name, value, onChange }) {
             id={name ? name : null}
             value={value ? value : ""}
             onChange={onChange ? onChange : null}
+            disabled={isDisabled}
           />
         </div>
       ) : (
@@ -30,6 +40,7 @@ function TextInput({ label, isPeriode, isPrdLabel, name, value, onChange }) {
           id={name ? name : null}
           value={value ? value : ""}
           onChange={onChange ? onChange : null}
+          disabled={isDisabled}
         />
       )}
     </div>

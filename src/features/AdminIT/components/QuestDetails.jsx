@@ -126,6 +126,7 @@ export default function QuestDetails({
               <NavLink
                 to={link}
                 style={{ textDecoration: "none", color: "#000" }}
+                key={i}
               >
                 <div
                   className={style.details}
@@ -140,7 +141,6 @@ export default function QuestDetails({
                         ? "5px 10px"
                         : "20px 10px",
                   }}
-                  key={i}
                 >
                   <div className={style.item}>
                     <h3>{e.title}</h3>
@@ -159,8 +159,13 @@ export default function QuestDetails({
             ))
           : propData.map((e, i) => (
               <NavLink
-                to={link}
+                to={
+                  link === "/AdminIT/gerer_les_membres/informations_d'un_membre"
+                    ? `${link}/${e.userName}`
+                    : link
+                }
                 style={{ textDecoration: "none", color: "#000" }}
+                key={i}
               >
                 <TableRow
                   nom={Object.values(e)[0]}
@@ -170,7 +175,6 @@ export default function QuestDetails({
                   action={Object.values(e)[4]}
                   border={border}
                   lineHeight={lineHeight}
-                  key={i}
                 />
               </NavLink>
             ))}

@@ -13,6 +13,7 @@
   padding: 13px 30px;
   font-size: 14px;
   position: relative;
+  cursor: pointer;
 }
 .rolesContainer li::before {
   position: absolute;

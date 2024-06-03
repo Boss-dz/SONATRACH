@@ -35,7 +35,6 @@
   color: #33333399;
   text-decoration: none;
   padding-right: 5px;
-  padding-left: 5px;
 }
 .path span {
   color: #33333399;
@@ -73,6 +72,7 @@
 .dropMenu ul li {
   padding: 5px;
   border-radius: 10px;
+  width: 114px;
 }
 .dropMenu ul li:hover {
   background-color: #f5f5f5;

@@ -1,37 +1,48 @@
-import React, { useState } from "react";
+import React from "react";
 import style from "./Membres.module.css";
 import Titre from "./Titre";
 import RolesMembresList from "./RolesMembresList";
 
+import axios from "axios";
+import { useEffect, useState } from "react";
+
 const roles = ["Participant", "Admin Formation", "Admin IT", "Admin Visiteur"];
 
-function VerticalDotsIcon() {
+function VerticalDotsIcon({ userID, userRoles, fetchUsers }) {
   const [isDroped, setIsDroped] = useState(false);
+  const [userRolesState, setUserRolesState] = useState(userRoles);
 
-  let a = 0;
-  let b = 0;
-  let c = 0;
-  let d = 0;
-  while (a === b || a === c || a === d || b === c || b === d || c === d) {
-    a = Math.random();
-    b = Math.random();
-    c = Math.random();
-    d = Math.random();
-  }
+  useEffect(() => {
+    setUserRolesState(userRoles);
+  }, [userRoles]);
+
+  const handleRoleChange = async (role) => {
+    const hasRole = userRolesState.includes(role);
+
+    try {
+      if (hasRole) {
+        await axios.delete("http://localhost:8000/api/user/removeRole", {
+          data: { userID, role },
+        });
+        setUserRolesState((prevRoles) => prevRoles.filter((r) => r !== role));
+      } else {
+        await axios.post("http://localhost:8000/api/user/addRole", {
+          userID,
+          role,
+        });
+        setUserRolesState((prevRoles) => [...prevRoles, role]);
+      }
+      fetchUsers(); // Fetch users to refresh the data
+    } catch (error) {
+      console.error("Error updating role:", error);
+    }
+  };
 
   return (
-    <div
-      style={{
-        position: "relative",
-      }}
-    >
+    <div style={{ position: "relative" }}>
       <div
         onClick={() => setIsDroped((d) => !d)}
-        style={{
-          fontSize: "20px",
-          fontWeight: "900",
-          cursor: "pointer",
-        }}
+        style={{ fontSize: "20px", fontWeight: "900", cursor: "pointer" }}
       >
         &#8942;
       </div>
@@ -39,76 +50,62 @@ function VerticalDotsIcon() {
       <form
         className={style.form}
         style={isDroped ? { display: "flex" } : { display: "none" }}
-        onMouseLeave={() => {
-          setIsDroped((drop) => !drop);
-        }}
+        onMouseLeave={() => setIsDroped(false)}
       >
         {roles.map((role) => (
-          <>
+          <React.Fragment key={role}>
             <input
               className={style.input}
               type="checkbox"
-              id={`${role.replace(/\s/g, "")}-${a}`}
+              id={`${role.replace(/\s/g, "")}-${userID}`}
               name="roles"
-              value={role.replace(/\s/g, "")}
+              value={role}
+              checked={userRolesState.includes(role)}
+              onChange={() => handleRoleChange(role)}
             />
             <label
               className={style.label}
-              htmlFor={`${role.replace(/\s/g, "")}-${a}`}
+              htmlFor={`${role.replace(/\s/g, "")}-${userID}`}
             >
               {role.replace(/ /g, "\u00A0")}
             </label>
-          </>
+          </React.Fragment>
         ))}
-        {/* <input
-          className={style.input}
-          type="checkbox"
-          id={`Participant${a}`}
-          name="roles"
-          value="Participant"
-        />
-        <label className={style.label} htmlFor={`Participant${a}`}>
-          Participant
-        </label>
-
-        <input
-          className={style.input}
-          type="checkbox"
-          id={`AdminFormation${b}`}
-          name="roles"
-          value="AdminFormation"
-        />
-        <label className={style.label} htmlFor={`AdminFormation${b}`}>
-          Admin&nbsp;Formation
-        </label>
-
-        <input
-          className={style.input}
-          type="checkbox"
-          id={`AdminIT${c}`}
-          name="roles"
-          value="AdminIT"
-        />
-        <label className={style.label} htmlFor={`AdminIT${c}`}>
-          Admin IT
-        </label>
-
-        <input
-          className={style.input}
-          type="checkbox"
-          id={`AdminVisiteur${d}`}
-          name="roles"
-          value="AdminVisiteur"
-        />
-        <label className={style.label} htmlFor={`AdminVisiteur${d}`}>
-          Admin Visiteur
-        </label> */}
       </form>
     </div>
   );
 }
 
 function Membres({ roleFilter, setRoleFilter }) {
+  const [allUsers, setAllUsers] = useState([]);
+
+  const fetchUsers = async () => {
+    try {
+      const response = await axios.get(
+        "http://localhost:8000/api/users/details"
+      );
+      const formatedAllUsers = response.data.map((user) => ({
+        nom: user.nom,
+        prenom: user.prenom,
+        action: (
+          <VerticalDotsIcon
+            userID={user.utilisateurID}
+            userRoles={user.roles}
+            fetchUsers={fetchUsers}
+          />
+        ),
+        roles: user.roles,
+      }));
+      setAllUsers(formatedAllUsers);
+    } catch (error) {
+      console.error("Error fetching Users:", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchUsers();
+  }, []);
+
   return (
     <div>
       <Titre
@@ -119,43 +116,7 @@ function Membres({ roleFilter, setRoleFilter }) {
       <div className={style.container}>
         <RolesMembresList
           columns={["Nom", "Prénom", "Roles"]}
-          propData={[
-            {
-              nom: "Rayane",
-              prenom: "MELZI",
-              action: <VerticalDotsIcon />,
-              roles: [
-                "Participant",
-                "Admin Formation",
-                "Admin IT",
-                "Admin Visiteur",
-              ],
-            },
-            {
-              nom: "Mohammed",
-              prenom: "HAOUA",
-              vide1: "",
-              vide2: "",
-              action: <VerticalDotsIcon />,
-              roles: ["Participant"],
-            },
-            {
-              nom: "Nadjib",
-              prenom: "DJELLALI",
-              vide1: "",
-              vide2: "",
-              action: <VerticalDotsIcon />,
-              roles: ["Admin IT"],
-            },
-            {
-              nom: "Salah",
-              prenom: "BENSAID",
-              vide1: "",
-              vide2: "",
-              action: <VerticalDotsIcon />,
-              roles: ["Admin Visiteur"],
-            },
-          ].filter((membre) => {
+          propData={allUsers.filter((membre) => {
             return membre.roles.includes(roleFilter) || roleFilter === "tous";
           })}
           lineHeight="small"

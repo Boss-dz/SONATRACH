@@ -43,7 +43,6 @@ app.post("/", (req, res) => {
   );
 });
 
-
 app.get("/AdminFormation/formations_non_cloture", (req, res) => {
   // Requête SQL pour sélectionner les formations qui ne sont pas encore terminées
   const query = "SELECT * FROM formation WHERE date_fin_questionnaire > NOW()";
@@ -506,6 +505,405 @@ app.get("/api/evaluation/:formationID/:userID", (req, res) => {
     }
 
     res.status(200).json(results[0]);
+  });
+});
+
+app.get("/api/user/:userName", (req, res) => {
+  const userName = req.params.userName;
+
+  db.query(
+    "SELECT utilisateur.*, structure.nom_structure FROM utilisateur LEFT JOIN structure ON utilisateur.structureID = structure.structureID WHERE username = ?",
+    [userName],
+    (error, results) => {
+      if (error) {
+        console.error("Database query error:", error);
+        return res.status(500).json({ error: "Internal server error" });
+      }
+
+      if (results.length === 0) {
+        return res.status(404).json({ error: "User not found" });
+      }
+
+      const user = results[0];
+      return res.status(200).json(user);
+    }
+  );
+});
+
+// Get all roles for a specific user by userID
+app.get("/api/user/:userID/roles", (req, res) => {
+  const { userID } = req.params;
+
+  const query = `
+    SELECT role.nom_role
+    FROM userrole
+    JOIN role ON userrole.roleID = role.roleID
+    WHERE userrole.utilisateurID = ?
+  `;
+
+  db.query(query, [userID], (error, results) => {
+    if (error) {
+      console.error("Database query error:", error);
+      return res.status(500).json({ error: "Internal server error" });
+    }
+    res.status(200).json(results);
+  });
+});
+
+// Update user information based on username
+app.put("/api/user/:username", (req, res) => {
+  const { username } = req.params;
+  const { password, nom, prenom, email, fonction, structureID } = req.body;
+
+  const query = `
+    UPDATE utilisateur
+    SET password = ?, nom = ?, prenom = ?, email = ?, fonction = ?, structureID = ?
+    WHERE username = ?
+  `;
+
+  db.query(
+    query,
+    [password, nom, prenom, email, fonction, structureID, username],
+    (error, results) => {
+      if (error) {
+        console.error("Database query error:", error);
+        return res.status(500).json({ error: "Internal server error" });
+      }
+
+      if (results.affectedRows === 0) {
+        return res.status(404).json({ error: "User not found" });
+      }
+
+      res
+        .status(200)
+        .json({ message: "User information updated successfully" });
+    }
+  );
+});
+
+app.get("/api/users/details", (req, res) => {
+  // Query to get all user details
+  const usersQuery = `
+    SELECT utilisateur.*, structure.nom_structure 
+    FROM utilisateur 
+    LEFT JOIN structure ON utilisateur.structureID = structure.structureID`;
+
+  // Query to get all roles
+  const rolesQuery = `
+    SELECT userrole.utilisateurID, role.nom_role 
+    FROM userrole 
+    JOIN role ON userrole.roleID = role.roleID`;
+
+  // Execute the queries in parallel
+  db.query(usersQuery, (usersError, usersResults) => {
+    if (usersError) {
+      console.error("Database query error:", usersError);
+      return res.status(500).json({ error: "Internal server error" });
+    }
+
+    db.query(rolesQuery, (rolesError, rolesResults) => {
+      if (rolesError) {
+        console.error("Database query error:", rolesError);
+        return res.status(500).json({ error: "Internal server error" });
+      }
+
+      // Create a map to associate user IDs with their roles
+      const rolesMap = {};
+      rolesResults.forEach((role) => {
+        if (!rolesMap[role.utilisateurID]) {
+          rolesMap[role.utilisateurID] = [];
+        }
+        rolesMap[role.utilisateurID].push(role.nom_role);
+      });
+
+      // Combine user details with their roles
+      const usersWithRoles = usersResults.map((user) => {
+        return {
+          ...user,
+          roles: rolesMap[user.utilisateurID] || [],
+        };
+      });
+
+      return res.status(200).json(usersWithRoles);
+    });
+  });
+});
+
+app.post("/api/user/addRole", (req, res) => {
+  const { userID, role } = req.body;
+
+  // Convert role name to roleID
+  const roleQuery = "SELECT roleID FROM role WHERE nom_role = ?";
+  db.query(roleQuery, [role], (roleErr, roleResults) => {
+    if (roleErr) {
+      console.error("Database query error:", roleErr);
+      return res.status(500).json({ error: "Internal server error" });
+    }
+
+    if (roleResults.length === 0) {
+      return res.status(404).json({ error: "Role not found" });
+    }
+
+    const roleID = roleResults[0].roleID;
+
+    // Add the role to the user
+    const query = "INSERT INTO userrole (utilisateurID, roleID) VALUES (?, ?)";
+    db.query(query, [userID, roleID], (err) => {
+      if (err) {
+        console.error("Database insert error:", err);
+        return res.status(500).json({ error: "Internal server error" });
+      }
+      res.status(201).json({ message: "Role added successfully" });
+    });
+  });
+});
+
+app.delete("/api/user/removeRole", (req, res) => {
+  const { userID, role } = req.body;
+
+  // Convert role name to roleID
+  const roleQuery = "SELECT roleID FROM role WHERE nom_role = ?";
+  db.query(roleQuery, [role], (roleErr, roleResults) => {
+    if (roleErr) {
+      console.error("Database query error:", roleErr);
+      return res.status(500).json({ error: "Internal server error" });
+    }
+
+    if (roleResults.length === 0) {
+      return res.status(404).json({ error: "Role not found" });
+    }
+
+    const roleID = roleResults[0].roleID;
+
+    // Remove the role from the user
+    const query = "DELETE FROM userrole WHERE utilisateurID = ? AND roleID = ?";
+    db.query(query, [userID, roleID], (err) => {
+      if (err) {
+        console.error("Database delete error:", err);
+        return res.status(500).json({ error: "Internal server error" });
+      }
+      res.status(200).json({ message: "Role removed successfully" });
+    });
+  });
+});
+
+// Get formation information
+app.get("/api/formations/:id?", (req, res) => {
+  const formationID = req.params.id;
+
+  // Construct the SQL query based on whether ID is provided or not
+  let query;
+  let queryParams;
+  if (formationID) {
+    query = "SELECT * FROM formation WHERE formationID = ?";
+    queryParams = [formationID];
+  } else {
+    query = "SELECT * FROM formation";
+    queryParams = [];
+  }
+
+  // Execute the SQL query
+  db.query(query, queryParams, (error, results) => {
+    if (error) {
+      console.error("Database query error:", error);
+      return res.status(500).json({ error: "Internal server error" });
+    }
+    res.status(200).json(results);
+  });
+});
+
+app.get("/api/formations/:id/participations", (req, res) => {
+  const formationID = req.params.id;
+
+  const query = `
+    SELECT utilisateur.*, structure.nom_structure
+    FROM participation
+    JOIN utilisateur ON participation.utilisateurID = utilisateur.utilisateurID
+    LEFT JOIN structure ON utilisateur.structureID = structure.structureID
+    WHERE participation.formationID = ?
+  `;
+
+  db.query(query, [formationID], (error, results) => {
+    if (error) {
+      console.error("Database query error:", error);
+      return res.status(500).json({ error: "Internal server error" });
+    }
+    res.status(200).json(results);
+  });
+});
+
+app.put("/api/formation/:id", (req, res) => {
+  const formationID = req.params.id;
+  const {
+    intitule,
+    org_formateur,
+    nom_formateur,
+    lieu,
+    date_debut,
+    date_fin,
+    date_debut_questionnaire,
+    date_fin_questionnaire,
+  } = req.body;
+
+  const updateFormationQuery = `
+    UPDATE formation
+    SET intitule = ?, org_formateur = ?, nom_formateur = ?, lieu = ?, date_debut = ?, date_fin = ?, date_debut_questionnaire = ?, date_fin_questionnaire = ?
+    WHERE formationID = ?`;
+
+  db.query(
+    updateFormationQuery,
+    [
+      intitule,
+      org_formateur,
+      nom_formateur,
+      lieu,
+      date_debut,
+      date_fin,
+      date_debut_questionnaire,
+      date_fin_questionnaire,
+      formationID,
+    ],
+    (err, result) => {
+      if (err) {
+        console.error("Error updating formation:", err);
+        return res.status(500).json({ error: "Error updating formation" });
+      }
+      res.status(200).json({ message: "Formation updated successfully" });
+    }
+  );
+});
+
+// Update participations for a formation
+app.put("/api/participations/:formationID", (req, res) => {
+  const formationID = req.params.formationID;
+  const { participations } = req.body;
+
+  // Start a transaction
+  db.beginTransaction((err) => {
+    if (err) {
+      console.error("Transaction error:", err);
+      return res.status(500).json({ error: "Transaction error" });
+    }
+
+    // Delete existing participations for the formation
+    const deleteParticipationsQuery =
+      "DELETE FROM participation WHERE formationID = ?";
+    db.query(deleteParticipationsQuery, [formationID], (err, result) => {
+      if (err) {
+        return db.rollback(() => {
+          console.error("Error deleting participations:", err);
+          res.status(500).json({ error: "Error deleting participations" });
+        });
+      }
+
+      // If no new participations are provided, commit the transaction and return
+      if (!participations || participations.length === 0) {
+        return db.commit((err) => {
+          if (err) {
+            return db.rollback(() => {
+              console.error("Transaction commit error:", err);
+              res.status(500).json({ error: "Transaction commit error" });
+            });
+          }
+          res
+            .status(200)
+            .json({ message: "Participations updated successfully" });
+        });
+      }
+
+      // Insert new participations
+      const insertParticipationQuery =
+        "INSERT INTO participation (formationID, utilisateurID) VALUES ?";
+      const participationValues = participations.map((part) => [
+        formationID,
+        part.utilisateurID,
+      ]);
+
+      db.query(
+        insertParticipationQuery,
+        [participationValues],
+        (err, result) => {
+          if (err) {
+            return db.rollback(() => {
+              console.error("Error inserting participations:", err);
+              res.status(500).json({ error: "Error inserting participations" });
+            });
+          }
+
+          // Commit transaction
+          db.commit((err) => {
+            if (err) {
+              return db.rollback(() => {
+                console.error("Transaction commit error:", err);
+                res.status(500).json({ error: "Transaction commit error" });
+              });
+            }
+            res
+              .status(200)
+              .json({ message: "Participations updated successfully" });
+          });
+        }
+      );
+    });
+  });
+});
+
+app.get("/api/reponses/:formationID?", (req, res) => {
+  const { formationID } = req.params;
+  let query = `
+    SELECT
+      r.reponseID,
+      r.date_reponse,
+      r.taux_satisfaction,
+      r.question1,
+      r.question2,
+      r.question3,
+      r.question4,
+      r.question5,
+      r.question6,
+      r.question7,
+      r.question8,
+      r.question9,
+      r.question10,
+      r.question11,
+      r.question12,
+      r.question13,
+      r.question14,
+      r.question15,
+      r.question16,
+      r.question17,
+      r.question18,
+      r.question19,
+      r.question20,
+      r.question21,
+      r.question22,
+      f.formationID,
+      u.utilisateurID,
+      u.nom,
+      u.prenom,
+      u.fonction,
+      s.nom_structure
+    FROM
+      reponse r
+    JOIN
+      formation f ON r.formationID = f.formationID
+    JOIN
+      utilisateur u ON r.utilisateurID = u.utilisateurID
+    JOIN
+      structure s ON u.structureID = s.structureID
+  `;
+
+  if (formationID) {
+    query += ` WHERE r.formationID = ?`;
+  }
+
+  db.query(query, [formationID].filter(Boolean), (err, results) => {
+    if (err) {
+      console.error("Error fetching data:", err);
+      res.status(500).json({ error: "Failed to fetch data" });
+    } else {
+      res.json(results);
+    }
   });
 });
 

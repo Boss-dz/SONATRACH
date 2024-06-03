@@ -7,7 +7,7 @@ import Roles from "../components/Roles";
 import Membres from "../components/Membres";
 import { useState } from "react";
 
-export default function QuestClot() {
+export default function GererRoles() {
   const [roleFilter, setRoleFilter] = useState("tous");
   return (
     <div className={style.container}>
