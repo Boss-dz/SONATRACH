@@ -42,7 +42,7 @@ export default function Header() {
         </div>
       )}
       {location.pathname.startsWith(
-        "/AdminVisiteur/formations_non_cloture/reponses_formation"
+        "/AdminVisiteur/formations_non_cloture/reponses_formation/9"
       ) && (
         <div className={style.path}>
           <NavLink to="/AdminVisiteur" className={style.link}>

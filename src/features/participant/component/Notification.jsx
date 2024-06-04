@@ -91,10 +91,8 @@ export default function Notification({ addStyle, color }) {
         >
           Voir plus
         </button>}
-        <button className={`${style.btn}`} onClick={handleClick}>
-          Voir plus
-        </button>
       </div>
     </div>
   );
 }
+

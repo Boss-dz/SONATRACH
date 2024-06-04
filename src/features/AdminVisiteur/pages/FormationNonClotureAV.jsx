@@ -87,7 +87,7 @@ export default function FormationNonClotureAV() {
         <QuestDetails
           propData={formations}
           dataType="formation"
-          link="/AdminFormation/formations_non_cloture/reponses_formation"
+          link="/AdminVisiteur/formations_non_cloture/reponses_formation"
         />
         <AddButton />
         <Footer />

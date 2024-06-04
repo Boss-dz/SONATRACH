@@ -2,36 +2,6 @@ import style from "./Notification.module.css";
 import { NavLink } from "react-router-dom";
 import { useEffect, useState } from "react";
 
-// let data = [
-//   {
-//     title: "Administration Microsoft Exchange Server 2016/2019",
-//     company: "Microsoft",
-//     participants: 20,
-//     reponses: 16,
-//     tauxSatis: 94,
-//   },
-//   {
-//     title: "Adm Microsoft",
-//     company: "Microsoft",
-//     participants: 20,
-//     reponses: 16,
-//     tauxSatis: 94,
-//   },
-//   {
-//     title: "Admrezrezrezrzrzrrezrze Microsoft",
-//     company: "Microsoft",
-//     participants: 20,
-//     reponses: 16,
-//     tauxSatis: 94,
-//   },
-//   {
-//     title: "Adm Microsoft",
-//     company: "Microsoft",
-//     participants: 20,
-//     reponses: 16,
-//     tauxSatis: 94,
-//   },
-// ];
 
 export default function Notification({ addStyle, btnColor, statistics }) {
   const [data, setData] = useState([]);

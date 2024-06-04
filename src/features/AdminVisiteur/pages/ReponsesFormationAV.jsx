@@ -1,4 +1,4 @@
-import style from "./AjouterFormation.module.css";
+import style from "./ReponsesFormationAV.module.css";
 import Header from "../components/Header";
 import Sidebar from "../components/Sidebar";
 import Titre from "../components/Titre";
@@ -11,12 +11,20 @@ import AddBoxRoundedIcon from "@mui/icons-material/AddBoxRounded";
 import LocalPrintshopIcon from "@mui/icons-material/LocalPrintshop";
 
 import { useState, useEffect } from "react";
-import { useNavigate, useParams, NavLink } from "react-router-dom";
+import { useNavigate, useParams, NavLink, useLocation } from "react-router-dom";
 import axios from "axios";
 import React from "react";
 
 function DI({ reponseID }) {
   const { formationID } = useParams();
+  const location = useLocation();
+
+  let clotureOuPas;
+  if (location.pathname.includes("formations_cloture")) {
+    clotureOuPas = "formations_cloture";
+  } else {
+    clotureOuPas = "formations_non_cloture";
+  }
 
   return (
     <div
@@ -26,7 +34,7 @@ function DI({ reponseID }) {
       }}
     >
       <NavLink
-        to={`/AdminFormation/formations_non_cloture/reponses_formation/:${formationID}/details_reponse/:${reponseID}`}
+        to={`/AdminVisiteur/${clotureOuPas}/reponses_formation/${formationID}/details_reponse/${reponseID}`}
         style={{ color: "#007FFF", opacity: "70%" }}
       >
         <AddBoxRoundedIcon />
@@ -36,7 +44,8 @@ function DI({ reponseID }) {
   );
 }
 
-function ReponsesFormation() {
+function ReponsesFormationAV() {
+  const location = useLocation();
   let navigate = useNavigate();
   const { formationID } = useParams();
   const [reponses, setReponses] = useState([]);
@@ -94,13 +103,22 @@ function ReponsesFormation() {
     fetchFormationInfo();
   }, [formationID]);
 
+  // useEffect(() => {
+  //   console.log(formation);
+  // }, [formation]);
 
-
-  const handleClick = () => {
-    navigate(
-      `/AdminFormation/formations_non_cloture/reponses_formation/modifier_formation/${formationID}`
-    );
-  };
+  // const handleClick = () => {
+  //   if (location.pathname.includes("formations_non_cloture")) {
+  //     navigate(
+  //       `/AdminVisiteur/formations_non_cloture/reponses_formation/modifier_formation/${formationID}`
+  //     );
+  //   }
+  //   if (location.pathname.includes("formations_cloture")) {
+  //     navigate(
+  //       `/AdminVisiteur/formations_cloture/reponses_formation/modifier_formation/${formationID}`
+  //     );
+  //   }
+  // };
 
   useEffect(() => {
     const fetchResponses = async () => {
@@ -135,7 +153,7 @@ function ReponsesFormation() {
     };
 
     fetchResponses();
-  }, []);
+  }, [formationID]);
 
   return (
     <div className={style.container}>
@@ -160,7 +178,9 @@ function ReponsesFormation() {
             top: "15px",
           }}
         >
-          <Button content="Modifier" btnStyle="white" onClick={handleClick} />
+          {/* {!location.pathname.includes("formations_cloture") && (
+            <Button content="Modifier" btnStyle="white" onClick={handleClick} />
+          )} */}
         </div>
         <AddFormationForm
           formation={formation}
@@ -184,4 +204,4 @@ function ReponsesFormation() {
   );
 }
 
-export default ReponsesFormation;
+export default ReponsesFormationAV;

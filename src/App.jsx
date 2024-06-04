@@ -24,10 +24,12 @@ import AjouterMembre from "./features/AdminIT/pages/AjouterMembre";
 import GererRoles from "./features/AdminIT/pages/GererRoles";
 import ParametreAIT from "./features/AdminIT/pages/Parametre";
 
-import HomepageAV from './features/AdminVisiteur/pages/HomepageAV'
+import HomepageAV from "./features/AdminVisiteur/pages/HomepageAV";
 import FormationNonClotureAV from "./features/AdminVisiteur/pages/FormationNonClotureAV";
 import FormationClotureAV from "./features/AdminVisiteur/pages/FormationClotureAV";
 import ParametreAV from "./features/AdminVisiteur/pages/ParametreAV";
+import ReponsesFormationAV from "./features/AdminVisiteur/pages/ReponsesFormationAV";
+import DetailsReponseAV from './features/AdminVisiteur/pages/DetailsReponseAV'
 
 export default function App() {
   return (
@@ -84,8 +86,24 @@ export default function App() {
           element={<ReponsesFormation />}
         />
         <Route
+          path="/AdminVisiteur/formations_non_cloture/reponses_formation/:formationID"
+          element={<ReponsesFormationAV />}
+        />
+        <Route
+          path="/AdminVisiteur/formations_cloture/reponses_formation/:formationID"
+          element={<ReponsesFormationAV />}
+        />
+        <Route
           path="/AdminFormation/formations_cloture/reponses_formation/:formationID/details_reponse/:reponseID"
           element={<DetailsReponse />}
+        />
+        <Route
+          path="/AdminVisiteur/formations_cloture/reponses_formation/:formationID/details_reponse/:reponseID"
+          element={<DetailsReponseAV />}
+        />
+        <Route
+          path="/AdminVisiteur/formations_non_cloture/reponses_formation/:formationID/details_reponse/:reponseID"
+          element={<DetailsReponseAV />}
         />
         <Route path="/AdminFormation/parametre" element={<ParametreAF />} />
         <Route path="/AdminVisiteur" element={<HomepageAV />} />

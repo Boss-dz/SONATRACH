@@ -65,6 +65,7 @@ export default function FormationClotureAV() {
           color="#68676E80"
           propData={formations}
           dataType="formation"
+          link="/AdminVisiteur/formations_cloture/reponses_formation"
         />
         <Footer />
       </div>

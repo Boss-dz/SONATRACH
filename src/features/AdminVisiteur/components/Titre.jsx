@@ -5,11 +5,11 @@ export default function Titre({ titre, searchbar, component }) {
   return (
     <div className={style.container}>
       {titre === undefined ? (
-        location.pathname === "/AdminVisiteur/formations_non_cloture" ? (
+        location.pathname === "/AdminFormation/formations_non_cloture" ? (
           <h1>Formations non clôturé</h1>
-        ) : location.pathname === "/AdminVisiteur/ajouter_une_formation" ? (
+        ) : location.pathname === "/AdminFormation/ajouter_une_formation" ? (
           <h1>Ajouter une formation</h1>
-        ) : location.pathname === "/AdminVisiteur/formations_cloture" ? (
+        ) : location.pathname === "/AdminFormation/formations_cloture" ? (
           <h1>Formations clôturé</h1>
         ) : (
           <div className={style.path}>

@@ -40,7 +40,6 @@
   align-items: center;
   justify-content: space-between;
   padding: 10px;
-  cursor: pointer;
 }
 .notLastDetails {
   border-bottom: 1px solid #d6dbde;
@@ -76,4 +75,7 @@
   border-radius: 5px;
   border: 1px solid #f29e4f;
   color: #f29e4f;
+}
+.btn:hover{
+  background-color: #f29e4f40;
 }

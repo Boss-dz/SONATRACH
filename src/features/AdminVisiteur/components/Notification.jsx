@@ -1,46 +1,22 @@
 import style from "./Notification.module.css";
 import { NavLink } from "react-router-dom";
+import { useEffect, useState } from "react";
 
-const data = [
-  {
-    title: "Administration Microsoft Exchange Server 2016/2019",
-    company: "Microsoft",
-    participants: 20,
-    reponses: 16,
-    tauxSatis: 94,
-  },
-  {
-    title: "Adm Microsoft",
-    company: "Microsoft",
-    participants: 20,
-    reponses: 16,
-    tauxSatis: 94,
-  },
-  {
-    title: "Admrezrezrezrzrzrrezrze Microsoft",
-    company: "Microsoft",
-    participants: 20,
-    reponses: 16,
-    tauxSatis: 94,
-  },
-  {
-    title: "Adm Microsoft",
-    company: "Microsoft",
-    participants: 20,
-    reponses: 16,
-    tauxSatis: 94,
-  },
-];
 
-export default function Notification({ addStyle, btnColor }) {
-  // const length = data.length;
-  const list = data.slice(0, 3);
-  const date = new Date().toLocaleDateString();
+
+export default function Notification({ addStyle, btnColor, statistics }) {
+  const [data, setData] = useState([]);
+
+  useEffect(() => {
+    console.log(statistics);
+    setData(statistics.slice(0, 3));
+  }, [statistics]);
+
   return (
     <div className={`${style.container} ${addStyle ? addStyle : ""}`}>
       <p className={style.text}>Questionnaires Actifs</p>
       <div className={style.card}>
-        {list.map((e, i) => (
+        {data.map((e, i) => (
           <div
             key={i}
             className={i == 2 ? style.details : style.notLastDetails}
@@ -50,13 +26,14 @@ export default function Notification({ addStyle, btnColor }) {
             </div>
             <div>
               <p className={style.date}>
-                Reponnses:{" "}
+                Reponses:{" "}
                 <b>
                   {e.reponses}/{e.participants}
                 </b>
               </p>
               <p className={style.date}>
-                Moyenne de satisfaction : <b>{e.tauxSatis}%</b>
+                Moyenne de satisfaction :{" "}
+                <b>{e.tauxSatis ? e.tauxSatis : 0}%</b>
               </p>
             </div>
           </div>
