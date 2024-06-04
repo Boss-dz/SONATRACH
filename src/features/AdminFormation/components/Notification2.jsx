@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import style from "./Notification.module.css";
+import style from "./Notification2.module.css";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
@@ -12,19 +12,15 @@ const formatDate = (dateString) => {
   return `${year}-${month}-${day}`;
 };
 
-export default function Notification({ addStyle, color }) {
-  const navigate = useNavigate();
+export default function Notification({ color }) {
   const isCloture = false;
-  const [data , setData] = useState([]);
-
-
+  const [data, setData] = useState([]);
+  const navigate = useNavigate();
   const userData = JSON.parse(localStorage.getItem("userData"));
   const userID = userData.utilisateurID;
 
   useEffect(() => {
-    const endpoint = isCloture
-      ? "http://localhost:8000/AdminFormation/formations_cloture"
-      : "http://localhost:8000/AdminFormation/formations_non_cloture";
+    const endpoint = "http://localhost:8000/AdminFormation/formations_non_cloture";
     axios
       .get(endpoint)
       .then((response) => {
@@ -51,26 +47,15 @@ export default function Notification({ addStyle, color }) {
   const filterFormations = () => {
     return data.filter((formation) => !formation.hasResponded);
   };
-  const filterNonClot = () => {
-    return data.filter((formation) => formation.hasResponded && !isCloture);
-  };
 
-  const length = !addStyle ? filterFormations().length : filterNonClot().length;
-  const list = !addStyle ? filterFormations().slice(0, 3) : filterNonClot().slice(0,3);
-   const render = length > 0 ;
-
-  const handleClick = () => {
-    if (color === "#302CD780") {
-      navigate("/Participant/questionnaire_non_cloture");
-    } else {
-      navigate("/Participant/questionnaire_en_attente");
-    }
-  };
+  const length = filterFormations().length;
+  const list = filterFormations().slice(0, 3);
+  const render = length > 0;
 
   return (
-    <div className={`${style.container} ${addStyle ? addStyle : ""}`}>
+    <div className={`${style.container}`}>
       <p className={style.text}>
-        Vous avez <span className={addStyle ? style.span : ""}>{length}</span>{" "}
+        Vous avez <span >{length}</span>{" "}
         questionnaire a remplir !
       </p>
       <div className={style.card}>
@@ -85,14 +70,17 @@ export default function Notification({ addStyle, color }) {
             </p>
           </div>
         ))}
-        {render && <button
-          className={`${style.btn}`}
-          onClick={() => !addStyle ? navigate("/Participant/questionnaire_en_attente") : navigate("/Participant/questionnaire_non_cloture")}
-        >
-          Voir plus
-        </button>}
+        {render && (
+          <button
+            className={`${style.btn}`}
+            onClick={() =>
+             navigate("/AdminFormation/formations_non_cloture")
+            }
+          >
+            Voir plus
+          </button>
+        )}
       </div>
     </div>
   );
 }
-

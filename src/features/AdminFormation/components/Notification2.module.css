@@ -11,10 +11,6 @@
   border-radius: 20px;
   display: grid;
   padding-bottom: 5px;
-  position: relative;
-
-  height: 200px;
-  width: 400px;
 }
 .text {
   padding-bottom: 20px;
@@ -23,54 +19,47 @@
 .text span {
   color: red;
 }
+.text .span {
+  color: #302CD780;
+}
 
 .title {
   font-size: 10px;
   padding-left: 20px;
 }
-.title h2 {
+.title h2{
   font-size: 12px;
 }
-.title h4 {
+.title h4{
   font-weight: 500;
 }
-.details,
-.notLastDetails {
-  display: flex;
+.details {
+  display: grid;
   align-items: center;
-  justify-content: space-between;
-  padding: 10px;
-}
-.notLastDetails {
+  grid-template-columns: repeat(2,1fr);
   border-bottom: 1px solid #d6dbde;
+  padding: 10px;
+  height: 70px;
+  column-gap: 40px;
 }
-.details::before,
-.notLastDetails::before {
+.details::before {
   content: "";
-  border-width: 4px;
+  border-width: 7px;
   border-style: solid;
-  border-radius: 2px;
-  height: 20px;
-  border-color: #f29e4f80;
+  border-radius: 5px;
+  height: 10px;
+  border-color: var(--color,#dc354680) ;
   position: absolute;
 }
 .date {
-  white-space: nowrap;
-  margin-left: 5px;
   font-size: 10px;
 }
-
-.btnFather {
-  position: absolute;
-  bottom: 10px;
+.btn {
+  padding: 5px 10px 5px 10px;
   cursor: pointer;
   width: auto;
   align-self: center;
   justify-self: center;
-  position: relative;
-}
-.btn {
-  padding: 5px 10px 5px 10px;
   background-color: transparent;
   border-radius: 5px;
   border: 1px solid #f29e4f;

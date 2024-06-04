@@ -3,6 +3,7 @@ import { NavLink } from "react-router-dom";
 import { useEffect, useState } from "react";
 
 
+
 export default function Notification({ addStyle, btnColor, statistics }) {
   const [data, setData] = useState([]);
 
@@ -25,7 +26,7 @@ export default function Notification({ addStyle, btnColor, statistics }) {
             </div>
             <div>
               <p className={style.date}>
-                Reponnses:{" "}
+                Reponses:{" "}
                 <b>
                   {e.reponses}/{e.participants}
                 </b>
@@ -38,7 +39,7 @@ export default function Notification({ addStyle, btnColor, statistics }) {
           </div>
         ))}
         <NavLink
-          to="/AdminFormation/formations_non_cloture"
+          to="/AdminVisiteur/formations_non_cloture"
           className={style.btnFather}
         >
           <button className={`${style.btn} ${btnColor ? btnColor : ""}`}>

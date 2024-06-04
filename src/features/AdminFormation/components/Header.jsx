@@ -31,7 +31,7 @@ export default function Header() {
 
   return (
     <div className={style.container}>
-      {location.pathname === "/AdminFormation" && (
+      {(location.pathname === "/AdminFormation" )&& (
         <input type="search" placeholder="Search Here" />
       )}
       {location.pathname === "/AdminFormation/formations_non_cloture" && (
