@@ -168,7 +168,7 @@ function ReponsesFormationAV() {
       >
         <Header />
         <Titre titre="Reponses de la Formation" searchbar={false} />
-        <div
+        {/* <div
           style={{
             display: "flex",
             justifyContent: "flex-end",
@@ -178,10 +178,10 @@ function ReponsesFormationAV() {
             top: "15px",
           }}
         >
-          {/* {!location.pathname.includes("formations_cloture") && (
+           {!location.pathname.includes("formations_cloture") && (
             <Button content="Modifier" btnStyle="white" onClick={handleClick} />
-          )} */}
-        </div>
+          )} 
+        </div> */}
         <AddFormationForm
           formation={formation}
           setFormation={setFormation}

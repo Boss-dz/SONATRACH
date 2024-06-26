@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import style from "./AppSettings.module.css";
 import Button from "./Button";
 
@@ -11,6 +11,25 @@ function AppSettings({ username }) {
   const [formData, setFormData] = useState({
     role_default: userData.role_default || "",
   });
+
+  const [roles, setRoles] = useState([]);
+  useEffect(() => {
+    const fetchRoles = async () => {
+      try {
+        const response = await axios.get(
+          `http://localhost:8000/api/user/${
+            JSON.parse(localStorage.getItem("userData")).utilisateurID
+          }/roles`
+        );
+        const formatedData = response.data.map((role) => role.nom_role);
+        setRoles(formatedData);
+      } catch (error) {
+        console.error(error.response.data);
+      }
+    };
+
+    fetchRoles();
+  }, []);
 
   const handleChange = (e) => {
     const { id, value } = e.target;

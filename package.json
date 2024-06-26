@@ -20,6 +20,7 @@
     "@mui/material": "^5.15.19",
     "@mui/x-charts": "^7.5.1",
     "axios": "^1.6.8",
+    "bcrypt": "^5.1.1",
     "bcryptjs": "^2.4.3",
     "chart.js": "^4.4.3",
     "cors": "^2.8.5",
@@ -29,7 +30,8 @@
     "react": "^18.2.0",
     "react-chartjs-2": "^5.2.0",
     "react-dom": "^18.2.0",
-    "react-router-dom": "^6.22.3"
+    "react-router-dom": "^6.22.3",
+    "ws": "^8.17.1"
   },
   "devDependencies": {
     "@babel/plugin-transform-private-property-in-object": "^7.24.1",

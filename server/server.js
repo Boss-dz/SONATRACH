@@ -11,7 +11,7 @@ const db = mysql.createConnection({
   user: "root",
   password: "",
   database: "form-eval",
-  port: 3307,
+  port: 3306,
 });
 
 db.connect((err) => {
@@ -508,7 +508,7 @@ app.get("/api/evaluation/:formationID/:userID", (req, res) => {
   });
 });
 
-app.get("/api/user/:userName", (req, res) => {
+app.get("/api/user/:username", (req, res) => {
   const userName = req.params.userName;
 
   db.query(
@@ -581,12 +581,31 @@ app.put("/api/user/:username", (req, res) => {
   );
 });
 
-app.get("/api/users/details", (req, res) => {
-  // Query to get all user details
-  const usersQuery = `
+app.get("/api/users/details/:username?", (req, res) => {
+  const username = req.params.username;
+
+  // Construct the SQL query based on whether ID is provided or not
+  let usersQuery;
+  let queryParams;
+  if (username) {
+    usersQuery = `
+    SELECT utilisateur.*, structure.nom_structure 
+    FROM utilisateur 
+    LEFT JOIN structure ON utilisateur.structureID = structure.structureID
+    WHERE username = ?`;
+    queryParams = [username];
+  } else {
+    usersQuery = `
     SELECT utilisateur.*, structure.nom_structure 
     FROM utilisateur 
     LEFT JOIN structure ON utilisateur.structureID = structure.structureID`;
+    queryParams = [];
+  }
+  // Query to get all user details
+  // const usersQuery = `
+  //   SELECT utilisateur.*, structure.nom_structure
+  //   FROM utilisateur
+  //   LEFT JOIN structure ON utilisateur.structureID = structure.structureID`;
 
   // Query to get all roles
   const rolesQuery = `
@@ -595,7 +614,7 @@ app.get("/api/users/details", (req, res) => {
     JOIN role ON userrole.roleID = role.roleID`;
 
   // Execute the queries in parallel
-  db.query(usersQuery, (usersError, usersResults) => {
+  db.query(usersQuery, queryParams, (usersError, usersResults) => {
     if (usersError) {
       console.error("Database query error:", usersError);
       return res.status(500).json({ error: "Internal server error" });
@@ -1018,6 +1037,26 @@ app.put("/api/parametres", (req, res) => {
       console.error("Error updating data:", err);
       res.status(500).json({ error: "Failed to update data" });
     });
+});
+
+app.put("/api/utilisateur/:utilisateurID/role_default", (req, res) => {
+  const { utilisateurID } = req.params;
+  const { role_default } = req.body;
+
+  const query = `
+    UPDATE utilisateur
+    SET role_default = ?
+    WHERE utilisateurID = ?
+  `;
+
+  db.query(query, [role_default, utilisateurID], (err, results) => {
+    if (err) {
+      console.error("Error updating role_default:", err);
+      res.status(500).json({ error: "Failed to update role_default" });
+    } else {
+      res.json({ message: "role_default updated successfully" });
+    }
+  });
 });
 
 app.listen(8000, () => {

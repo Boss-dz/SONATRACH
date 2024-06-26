@@ -10,7 +10,8 @@ import axios from "axios";
 import { useState, useEffect } from "react";
 
 export default function HomepageAF() {
-  const userData = JSON.parse(localStorage.getItem("userData"));
+  // const userData = JSON.parse(localStorage.getItem("userData"));
+  const fullUsersData = JSON.parse(localStorage.getItem("fullUsersData"));
   const [statistics, setStatistics] = useState([]);
 
   useEffect(() => {
@@ -28,9 +29,9 @@ export default function HomepageAF() {
     fetchStats();
   }, []);
 
-  // useEffect(() => {
-  //   console.log(statistics);
-  // }, [statistics]);
+  useEffect(() => {
+    console.log(fullUsersData);
+  }, [fullUsersData]);
 
   return (
     <div className={style.container}>
@@ -45,7 +46,7 @@ export default function HomepageAF() {
         }}
       >
         <Header />
-        <Welcome content={`Bienvenue, ${userData.prenom}!`} change />
+        <Welcome content={`Bienvenue, ${fullUsersData.prenom}!`} change />
         <div className={style.notificationContainer}>
           {/* render the statistics on the graph */}
           <Graph />

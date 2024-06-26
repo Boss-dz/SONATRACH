@@ -8,13 +8,56 @@ import { useEffect, useState } from "react";
 
 const roles = ["Participant", "Admin Formation", "Admin IT", "Admin Visiteur"];
 
-function VerticalDotsIcon({ userID, userRoles, fetchUsers }) {
+function VerticalDotsIcon({ userID, userRoles, fetchUsers, user }) {
   const [isDroped, setIsDroped] = useState(false);
   const [userRolesState, setUserRolesState] = useState(userRoles);
+  // let fullUsersData = JSON.parse(localStorage.getItem("fullUsersData"));
 
   useEffect(() => {
     setUserRolesState(userRoles);
   }, [userRoles]);
+
+  // useEffect(() => {
+  //   console.log(userRolesState, userID);
+  // }, [userRoles, userID]);
+
+  useEffect(() => {
+    const fullUsersData = JSON.parse(localStorage.getItem("fullUsersData"));
+    if (fullUsersData.utilisateurID === userID) {
+      fullUsersData.roles = userRolesState;
+      localStorage.setItem("fullUsersData", JSON.stringify(fullUsersData));
+
+      // if (!fullUsersData.roles.includes(fullUsersData.role_default)) {
+      //   fullUsersData.role_default = fullUsersData.roles[0];
+      //   localStorage.setItem("fullUsersData", JSON.stringify(fullUsersData));
+      // }
+    }
+  }, [userRolesState, userID]);
+
+  useEffect(() => {
+    // console.log(userRolesState[0], user, user.role_default);
+    if (!userRolesState.includes(user.role_default)) {
+      //save userRolesState[0] as role_default in the dataBase
+      const updateRoleDefault = async (userID, role_default) => {
+        try {
+          await axios.put(
+            `http://localhost:8000/api/utilisateur/${userID}/role_default`,
+            { role_default },
+            {
+              headers: {
+                "Content-Type": "application/json",
+              },
+            }
+          );
+          // alert("Role default updated successfully!");
+        } catch (error) {
+          console.error("Error updating role default", error);
+          alert("Failed to update role default.");
+        }
+      };
+      updateRoleDefault(userID, userRolesState[0]);
+    }
+  }, [userRolesState]);
 
   const handleRoleChange = async (role) => {
     const hasRole = userRolesState.includes(role);
@@ -92,6 +135,7 @@ function Membres({ roleFilter, setRoleFilter }) {
             userID={user.utilisateurID}
             userRoles={user.roles}
             fetchUsers={fetchUsers}
+            user={user}
           />
         ),
         roles: user.roles,
