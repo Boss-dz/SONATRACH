@@ -1,6 +1,7 @@
 const express = require("express");
 const mysql = require("mysql");
 const cors = require("cors");
+const ldap = require("ldapjs");
 
 const app = express();
 app.use(express.json());
@@ -22,25 +23,263 @@ db.connect((err) => {
   }
 });
 
+// Cache for LDAP configuration
+let ldapConfig = null;
+
+// Function to fetch LDAP configuration from database
+function fetchLdapConfig(callback) {
+  if (ldapConfig) {
+    return callback(null, ldapConfig);
+  }
+
+  const configQuery =
+    'SELECT param_key, param_value FROM parametres_de_base WHERE param_key IN ("ServeurLDAP", "baseDN", "DN_cmpt", "LDAP_username")';
+  db.query(configQuery, (err, results) => {
+    if (err) {
+      console.error("Database query error:", err);
+      return callback(err);
+    }
+
+    if (results.length < 4) {
+      const error = new Error("Incomplete LDAP configuration found");
+      console.error(error);
+      return callback(error);
+    }
+
+    ldapConfig = results.reduce((config, row) => {
+      config[row.param_key] = row.param_value;
+      return config;
+    }, {});
+
+    callback(null, ldapConfig);
+  });
+}
+
+// LDAP Authentication Function
+function ldapAuthenticate(username, password, callback) {
+  fetchLdapConfig((err, config) => {
+    if (err) {
+      console.error("Error fetching LDAP config:", err);
+      return callback(err, null);
+    }
+
+    const client = ldap.createClient({
+      url: `ldap://${config.ServeurLDAP}:389`,
+    });
+    const dn = `uid=${username},ou=users,${config.baseDN}`;
+    // console.log("Attempting to bind with DN:", config.DN_cmpt);
+
+    client.bind(config.DN_cmpt, config.LDAP_username, (err) => {
+      if (err) {
+        console.error("LDAP admin bind error:", err);
+        return callback(err);
+      }
+
+      const opts = {
+        filter: `(uid=${username})`,
+        scope: "sub",
+        attributes: ["uid", "cn", "sn", "givenName", "title", "mail"],
+      };
+
+      // console.log("LDAP search options:", opts);
+
+      client.search(`ou=users,${config.baseDN}`, opts, (err, res) => {
+        if (err) {
+          console.error("LDAP search error:", err);
+          client.unbind();
+          return callback(err);
+        }
+
+        let user = null;
+
+        res.on("searchEntry", (entry) => {
+          user = JSON.stringify(entry.pojo);
+          user = JSON.parse(user);
+          // console.log("Found LDAP user:", JSON.parse(user));
+        });
+
+        res.on("searchReference", (referral) => {
+          // console.log("Referral:", referral.uris.join());
+        });
+
+        res.on("error", (err) => {
+          console.error("LDAP search error event:", err.message);
+          client.unbind();
+          return callback(err);
+        });
+
+        res.on("end", (result) => {
+          // console.log("LDAP search end status:", result.status);
+          if (result.status !== 0 || !user) {
+            console.error("LDAP search end error or user not found:", result);
+            client.unbind();
+            return callback(new Error("User not found"), null);
+          }
+
+          client.bind(dn, password, (err) => {
+            client.unbind();
+
+            if (err) {
+              console.error("LDAP user bind error:", err);
+              return callback(new Error("Invalid credentials"), null);
+            }
+
+            callback(null, user);
+          });
+        });
+      });
+    });
+
+    client.on("error", (err) => {
+      console.error("LDAP client error:", err);
+      client.unbind();
+      return callback(err, null);
+    });
+  });
+}
+
+const extractAttributes = (attributes) => {
+  if (!attributes || !Array.isArray(attributes)) {
+    console.error("Invalid attributes format:", attributes);
+    return {};
+  }
+
+  const attributeMap = {};
+  attributes.forEach((attr) => {
+    if (attr.type && attr.values && Array.isArray(attr.values)) {
+      attributeMap[attr.type] = attr.values[0]; // Assuming you want the first value
+    } else {
+      console.error("Invalid attribute format:", attr);
+    }
+  });
+  return attributeMap;
+
+  // const desiredData = {
+  //   uid: attributes.attributes.find((attr) => attr.type === "uid").values[0],
+  //   sn: attributes.attributes.find((attr) => attr.type === "sn").values[0],
+  //   givenName: attributes.attributes.find((attr) => attr.type === "givenName")
+  //     .values[0],
+  //   title: attributes.attributes.find((attr) => attr.type === "title")
+  //     .values[0],
+  //   mail: attributes.attributes.find((attr) => attr.type === "mail").values[0],
+  // };
+  // return desiredData;
+};
+
 app.post("/", (req, res) => {
   const { username, password } = req.body;
 
-  db.query(
-    "SELECT * FROM utilisateur WHERE username = ? AND password = ?",
-    [username, password],
-    (error, results) => {
-      if (error) {
-        console.error("Database query error:", error);
-        return res.status(500).json({ error: "Internal server error" });
-      }
-
-      if (results.length === 0) {
+  if (username.startsWith("sona")) {
+    ldapAuthenticate(username, password, (err, ldapUser) => {
+      if (err) {
+        console.error("LDAP authentication failed:", err);
         return res.status(401).json({ error: "Invalid username or password" });
       }
-      const user = results[0];
-      return res.status(200).json({ message: "Login successful", user: user });
-    }
-  );
+
+      // Extract LDAP user attributes
+      // console.log(ldapUser);
+      const ldapUserAttributes = extractAttributes(ldapUser.attributes);
+      const { uid, sn, givenName, title, mail } = ldapUserAttributes;
+
+      // Check if the user exists in the database
+      db.query(
+        "SELECT * FROM utilisateur WHERE username = ?",
+        [username],
+        (error, results) => {
+          if (error) {
+            console.error("Database query error:", error);
+            return res.status(500).json({ error: "Internal server error" });
+          }
+
+          if (results.length === 0) {
+            // If the user does not exist, insert them into the database
+            db.query(
+              "INSERT INTO utilisateur (username, password, nom, prenom, fonction, email, role_default) VALUES (?, ?, ?, ?, ?, ?, ?)",
+              [uid, password, sn, givenName, title, mail, "Participant"],
+              (insertError, insertResults) => {
+                if (insertError) {
+                  console.error("Database insert error:", insertError);
+                  return res
+                    .status(500)
+                    .json({ error: "Internal server error" });
+                }
+
+                const newUserId = insertResults.insertId;
+                db.query(
+                  "INSERT INTO userrole (utilisateurID, roleID) VALUES (?, ?)",
+                  [newUserId, 1],
+                  (roleError) => {
+                    if (roleError) {
+                      console.error("Database role insert error:", roleError);
+                      return res
+                        .status(500)
+                        .json({ error: "Internal server error" });
+                    }
+
+                    return res.status(200).json({
+                      message: "Login successful",
+                      user: {
+                        username: uid,
+                        nom: sn,
+                        prenom: givenName,
+                        fonction: title,
+                        email: mail,
+                        role_default: "Participant",
+                      },
+                    });
+                  }
+                );
+              }
+            );
+          } else {
+            // If the user already exists, return the user data
+            const user = results[0];
+            return res.status(200).json({ message: "Login successful", user });
+          }
+        }
+      );
+    });
+  } else if (username.startsWith("local")) {
+    db.query(
+      "SELECT * FROM utilisateur WHERE username = ? AND password = ?",
+      [username, password],
+      (error, results) => {
+        if (error) {
+          console.error("Database query error:", error);
+          return res.status(500).json({ error: "Internal server error" });
+        }
+
+        if (results.length === 0) {
+          return res
+            .status(401)
+            .json({ error: "Invalid username or password" });
+        }
+        const user = results[0];
+        return res
+          .status(200)
+          .json({ message: "Login successful", user: user });
+      }
+    );
+  } else {
+    res.status(400).json({ error: "Invalid username format" });
+  }
+
+  // db.query(
+  //   "SELECT * FROM utilisateur WHERE username = ? AND password = ?",
+  //   [username, password],
+  //   (error, results) => {
+  //     if (error) {
+  //       console.error("Database query error:", error);
+  //       return res.status(500).json({ error: "Internal server error" });
+  //     }
+
+  //     if (results.length === 0) {
+  //       return res.status(401).json({ error: "Invalid username or password" });
+  //     }
+  //     const user = results[0];
+  //     return res.status(200).json({ message: "Login successful", user: user });
+  //   }
+  // );
 });
 
 app.get("/AdminFormation/formations_non_cloture", (req, res) => {
@@ -250,6 +489,7 @@ app.post("/api/newUser", (req, res) => {
     roleNamesResults.forEach((row) => {
       roleNameToIdMap[row.nom_role] = row.roleID;
     });
+    console.log(first);
 
     // Convert role names to role IDs
     const roleIds = usersRoles.map((roleName) => roleNameToIdMap[roleName]);
@@ -509,7 +749,7 @@ app.get("/api/evaluation/:formationID/:userID", (req, res) => {
 });
 
 app.get("/api/user/:username", (req, res) => {
-  const userName = req.params.userName;
+  const userName = req.params.username;
 
   db.query(
     "SELECT utilisateur.*, structure.nom_structure FROM utilisateur LEFT JOIN structure ON utilisateur.structureID = structure.structureID WHERE username = ?",
