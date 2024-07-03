@@ -47,6 +47,48 @@ export default function Parametre() {
     console.log(ldap);
   }, [ldap]);
 
+  // useEffect(() => {
+  //   console.log(userData);
+  // }, [userData]);
+
+  const handleProfileSubmit = async (event) => {
+    event.preventDefault();
+
+    const updatedData = {
+      // ServeurLDAP: event.target["Serveur LDAP"].value,
+      // PORT: event.target["PORT"].value,
+      // baseDN: event.target["Base DN"].value,
+      // DN_cmpt: event.target["DN du compte"].value,
+      // Serveur_msgr: ldap.Serveur_msgr,
+      // nom_Admin: ldap.nom_Admin,
+      // LDAP_username: ldap.LDAP_username,
+      // LDAP_password: ldap.LDAP_password,
+      // periode_synch: ldap.periode_synch,
+      password: event.target["Mot de passe"].value,
+      nom: userData.nom,
+      prenom: userData.prenom,
+      email: event.target["Email"].value,
+      fonction: userData.fonction,
+      structureID: userData.structureID,
+    };
+
+    try {
+      await axios.put(
+        `http://localhost:8000/api/user/${user.username}`,
+        updatedData,
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      alert("Profile settings updated successfully!");
+    } catch (error) {
+      console.error("Error updating LDAP settings", error);
+      alert("Failed to update profile settings.");
+    }
+  };
+
   const handleLDAPSubmit = async (event) => {
     event.preventDefault();
 
@@ -153,6 +195,7 @@ export default function Parametre() {
           value1={user.email}
           inputName2="Mot de passe"
           value2={user.password}
+          onSubmit={handleProfileSubmit}
         />
         <ParametreModule
           toggleId="AuthLDAP"

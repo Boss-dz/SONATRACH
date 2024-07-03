@@ -48,8 +48,7 @@ export default function HomepageAF() {
         <Header />
         <Welcome content={`Bienvenue, ${fullUsersData.prenom}!`} change />
         <div className={style.notificationContainer}>
-          {/* render the statistics on the graph */}
-          <Graph />
+          <Graph statistics={statistics} />
           <Notification statistics={statistics} />
         </div>
         <Footer />

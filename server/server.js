@@ -282,34 +282,58 @@ app.post("/", (req, res) => {
   // );
 });
 
-app.get("/AdminFormation/formations_non_cloture", (req, res) => {
-  // Requête SQL pour sélectionner les formations qui ne sont pas encore terminées
-  const query = "SELECT * FROM formation WHERE date_fin_questionnaire > NOW()";
+app.get("/AdminFormation/formations_non_cloture/:userID?", (req, res) => {
+  const { userID } = req.params;
 
-  // Exécuter la requête SQL
-  db.query(query, (error, results) => {
+  let query;
+  let queryParams = [];
+
+  if (userID) {
+    query = `
+      SELECT f.*
+      FROM formation f
+      JOIN participation p ON f.formationID = p.formationID
+      WHERE p.utilisateurID = ? AND f.date_fin_questionnaire > NOW()
+    `;
+    queryParams = [userID];
+  } else {
+    query = "SELECT * FROM formation WHERE date_fin_questionnaire > NOW()";
+  }
+
+  db.query(query, queryParams, (error, results) => {
     if (error) {
       console.error("Database query error:", error);
       return res.status(500).json({ error: "Internal server error" });
     }
 
-    // Retourner les formations récupérées depuis la base de données
     res.status(200).json(results);
   });
 });
 
-app.get("/AdminFormation/formations_cloture", (req, res) => {
-  // Requête SQL pour sélectionner les formations qui ne sont pas encore terminées
-  const query = "SELECT * FROM formation WHERE date_fin_questionnaire < NOW()";
+app.get("/AdminFormation/formations_cloture/:userID?", (req, res) => {
+  const { userID } = req.params;
 
-  // Exécuter la requête SQL
-  db.query(query, (error, results) => {
+  let query;
+  let queryParams = [];
+
+  if (userID) {
+    query = `
+      SELECT f.*
+      FROM formation f
+      JOIN participation p ON f.formationID = p.formationID
+      WHERE p.utilisateurID = ? AND f.date_fin_questionnaire < NOW()
+    `;
+    queryParams = [userID];
+  } else {
+    query = "SELECT * FROM formation WHERE date_fin_questionnaire < NOW()";
+  }
+
+  db.query(query, queryParams, (error, results) => {
     if (error) {
       console.error("Database query error:", error);
       return res.status(500).json({ error: "Internal server error" });
     }
 
-    // Retourner les formations récupérées depuis la base de données
     res.status(200).json(results);
   });
 });
@@ -489,7 +513,6 @@ app.post("/api/newUser", (req, res) => {
     roleNamesResults.forEach((row) => {
       roleNameToIdMap[row.nom_role] = row.roleID;
     });
-    console.log(first);
 
     // Convert role names to role IDs
     const roleIds = usersRoles.map((roleName) => roleNameToIdMap[roleName]);

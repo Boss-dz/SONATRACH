@@ -15,16 +15,15 @@ const formatDate = (dateString) => {
 export default function Notification({ addStyle, color }) {
   const navigate = useNavigate();
   const isCloture = false;
-  const [data , setData] = useState([]);
-
+  const [data, setData] = useState([]);
 
   const userData = JSON.parse(localStorage.getItem("userData"));
   const userID = userData.utilisateurID;
 
   useEffect(() => {
     const endpoint = isCloture
-      ? "http://localhost:8000/AdminFormation/formations_cloture"
-      : "http://localhost:8000/AdminFormation/formations_non_cloture";
+      ? `http://localhost:8000/AdminFormation/formations_cloture/${userID}`
+      : `http://localhost:8000/AdminFormation/formations_non_cloture/${userID}`;
     axios
       .get(endpoint)
       .then((response) => {
@@ -56,8 +55,10 @@ export default function Notification({ addStyle, color }) {
   };
 
   const length = !addStyle ? filterFormations().length : filterNonClot().length;
-  const list = !addStyle ? filterFormations().slice(0, 3) : filterNonClot().slice(0,3);
-   const render = length > 0 ;
+  const list = !addStyle
+    ? filterFormations().slice(0, 3)
+    : filterNonClot().slice(0, 3);
+  const render = length > 0;
 
   const handleClick = () => {
     if (color === "#302CD780") {
@@ -85,14 +86,19 @@ export default function Notification({ addStyle, color }) {
             </p>
           </div>
         ))}
-        {render && <button
-          className={`${style.btn}`}
-          onClick={() => !addStyle ? navigate("/Participant/questionnaire_en_attente") : navigate("/Participant/questionnaire_non_cloture")}
-        >
-          Voir plus
-        </button>}
+        {render && (
+          <button
+            className={`${style.btn}`}
+            onClick={() =>
+              !addStyle
+                ? navigate("/Participant/questionnaire_en_attente")
+                : navigate("/Participant/questionnaire_non_cloture")
+            }
+          >
+            Voir plus
+          </button>
+        )}
       </div>
     </div>
   );
 }
-

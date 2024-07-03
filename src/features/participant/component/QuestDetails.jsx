@@ -39,13 +39,13 @@ export default function QuestDetails({ color, isCloture }) {
   const location = useLocation();
   const navigate = useNavigate();
   const [formations, setFormations] = useState([]);
-    const userData = JSON.parse(localStorage.getItem("userData"));
-    const userID = userData.utilisateurID;
+  const userData = JSON.parse(localStorage.getItem("userData"));
+  const userID = userData.utilisateurID;
 
   useEffect(() => {
     const endpoint = isCloture
-      ? "http://localhost:8000/AdminFormation/formations_cloture"
-      : "http://localhost:8000/AdminFormation/formations_non_cloture";
+      ? `http://localhost:8000/AdminFormation/formations_cloture/${userID}`
+      : `http://localhost:8000/AdminFormation/formations_non_cloture/${userID}`;
     axios
       .get(endpoint)
       .then((response) => {

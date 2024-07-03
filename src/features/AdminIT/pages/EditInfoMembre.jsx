@@ -33,9 +33,9 @@ export default function InfoMembre() {
   }, [userName]);
 
   useEffect(() => {
-    const fullUsersData = JSON.parse(localStorage.getItem("fullUsersData"));
+    const allUsersData = JSON.parse(localStorage.getItem("allUsersData"));
     const fonctionArray = Array.from(
-      new Set(fullUsersData.map((user) => user.fonction))
+      new Set(allUsersData.map((user) => user.fonction))
     );
     setFonctions(fonctionArray);
 

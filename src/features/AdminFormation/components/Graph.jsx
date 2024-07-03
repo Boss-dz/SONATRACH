@@ -12,7 +12,6 @@ import {
   Legend,
 } from "chart.js";
 import { Line } from "react-chartjs-2";
-import { faker } from "@faker-js/faker";
 
 ChartJS.register(
   CategoryScale,
@@ -35,35 +34,27 @@ export const options = {
   },
 };
 
-const labels = [
-  "Janvier",
-  "Février",
-  "Mars",
-  "Avril",
-  "Mai",
-  "Juin",
-  "Juillet",
-  "Aout",
-  // "Septembre",
-  // "Octobre",
-  // "Novembre",
-  // "Décembre",
-];
+function Graph({ statistics }) {
+  const onlyStats = statistics.filter((stat) => {
+    return stat.tauxSatis !== null;
+  });
 
-export const data = {
-  labels,
-  datasets: [
-    {
-      fill: true,
-      label: "Dataset 2",
-      data: labels.map(() => faker.number.int({ min: 0, max: 1000 })),
-      borderColor: "#F29E4F",
-      backgroundColor: "#fbead9",
-    },
-  ],
-};
+  const labels = onlyStats.map(
+    (stat) => stat.title.slice(0, 6) + `${stat.title.length > 6 ? "..." : ""}`
+  );
+  const data = {
+    labels,
+    datasets: [
+      {
+        fill: true,
+        label: "Moyenne de satisfaction",
+        data: onlyStats.map((stat) => stat.tauxSatis),
+        borderColor: "#F29E4F",
+        backgroundColor: "#fbead9",
+      },
+    ],
+  };
 
-function Graph() {
   return (
     <div className={style1.container}>
       <p className={style1.text}>Statistiques des formations</p>
