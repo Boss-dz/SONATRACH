@@ -5,12 +5,14 @@ import Titre from "../components/Titre";
 import Sidebar from "../components/Sidebar";
 import style from "./FormationNonClotureAV.module.css";
 import AddButton from "../components/AddButton";
+import SearchBar from "../components/SearchBar";
 
 import { useEffect, useState } from "react";
 import axios from "axios";
 
 export default function FormationNonClotureAV() {
   const [formations, setFormations] = useState([]);
+  const [filteredFormations, setFilteredFormations] = useState([]);
 
   useEffect(() => {
     const fetchFormations = async () => {
@@ -32,6 +34,7 @@ export default function FormationNonClotureAV() {
           ),
         }));
         setFormations(formattedFormations);
+        setFilteredFormations(formattedFormations);
       } catch (error) {
         console.error("Error fetching formations:", error);
       }
@@ -71,6 +74,10 @@ export default function FormationNonClotureAV() {
     }
   };
 
+  const handleSearch = (filteredResults) => {
+    setFilteredFormations(filteredResults);
+  };
+
   return (
     <div className={style.container}>
       <Sidebar />
@@ -83,9 +90,11 @@ export default function FormationNonClotureAV() {
         }}
       >
         <Header />
-        <Titre />
+        <Titre
+          component={<SearchBar data={formations} onSearch={handleSearch} />}
+        />
         <QuestDetails
-          propData={formations}
+          propData={filteredFormations}
           dataType="formation"
           link="/AdminVisiteur/formations_non_cloture/reponses_formation"
         />

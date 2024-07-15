@@ -4,12 +4,14 @@ import Footer from "../components/Footer";
 import Sidebar from "../components/Sidebar";
 import Titre from "../components/Titre";
 import QuestDetails from "../components/QuestDetails";
+import SearchBar from "../components/SearchBar";
 
 import { useEffect, useState } from "react";
 import axios from "axios";
 
 export default function FormationClotureAV() {
   const [formations, setFormations] = useState([]);
+  const [filteredFormations, setFilteredFormations] = useState([]);
 
   useEffect(() => {
     const fetchFormations = async () => {
@@ -29,6 +31,7 @@ export default function FormationClotureAV() {
           date_fin_questionnaire: formatDate(formation.date_fin_questionnaire),
         }));
         setFormations(formattedFormations);
+        setFilteredFormations(formattedFormations);
       } catch (error) {
         console.error("Error fetching formations:", error);
       }
@@ -47,6 +50,10 @@ export default function FormationClotureAV() {
     return `${year}-${month}-${day}`;
   };
 
+  const handleSearch = (filteredResults) => {
+    setFilteredFormations(filteredResults);
+  };
+
   return (
     <div className={style.container}>
       <Sidebar />
@@ -60,10 +67,12 @@ export default function FormationClotureAV() {
         }}
       >
         <Header />
-        <Titre />
+        <Titre
+          component={<SearchBar data={formations} onSearch={handleSearch} />}
+        />
         <QuestDetails
           color="#68676E80"
-          propData={formations}
+          propData={filteredFormations}
           dataType="formation"
           link="/AdminVisiteur/formations_cloture/reponses_formation"
         />

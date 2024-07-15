@@ -1,6 +1,6 @@
 import Sidebar from "../components/Sidebar";
 import Header from "../components/Header";
-import style from "./HomepageP.module.css";
+import style from "./HomepageAF.module.css";
 import Welcome from "../components/Welcome";
 import Notification from "../components/Notification";
 import Footer from "../components/Footer";
@@ -10,7 +10,6 @@ import axios from "axios";
 import { useState, useEffect } from "react";
 
 export default function HomepageAF() {
-  // const userData = JSON.parse(localStorage.getItem("userData"));
   const fullUsersData = JSON.parse(localStorage.getItem("fullUsersData"));
   const [statistics, setStatistics] = useState([]);
 

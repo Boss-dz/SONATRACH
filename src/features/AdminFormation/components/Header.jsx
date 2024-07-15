@@ -3,6 +3,7 @@ import { NavLink, useLocation, useParams } from "react-router-dom";
 
 import { useEffect, useState } from "react";
 import axios from "axios";
+import SearchBarWithSuggestions from "../components/SearchBarWithSuggestions";
 
 export default function Header() {
   const { formationID } = useParams();
@@ -29,10 +30,27 @@ export default function Header() {
     fetchRoles();
   }, []);
 
+  const links = [
+    { name: "Accueil", url: "/AdminFormation" },
+    {
+      name: "Formations non clôturé",
+      url: "/AdminFormation/formations_non_cloture",
+    },
+    {
+      name: "Ajouter une formation",
+      url: "/AdminFormation/ajouter_une_formation",
+    },
+    {
+      name: "Formations clôturé",
+      url: "/AdminFormation/formations_cloture",
+    },
+    { name: "Parametres", url: "/AdminFormation/parametre" },
+  ];
+
   return (
     <div className={style.container}>
-      {(location.pathname === "/AdminFormation" )&& (
-        <input type="search" placeholder="Search Here" />
+      {location.pathname === "/AdminFormation" && (
+        <SearchBarWithSuggestions links={links} />
       )}
       {location.pathname === "/AdminFormation/formations_non_cloture" && (
         <div className={style.path}>

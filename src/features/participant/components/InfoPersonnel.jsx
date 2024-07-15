@@ -81,10 +81,10 @@ export default function InfoPersonnel({ username, structure, setStructure }) {
         JSON.stringify({ ...userData, ...formData })
       );
 
-      alert("Information updated successfully");
+      alert("Informations mises à jour avec succès.");
     } catch (error) {
       console.error("Error updating user information:", error);
-      alert("Failed to update information");
+      alert("Échec de la mise à jour des informations.");
     }
   };
 

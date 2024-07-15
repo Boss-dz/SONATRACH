@@ -35,10 +35,17 @@ const calculateTimeRemaining = (endDate) => {
   }
 };
 
-export default function QuestDetails({ color, isCloture }) {
+export default function QuestDetails({
+  color,
+  isCloture,
+  formations,
+  setFormations,
+  filteredFormations,
+  setFilteredFormations,
+}) {
   const location = useLocation();
   const navigate = useNavigate();
-  const [formations, setFormations] = useState([]);
+  // const [formations, setFormations] = useState([]);
   const userData = JSON.parse(localStorage.getItem("userData"));
   const userID = userData.utilisateurID;
 
@@ -63,6 +70,7 @@ export default function QuestDetails({ color, isCloture }) {
 
         Promise.all(formationPromises).then((formationResults) => {
           setFormations(formationResults);
+          setFilteredFormations(formationResults);
         });
       })
       .catch((error) => {

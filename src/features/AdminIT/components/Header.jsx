@@ -3,6 +3,7 @@ import { NavLink, useLocation } from "react-router-dom";
 
 import { useEffect, useState } from "react";
 import axios from "axios";
+import SearchBarWithSuggestions from "../components/SearchBarWithSuggestions";
 
 export default function Header() {
   const [menuDroped, setMenuDroped] = useState(false);
@@ -28,10 +29,27 @@ export default function Header() {
     fetchRoles();
   }, []);
 
+  const links = [
+    { name: "Accueil", url: "/AdminIT" },
+    {
+      name: "Gérer les membres",
+      url: "/AdminIT/gerer_les_membres",
+    },
+    {
+      name: "Ajouter un membre local",
+      url: "/AdminIT/ajouter_un_membre",
+    },
+    {
+      name: "Gérer les roles",
+      url: "/AdminIT/gerer_les_roles",
+    },
+    { name: "Parametres", url: "/AdminIT/parametre" },
+  ];
+
   return (
     <div className={style.container}>
       {location.pathname === "/AdminIT" && (
-        <input type="search" placeholder="Search Here" />
+        <SearchBarWithSuggestions links={links} />
       )}
       {location.pathname === "/AdminIT/gerer_les_membres" && (
         <div className={style.path}>

@@ -47,10 +47,10 @@ function AppSettings({ username }) {
         fieldsToUpdate: formData,
       });
       localStorage.setItem("userData", JSON.stringify(formData));
-      alert("Information updated successfully");
+      alert("Informations mises à jour avec succès");
     } catch (error) {
       console.error("Error updating user information:", error);
-      alert("Failed to update information");
+      alert("Échec de la mise à jour des informations");
     }
   };
 

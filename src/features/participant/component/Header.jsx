@@ -3,6 +3,7 @@ import { NavLink, useLocation } from "react-router-dom";
 
 import { useEffect, useState } from "react";
 import axios from "axios";
+import SearchBarWithSuggestions from "../components/SearchBarWithSuggestions";
 
 export default function Header() {
   const [menuDroped, setMenuDroped] = useState(false);
@@ -28,10 +29,27 @@ export default function Header() {
     fetchRoles();
   }, []);
 
+  const links = [
+    { name: "Accueil", url: "/Participant" },
+    {
+      name: "Questionnaire En Attente",
+      url: "/Participant/questionnaire_en_attente",
+    },
+    {
+      name: "Questionnaire Non Cloturer",
+      url: "/Participant/questionnaire_non_cloture",
+    },
+    {
+      name: "Questionnaire Cloturer",
+      url: "/Participant/questionnaire_cloture",
+    },
+    { name: "Parametres", url: "/Participant/parametre" },
+  ];
   return (
     <div className={style.container}>
+      {/* <input type="search" placeholder="Search Here" /> */}
       {location.pathname === "/Participant" && (
-        <input type="search" placeholder="Search Here" />
+        <SearchBarWithSuggestions links={links} />
       )}
       {location.pathname === "/Participant/questionnaire_en_attente" && (
         <div className={style.path}>

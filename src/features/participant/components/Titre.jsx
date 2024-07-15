@@ -1,16 +1,26 @@
+import { Padding } from "@mui/icons-material";
 import style from "./Titre.module.css";
 import { useLocation } from "react-router-dom";
 export default function Titre({ titre, searchbar, component }) {
   const location = useLocation();
   return (
-    <div className={style.container}>
+    <div
+      className={style.container}
+      style={
+        location.pathname === "/Participant/parametre"
+          ? {
+              padding: "30px 70px",
+            }
+          : {}
+      }
+    >
       {titre === undefined ? (
-        location.pathname === "/AdminFormation/formations_non_cloture" ? (
-          <h1>Formations non clôturé</h1>
-        ) : location.pathname === "/AdminFormation/ajouter_une_formation" ? (
-          <h1>Ajouter une formation</h1>
-        ) : location.pathname === "/AdminFormation/formations_cloture" ? (
-          <h1>Formations clôturé</h1>
+        location.pathname === "/Participant/questionnaire_en_attente" ? (
+          <h1>Questionnaire En Attente</h1>
+        ) : location.pathname === "/Participant/questionnaire_non_cloture" ? (
+          <h1>Questionnaire Non Cloturer</h1>
+        ) : location.pathname === "/Participant/questionnaire_cloture" ? (
+          <h1>Questionnaire Cloturer</h1>
         ) : (
           <div className={style.path}>
             <h1>Parametres</h1>

@@ -7,6 +7,10 @@ import Table from "../components/EnhancedTableHead";
 import AddFormationForm from "../components/AddFormationForm";
 import Button from "../components/Button";
 
+import PrintComponent from "../components/PrintComponent";
+import { useRef } from "react";
+import { useReactToPrint } from "react-to-print";
+
 import AddBoxRoundedIcon from "@mui/icons-material/AddBoxRounded";
 import LocalPrintshopIcon from "@mui/icons-material/LocalPrintshop";
 
@@ -15,7 +19,8 @@ import { useNavigate, useParams, NavLink, useLocation } from "react-router-dom";
 import axios from "axios";
 import React from "react";
 
-function DI({ reponseID }) {
+function DI({ reponseID, tauxSatisfaction }) {
+  //DI: Details/Impression
   const { formationID } = useParams();
   const location = useLocation();
 
@@ -25,6 +30,11 @@ function DI({ reponseID }) {
   } else {
     clotureOuPas = "formations_non_cloture";
   }
+
+  const printRef = useRef();
+  const handlePrint = useReactToPrint({
+    content: () => printRef.current,
+  });
 
   return (
     <div
@@ -39,7 +49,16 @@ function DI({ reponseID }) {
       >
         <AddBoxRoundedIcon />
       </NavLink>
-      <LocalPrintshopIcon color="action" />
+      <LocalPrintshopIcon color="action" onClick={handlePrint} />
+
+      <div style={{ display: "none" }}>
+        <PrintComponent
+          ref={printRef}
+          title="Réponse au questionnaire d'évaluation"
+          repID={reponseID}
+          taux={tauxSatisfaction}
+        />
+      </div>
     </div>
   );
 }
@@ -103,23 +122,6 @@ function ReponsesFormationAV() {
     fetchFormationInfo();
   }, [formationID]);
 
-  // useEffect(() => {
-  //   console.log(formation);
-  // }, [formation]);
-
-  // const handleClick = () => {
-  //   if (location.pathname.includes("formations_non_cloture")) {
-  //     navigate(
-  //       `/AdminVisiteur/formations_non_cloture/reponses_formation/modifier_formation/${formationID}`
-  //     );
-  //   }
-  //   if (location.pathname.includes("formations_cloture")) {
-  //     navigate(
-  //       `/AdminVisiteur/formations_cloture/reponses_formation/modifier_formation/${formationID}`
-  //     );
-  //   }
-  // };
-
   useEffect(() => {
     const fetchResponses = async () => {
       try {
@@ -128,22 +130,19 @@ function ReponsesFormationAV() {
         );
         const formatedData = response.data.map((rep) => {
           return {
-            // id: 1,
             id: rep.reponseID,
-            // date: "Rayan",
             date: formatDate(rep.date_reponse),
-            // nom: "MELZI",
             nom: rep.nom,
-            // prenom: "Rayan",
             prenom: rep.prenom,
-            // fonction: "Dev",
             fonction: rep.fonction,
-            // structure: "IT",
             structure: rep.nom_structure,
-            // TdS: "90%",
             TdS: `${rep.taux_satisfaction}%`,
-            // DI: "Rayan",
-            DI: <DI reponseID={rep.reponseID} />,
+            DI: (
+              <DI
+                reponseID={rep.reponseID}
+                tauxSatisfaction={rep.taux_satisfaction}
+              />
+            ),
           };
         });
         setReponses(formatedData);

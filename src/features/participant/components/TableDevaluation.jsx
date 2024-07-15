@@ -82,14 +82,14 @@ export default function TableDevaluation({ isCloture }) {
 
   const handleSave = async () => {
     if (!validateSelections()) {
-      alert("Please select an option in each row.");
+      alert("Veuillez sélectionner une option dans chaque ligne.");
       return;
     }
 
     // Validate text areas
     const { pointsForts, pointsAmeliorer, partiesInteressantes } = formText;
     if (!pointsForts || !pointsAmeliorer || !partiesInteressantes) {
-      alert("Please fill in all required fields.");
+      alert("Veuillez remplir tous les champs obligatoires.");
       return;
     }
 
@@ -113,7 +113,7 @@ export default function TableDevaluation({ isCloture }) {
         throw new Error("Failed to save responses");
       }
 
-      alert("Responses saved successfully");
+      alert("Réponses enregistrées avec succès.");
       setSelectedOptions({});
       setFormText({
         pointsForts: "",
@@ -123,7 +123,9 @@ export default function TableDevaluation({ isCloture }) {
         commentaires: "",
       });
     } catch (error) {
-      alert("Error saving responses. Please try again.");
+      alert(
+        "Erreur lors de l'enregistrement des réponses. Veuillez réessayer."
+      );
     }
   };
 

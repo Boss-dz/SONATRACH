@@ -55,15 +55,6 @@ export default function Parametre() {
     event.preventDefault();
 
     const updatedData = {
-      // ServeurLDAP: event.target["Serveur LDAP"].value,
-      // PORT: event.target["PORT"].value,
-      // baseDN: event.target["Base DN"].value,
-      // DN_cmpt: event.target["DN du compte"].value,
-      // Serveur_msgr: ldap.Serveur_msgr,
-      // nom_Admin: ldap.nom_Admin,
-      // LDAP_username: ldap.LDAP_username,
-      // LDAP_password: ldap.LDAP_password,
-      // periode_synch: ldap.periode_synch,
       password: event.target["Mot de passe"].value,
       nom: userData.nom,
       prenom: userData.prenom,
@@ -82,10 +73,10 @@ export default function Parametre() {
           },
         }
       );
-      alert("Profile settings updated successfully!");
+      alert("Paramètres de profil mis à jour avec succès !");
     } catch (error) {
       console.error("Error updating LDAP settings", error);
-      alert("Failed to update profile settings.");
+      alert("Échec de la mise à jour des paramètres de profil.");
     }
   };
 
@@ -110,10 +101,10 @@ export default function Parametre() {
           "Content-Type": "application/json",
         },
       });
-      alert("LDAP settings updated successfully!");
+      alert("Paramètres LDAP mis à jour avec succès !");
     } catch (error) {
       console.error("Error updating LDAP settings", error);
-      alert("Failed to update LDAP settings.");
+      alert("Échec de la mise à jour des paramètres LDAP.");
     }
   };
 
@@ -138,10 +129,10 @@ export default function Parametre() {
           "Content-Type": "application/json",
         },
       });
-      alert("Messagerie settings updated successfully!");
+      alert("Paramètres de messagerie mis à jour avec succès !");
     } catch (error) {
       console.error("Error updating messagerie settings", error);
-      alert("Failed to update messagerie settings.");
+      alert("Échec de la mise à jour des paramètres de messagerie.");
     }
   };
 
@@ -167,10 +158,10 @@ export default function Parametre() {
           "Content-Type": "application/json",
         },
       });
-      alert("Synchronisation settings updated successfully!");
+      alert("Paramètres de synchronisation mis à jour avec succès !");
     } catch (error) {
       console.error("Error updating synchronisation settings", error);
-      alert("Failed to update synchronisation settings.");
+      alert("Échec de la mise à jour des paramètres de synchronisation.");
     }
   };
 

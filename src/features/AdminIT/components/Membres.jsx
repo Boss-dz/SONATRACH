@@ -2,6 +2,7 @@ import React from "react";
 import style from "./Membres.module.css";
 import Titre from "./Titre";
 import RolesMembresList from "./RolesMembresList";
+import SearchBar from "../components/SearchBar";
 
 import axios from "axios";
 import { useEffect, useState } from "react";
@@ -52,7 +53,7 @@ function VerticalDotsIcon({ userID, userRoles, fetchUsers, user }) {
           // alert("Role default updated successfully!");
         } catch (error) {
           console.error("Error updating role default", error);
-          alert("Failed to update role default.");
+          alert("Échec de la mise à jour du rôle par défaut.");
         }
       };
       updateRoleDefault(userID, userRolesState[0]);
@@ -121,6 +122,7 @@ function VerticalDotsIcon({ userID, userRoles, fetchUsers, user }) {
 
 function Membres({ roleFilter, setRoleFilter }) {
   const [allUsers, setAllUsers] = useState([]);
+  const [filteredUsers, setFilteredUsers] = useState([]);
 
   const fetchUsers = async () => {
     try {
@@ -141,6 +143,7 @@ function Membres({ roleFilter, setRoleFilter }) {
         roles: user.roles,
       }));
       setAllUsers(formatedAllUsers);
+      setFilteredUsers(formatedAllUsers);
     } catch (error) {
       console.error("Error fetching Users:", error);
     }
@@ -150,17 +153,22 @@ function Membres({ roleFilter, setRoleFilter }) {
     fetchUsers();
   }, []);
 
+  const handleSearch = (filteredResults) => {
+    setFilteredUsers(filteredResults);
+  };
+
   return (
     <div>
       <Titre
         titre="Membres"
         padding={{ paddingLeft: "0", paddingRight: "0", paddingTop: "0" }}
         size="small"
+        component={<SearchBar data={allUsers} onSearch={handleSearch} />}
       />
       <div className={style.container}>
         <RolesMembresList
           columns={["Nom", "Prénom", "Roles"]}
-          propData={allUsers.filter((membre) => {
+          propData={filteredUsers.filter((membre) => {
             return membre.roles.includes(roleFilter) || roleFilter === "tous";
           })}
           lineHeight="small"

@@ -6,12 +6,14 @@ import Titre from "../components/Titre";
 import Sidebar from "../components/Sidebar";
 import AddButton from "../components/AddButton";
 import UserType from "../components/UserType";
+import SearchBar from "../components/SearchBar";
 
 import { useState, useEffect } from "react";
 import axios from "axios";
 
 export default function GererMembres() {
   const [allUsers, setAllUsers] = useState([]);
+  const [filteredUsers, setFilteredUsers] = useState([]);
 
   useEffect(() => {
     const fetchUsers = async () => {
@@ -36,6 +38,7 @@ export default function GererMembres() {
         });
         // console.log(formatedAllUsers);
         setAllUsers(formatedAllUsers);
+        setFilteredUsers(formatedAllUsers);
       } catch (error) {
         console.error("Error fetching Users:", error);
       }
@@ -44,9 +47,13 @@ export default function GererMembres() {
     fetchUsers();
   }, []);
 
+  const handleSearch = (filteredResults) => {
+    setFilteredUsers(filteredResults);
+  };
+
   return (
     <div className={style.container}>
-      <Sidebar />
+      <Sidebar data={allUsers} onSearch={handleSearch} />
       <div
         style={{
           maxHeight: "100vh",
@@ -57,11 +64,13 @@ export default function GererMembres() {
         }}
       >
         <Header />
-        <Titre />
+        <Titre
+          component={<SearchBar data={allUsers} onSearch={handleSearch} />}
+        />
         <QuestDetails
           color="#68676E80"
           columns={["Nom d’Utilisateur", "Nom", "Prénom", "Structure", "Type"]}
-          propData={allUsers}
+          propData={filteredUsers}
           lineHeight="small"
           link="/AdminIT/gerer_les_membres/informations_d'un_membre"
         />

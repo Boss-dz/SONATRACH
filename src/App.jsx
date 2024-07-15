@@ -58,9 +58,28 @@ const PrivateRoute = ({ element: Component, roles, ...rest }) => {
   return (
     <>
       {forbidden && (
-        <div>
-          {" "}
-          Accès refusé. Vous n'avez pas le rôle nécessaire pour voir cette page.
+        <div
+          style={{
+            height: "100vh",
+            width: "100vw",
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "center",
+            alignItems: "center",
+            textAlign: "center",
+          }}
+        >
+          <div className="lock"></div>
+          <div className="message">
+            <h1
+              style={{
+                margin: "40px 0 20px",
+              }}
+            >
+              Accès refusé
+            </h1>
+            <p>Vous n'avez pas le rôle nécessaire pour voir cette page.</p>
+          </div>
         </div>
       )}
       {!forbidden && <Component />}
@@ -72,7 +91,6 @@ function AppRoutes() {
   return (
     <Routes>
       <Route path="/" element={<Authentification />} />
-
       <Route
         path="/Participant"
         element={<PrivateRoute roles={["Participant"]} element={HomepageP} />}
@@ -103,7 +121,6 @@ function AppRoutes() {
         path="/Participant/parametre"
         element={<PrivateRoute roles={["Participant"]} element={ParametreP} />}
       />
-
       <Route
         path="/AdminFormation"
         element={
@@ -170,7 +187,6 @@ function AppRoutes() {
           />
         }
       />
-
       <Route
         path="/AdminVisiteur/formations_non_cloture/reponses_formation/:formationID"
         element={
@@ -243,7 +259,6 @@ function AppRoutes() {
           <PrivateRoute roles={["Admin Visiteur"]} element={ParametreAV} />
         }
       />
-
       <Route
         path="/AdminIT"
         element={<PrivateRoute roles={["Admin IT"]} element={HomepageAIT} />}

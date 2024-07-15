@@ -3,9 +3,15 @@ import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import axios from "axios";
 
-export default function QuestUserInfo() {
+export default function QuestUserInfo({ repID }) {
   const [userInfo, setUserInfo] = useState({});
-  const { formationID, reponseID } = useParams();
+  let { formationID, reponseID } = useParams();
+
+  useEffect(() => {
+    if (reponseID === undefined) {
+      reponseID = repID;
+    }
+  }, []);
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -13,7 +19,7 @@ export default function QuestUserInfo() {
         const response = await axios.get(
           `http://localhost:8000/api/reponses/${formationID}/${reponseID}`
         );
-        console.log(response.data);
+        // console.log(response.data);
         setUserInfo(response.data[0]);
       } catch (error) {
         console.error("Failed to fetch usre data:", error);

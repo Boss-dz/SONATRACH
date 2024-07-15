@@ -109,18 +109,18 @@ export default function FormModule({
           formData,
           usersRoles,
         });
-        alert("User added successfully");
+        alert("Utilisateur ajouté avec succès");
       } catch (error) {
         console.error("Error adding user:", error);
-        alert("Error adding user");
+        alert("Erreur lors de l'ajout de l'utilisateur");
       }
     } else {
       try {
         await axios.put(`http://localhost:8000/api/user/${userName}`, formData);
-        alert("User added successfully");
+        alert("Utilisateur ajouté avec succès");
       } catch (error) {
         console.error("Error adding user:", error);
-        alert("Error adding user");
+        alert("Erreur lors de l'ajout de l'utilisateur");
       }
     }
   };

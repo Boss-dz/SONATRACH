@@ -3,11 +3,17 @@ import style from "./TableDevaluation.module.css";
 import { useParams } from "react-router-dom";
 import axios from "axios";
 
-export default function TableDevaluation({ isCloture }) {
+export default function TableDevaluation({ isCloture, repID }) {
   const [selectedOptions, setSelectedOptions] = useState({});
   const [section3Visible, setSection3Visible] = useState(false);
   const { formationID } = useParams();
-  const { reponseID } = useParams();
+  let { reponseID } = useParams();
+
+  useEffect(() => {
+    if (reponseID === undefined) {
+      reponseID = repID;
+    }
+  }, []);
 
   const [formText, setFormText] = useState({
     pointsForts: "",
@@ -82,14 +88,14 @@ export default function TableDevaluation({ isCloture }) {
 
   const handleSave = async () => {
     if (!validateSelections()) {
-      alert("Please select an option in each row.");
+      alert("Veuillez sélectionner une option dans chaque ligne.");
       return;
     }
 
     // Validate text areas
     const { pointsForts, pointsAmeliorer, partiesInteressantes } = formText;
     if (!pointsForts || !pointsAmeliorer || !partiesInteressantes) {
-      alert("Please fill in all required fields.");
+      alert("Veuillez remplir tous les champs obligatoires.");
       return;
     }
 
@@ -113,7 +119,7 @@ export default function TableDevaluation({ isCloture }) {
         throw new Error("Failed to save responses");
       }
 
-      alert("Responses saved successfully");
+      alert("Réponses enregistrées avec succès");
       setSelectedOptions({});
       setFormText({
         pointsForts: "",
@@ -123,7 +129,9 @@ export default function TableDevaluation({ isCloture }) {
         commentaires: "",
       });
     } catch (error) {
-      alert("Error saving responses. Please try again.");
+      alert(
+        "Erreur lors de l'enregistrement des réponses. Veuillez réessayer."
+      );
     }
   };
 
@@ -152,7 +160,7 @@ export default function TableDevaluation({ isCloture }) {
       const response = await axios.get(
         `http://localhost:8000/api/userReponses/${reponseID}`
       );
-      console.log(response.data);
+      // console.log(response.data);
 
       const data = response.data[0];
 
@@ -261,7 +269,7 @@ export default function TableDevaluation({ isCloture }) {
   return (
     <div className={style.container}>
       <div className={style.tableContainer}>
-        <table>
+        <table className={style.table}>
           <thead>
             <tr className={style.tableHead}>
               <th>AXES D'EVALUATION</th>
@@ -275,7 +283,7 @@ export default function TableDevaluation({ isCloture }) {
             {tableData.map((section, sectionIndex) => (
               <React.Fragment key={sectionIndex}>
                 <tr key={`section-${sectionIndex}`}>
-                  <td colSpan={1} className={style.color}>
+                  <td colSpan={5} className={style.color}>
                     {section.section}
                   </td>
                 </tr>
@@ -292,7 +300,7 @@ export default function TableDevaluation({ isCloture }) {
                         checked={section3Visible === true}
                         onChange={handleSection3VisibilityChange}
                       />
-                      Yes
+                      Oui
                     </td>
                     <td colSpan={2}>
                       <input
@@ -302,7 +310,7 @@ export default function TableDevaluation({ isCloture }) {
                         checked={section3Visible === false}
                         onChange={handleSection3VisibilityChange}
                       />
-                      No
+                      Non
                     </td>
                   </tr>
                 )}

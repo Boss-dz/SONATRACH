@@ -23,6 +23,10 @@ import LocalPrintshopIcon from "@mui/icons-material/LocalPrintshop";
 import FilterListIcon from "@mui/icons-material/FilterList";
 import { visuallyHidden } from "@mui/utils";
 
+import PrintComponent from "../components/PrintComponent";
+import { useRef } from "react";
+import { useReactToPrint } from "react-to-print";
+
 const headCells = [
   { id: "date", numeric: false, disablePadding: false, label: "Date reponse" },
   { id: "nom", numeric: false, disablePadding: false, label: "nom" },
@@ -131,7 +135,12 @@ EnhancedTableHead.propTypes = {
 };
 
 function EnhancedTableToolbar(props) {
-  const { numSelected } = props;
+  const { numSelected, items } = props;
+
+  const printRef = useRef();
+  const handlePrint = useReactToPrint({
+    content: () => printRef.current,
+  });
 
   return (
     <Toolbar
@@ -169,8 +178,9 @@ function EnhancedTableToolbar(props) {
 
       {numSelected > 0 ? (
         <Tooltip title="Imprimer">
-          <IconButton>
+          <IconButton onClick={handlePrint}>
             <LocalPrintshopIcon />
+            {/* <LocalPrintshopIcon /> */}
           </IconButton>
         </Tooltip>
       ) : (
@@ -180,6 +190,9 @@ function EnhancedTableToolbar(props) {
           </IconButton>
         </Tooltip>
       )}
+      <div style={{ display: "none" }}>
+        <PrintComponent ref={printRef} items={items} />
+      </div>
     </Toolbar>
   );
 }
@@ -195,6 +208,23 @@ const EnhancedTable = ({ rows = [] }) => {
   const [page, setPage] = React.useState(0);
   const [dense, setDense] = React.useState(false);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
+
+  const [selectedItems, setSelectedItems] = React.useState([]);
+
+  React.useEffect(() => {
+    const items = selected.map((repId) => {
+      const item = rows.filter((rep) => {
+        return rep.id === repId;
+      });
+
+      return {
+        title: "Réponse au questionnaire d'évaluation",
+        repID: repId,
+        taux: item[0].DI.props.tauxSatisfaction,
+      };
+    });
+    setSelectedItems(items);
+  }, [selected]);
 
   const handleRequestSort = (event, property) => {
     const isAsc = orderBy === property && order === "asc";
@@ -260,7 +290,10 @@ const EnhancedTable = ({ rows = [] }) => {
   return (
     <Box sx={{ width: "100%" }}>
       <Paper sx={{ width: "100%", mb: 2 }}>
-        <EnhancedTableToolbar numSelected={selected.length} />
+        <EnhancedTableToolbar
+          numSelected={selected.length}
+          items={selectedItems}
+        />
         <TableContainer>
           <Table
             sx={{ minWidth: 750 }}
@@ -298,12 +331,7 @@ const EnhancedTable = ({ rows = [] }) => {
                         inputProps={{ "aria-labelledby": labelId }}
                       />
                     </TableCell>
-                    <TableCell
-                      component="th"
-                      id={labelId}
-                      scope="row"
-                      padding="none"
-                    >
+                    <TableCell component="th" id={labelId} scope="row">
                       {row.date}
                     </TableCell>
                     <TableCell align="left">{row.nom}</TableCell>
