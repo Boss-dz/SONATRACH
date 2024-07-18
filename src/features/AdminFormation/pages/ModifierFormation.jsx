@@ -49,6 +49,7 @@ export default function ModifierFormation() {
       };
     })
   );
+  const [concerneParNotifications, setConcerneParNotifications] = useState([]);
 
   // Function to format date to yyyy-mm-dd
   const formatDate = (dateString) => {
@@ -93,12 +94,15 @@ export default function ModifierFormation() {
     fetchFormationInfo();
   }, [formationID]);
 
-  // useEffect(() => {
-  //   console.log(formation);
-  // }, [formation]);
-
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    const subject = "Questionnaire d'évaluation a remplire";
+    const message = `Bonjour,
+
+Un questionnaire d'évaluation pour la formation que vous avez suivie a été créé. Veuillez le trouver et le remplir dans l'application web des questionnaires d'évaluation.
+
+Merci pour votre collaboration.`;
 
     try {
       // Update the formation
@@ -113,6 +117,16 @@ export default function ModifierFormation() {
         { participations }
       );
       // console.log("Participations updated successfully:", responsePrt.data);
+      await Promise.all(
+        concerneParNotifications.map(async (participant) => {
+          const to = participant.email;
+          await axios.post("http://localhost:8000/api/send-notification", {
+            to,
+            subject,
+            message,
+          });
+        })
+      );
 
       alert("Formation et participants modifiés avec succès");
     } catch (error) {
@@ -132,14 +146,14 @@ export default function ModifierFormation() {
         return { utilisateurID: participant.userID };
       })
     );
-    console.log(participations);
+    console.log("participations :", participations);
   }, [membresConcernes]);
 
   const handleRemoveParticipant = (id) => {
-    // setMembresAjoutes((prev) =>
-    //   prev.filter((participant) => participant.userID !== id)
-    // );
     setMembresConcernes((prev) =>
+      prev.filter((participant) => participant.userID !== id)
+    );
+    setConcerneParNotifications((prev) =>
       prev.filter((participant) => participant.userID !== id)
     );
   };
@@ -172,7 +186,7 @@ export default function ModifierFormation() {
           fonction: participant.fonction,
           structureID: participant.nom_structure,
         }));
-        console.log(formatedData);
+        // console.log(formatedData);
         setMembresConcernes(formatedData);
       } catch (error) {
         console.error("Error fetching participations:", error);
@@ -183,8 +197,12 @@ export default function ModifierFormation() {
 
   useEffect(() => {
     // console.log(membresAjoutes);
-    console.log(membresConcernes);
+    console.log("membresConcernes :", membresConcernes);
   }, [membresConcernes]);
+
+  useEffect(() => {
+    console.log("concerneParNotifications :", concerneParNotifications);
+  }, [concerneParNotifications]);
 
   return (
     <div className={style.container}>
@@ -221,6 +239,8 @@ export default function ModifierFormation() {
           setActive={setActive}
           setMembresConcernes={setMembresConcernes}
           membresConcernes={membresConcernes}
+          setConcerneParNotifications={setConcerneParNotifications}
+          concerneParNotifications={concerneParNotifications}
         />
 
         <div

@@ -76,6 +76,8 @@ export default function QuestDetails({
   lineHeight,
   membresConcernes,
   setMembresConcernes,
+  setConcerneParNotifications,
+  concerneParNotifications,
   link,
 }) {
   const location = useLocation();
@@ -238,12 +240,15 @@ export default function QuestDetails({
                 prenom={user.prenom}
                 fonction={user.fonction}
                 structure={user.structureID}
+                email={user.email}
                 action={user.action}
                 border={border}
                 lineHeight={lineHeight}
                 key={i}
                 membresConcernes={membresConcernes}
                 setMembresConcernes={setMembresConcernes}
+                setConcerneParNotifications={setConcerneParNotifications}
+                concerneParNotifications={concerneParNotifications}
               />
             ))
           : propData.map((e, i) => (
@@ -262,68 +267,3 @@ export default function QuestDetails({
     </div>
   );
 }
-
-// : dataType === "utilisateur"
-//           ? propData.map((user, i) =>
-//               link ? (
-//                 <NavLink to={link}>
-//                   <TableRow
-//                     userID={user.utilisateurID}
-//                     nom={user.nom}
-//                     prenom={user.prenom}
-//                     fonction={user.fonction}
-//                     structure={user.structureID}
-//                     action={user.action}
-//                     border={border}
-//                     lineHeight={lineHeight}
-//                     key={i}
-//                     membresConcernes={membresConcernes}
-//                     setMembresConcernes={setMembresConcernes}
-//                   />
-//                 </NavLink>
-//               ) : (
-//                 <TableRow
-//                   userID={user.utilisateurID}
-//                   nom={user.nom}
-//                   prenom={user.prenom}
-//                   fonction={user.fonction}
-//                   structure={user.structureID}
-//                   action={user.action}
-//                   border={border}
-//                   lineHeight={lineHeight}
-//                   key={i}
-//                   membresConcernes={membresConcernes}
-//                   setMembresConcernes={setMembresConcernes}
-//                 />
-//               )
-//             )
-//           : propData.map((e, i) =>
-//               link ? (
-//                 <NavLink to={link}>
-//                   <TableRow
-//                     nom={Object.values(e)[0]}
-//                     prenom={Object.values(e)[1]}
-//                     fonction={Object.values(e)[2]}
-//                     structure={Object.values(e)[3]}
-//                     action={Object.values(e)[4]}
-//                     border={border}
-//                     lineHeight={lineHeight}
-//                     key={i}
-//                   />
-//                 </NavLink>
-//               ) : (
-//                 <TableRow
-//                   userID={user.utilisateurID}
-//                   nom={user.nom}
-//                   prenom={user.prenom}
-//                   fonction={user.fonction}
-//                   structure={user.structureID}
-//                   action={user.action}
-//                   border={border}
-//                   lineHeight={lineHeight}
-//                   key={i}
-//                   membresConcernes={membresConcernes}
-//                   setMembresConcernes={setMembresConcernes}
-//                 />
-//               )
-//             )}

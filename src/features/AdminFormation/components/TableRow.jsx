@@ -12,14 +12,15 @@ function TableRow({
   prenom,
   fonction,
   structure,
+  email,
   action,
   border,
   lineHeight,
   membresConcernes,
   setMembresConcernes,
+  setConcerneParNotifications,
+  concerneParNotifications,
 }) {
-  // const { formationID } = useParams();
-
   const [ajoute, setAjoute] = useState(false);
 
   useEffect(() => {
@@ -27,7 +28,7 @@ function TableRow({
       if (ajoute === true) {
         setMembresConcernes((prev) => [
           ...prev,
-          { userID, nom, prenom, fonction, structureID: structure },
+          { userID, nom, prenom, fonction, structureID: structure, email },
         ]);
       } else {
         setMembresConcernes((prev) =>
@@ -35,18 +36,35 @@ function TableRow({
         );
       }
     }
+    // if (setConcerneParNotifications !== undefined) {
+    //   if (ajoute === true) {
+    //     setConcerneParNotifications((prev) => [
+    //       ...prev,
+    //       { userID, nom, prenom, fonction, structureID: structure, email },
+    //     ]);
+    //   } else {
+    //     setConcerneParNotifications((prev) =>
+    //       prev.filter((membre) => membre.userID !== userID)
+    //     );
+    //   }
+    // }
   }, [ajoute]);
 
   useEffect(() => {
     if (membresConcernes !== undefined) {
-      // if (!membresConcernes.find((membre) => membre.userID === userID)) {
-      //   setAjoute(false);
-      // }
       if (membresConcernes.find((membre) => membre.userID === userID)) {
         setAjoute(true);
       }
     }
   }, [membresConcernes]);
+
+  useEffect(() => {
+    if (concerneParNotifications !== undefined) {
+      if (concerneParNotifications.find((membre) => membre.userID === userID)) {
+        setAjoute(true);
+      }
+    }
+  }, [concerneParNotifications]);
 
   return (
     <div
@@ -69,7 +87,18 @@ function TableRow({
       <div className={style.item}>{structure}</div>
       <div className={style.item}>
         {action === undefined ? (
-          <BtnAjoute ajoute={ajoute} setAjoute={setAjoute} />
+          <BtnAjoute
+            ajoute={ajoute}
+            setAjoute={setAjoute}
+            setConcerneParNotifications={setConcerneParNotifications}
+            concerneParNotifications={concerneParNotifications}
+            userID={userID}
+            nom={nom}
+            prenom={prenom}
+            fonction={fonction}
+            structure={structure}
+            email={email}
+          />
         ) : (
           action
         )}

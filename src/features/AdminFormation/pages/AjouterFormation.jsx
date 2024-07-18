@@ -47,6 +47,12 @@ export default function AjouterFormation() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    const subject = "Questionnaire d'évaluation a remplire";
+    const message = `Bonjour,
+
+Un questionnaire d'évaluation pour la formation que vous avez suivie a été créé. Veuillez le trouver et le remplir dans l'application web des questionnaires d'évaluation.
+
+Merci pour votre collaboration.`;
     try {
       // Create the formation
       const response = await axios.post(
@@ -62,6 +68,13 @@ export default function AjouterFormation() {
             formationID,
             utilisateurID: participant.userID,
           });
+
+          const to = participant.email;
+          await axios.post("http://localhost:8000/api/send-notification", {
+            to,
+            subject,
+            message,
+          });
         })
       );
 
@@ -74,6 +87,10 @@ export default function AjouterFormation() {
       alert("Erreur lors de l'ajout de la formation et des participants");
     }
   };
+
+  // useEffect(() => {
+  //   console.log(membresConcernes);
+  // }, [membresConcernes]);
 
   const handleRemoveParticipant = (id) => {
     setMembresAjoutes((prev) =>

@@ -2,6 +2,7 @@ const express = require("express");
 const mysql = require("mysql");
 const cors = require("cors");
 const ldap = require("ldapjs");
+const { sendEmail } = require("./emailService");
 
 const app = express();
 app.use(express.json());
@@ -26,6 +27,29 @@ db.connect((err) => {
 // Cache for LDAP configuration
 let ldapConfig = null;
 
+//function to fetch mailing configuration from Database
+// function fetchMailingConfig(callback) {
+//   const configQuery =
+//     'SELECT param_key, param_value FROM parametres_de_base WHERE param_key IN ("Serveur_msgr", "PORT" )'; /* "SMTP_username", "SMTP_password" */
+//   db.query(configQuery, (err, results) => {
+//     if (err) {
+//       console.error("Database query error:", err);
+//       return callback(err);
+//     }
+//     if (results.length === 0) {
+//       const error = new Error("Incomplete mailing configuration found");
+//       console.error(error);
+//       return callback(error);
+//     }
+//     const mailingConfig = results.reduce((config, row) => {
+//       config[row.param_key] = row.param_value;
+//       return config;
+//     }, {});
+//     callback(null, mailingConfig);
+//   });
+// }
+// module.exports = fetchMailingConfig;
+
 // Function to fetch LDAP configuration from database
 function fetchLdapConfig(callback) {
   if (ldapConfig) {
@@ -33,7 +57,7 @@ function fetchLdapConfig(callback) {
   }
 
   const configQuery =
-    'SELECT param_key, param_value FROM parametres_de_base WHERE param_key IN ("ServeurLDAP", "baseDN", "DN_cmpt", "LDAP_username")';
+    'SELECT param_key, param_value FROM parametres_de_base WHERE param_key IN ("ServeurLDAP", "baseDN", "DN_cmpt", "LDAP_password")';
   db.query(configQuery, (err, results) => {
     if (err) {
       console.error("Database query error:", err);
@@ -69,7 +93,7 @@ function ldapAuthenticate(username, password, callback) {
     const dn = `uid=${username},ou=users,${config.baseDN}`;
     // console.log("Attempting to bind with DN:", config.DN_cmpt);
 
-    client.bind(config.DN_cmpt, config.LDAP_username, (err) => {
+    client.bind(config.DN_cmpt, config.LDAP_password, (err) => {
       if (err) {
         console.error("LDAP admin bind error:", err);
         return callback(err);
@@ -1320,6 +1344,32 @@ app.put("/api/utilisateur/:utilisateurID/role_default", (req, res) => {
       res.json({ message: "role_default updated successfully" });
     }
   });
+});
+
+//sending emails
+app.post("/api/send-notification", async (req, res) => {
+  const { to, subject, message } = req.body;
+
+  try {
+    await sendEmail(to, subject, message);
+    res.status(200).send("Notification sent successfully");
+  } catch (error) {
+    console.error("Error sending notification:", error);
+    res.status(500).send("Failed to send notification");
+  }
+});
+
+app.post("/api/contact-admin", async (req, res) => {
+  const { from, subject, message } = req.body;
+  const adminEmail = "nanoray33@gmail.com"; // replace with the admin's email
+
+  try {
+    await sendEmail(adminEmail, subject, `From: ${from}\n\n${message}`);
+    res.status(200).send("Email sent to admin successfully");
+  } catch (error) {
+    console.error("Error sending email to admin:", error);
+    res.status(500).send("Failed to send email to admin");
+  }
 });
 
 app.listen(8000, () => {

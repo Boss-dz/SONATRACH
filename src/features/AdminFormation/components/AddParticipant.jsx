@@ -12,6 +12,8 @@ function AddParticipant({
   setActive,
   membresConcernes,
   setMembresConcernes,
+  setConcerneParNotifications,
+  concerneParNotifications,
 }) {
   const [users, setUsers] = useState([]);
   const [filteredUsers, setFilteredUsers] = useState([]);
@@ -98,6 +100,8 @@ function AddParticipant({
           lineHeight="small"
           setMembresConcernes={setMembresConcernes}
           membresConcernes={membresConcernes}
+          setConcerneParNotifications={setConcerneParNotifications}
+          concerneParNotifications={concerneParNotifications}
         />
       </div>
     </div>
