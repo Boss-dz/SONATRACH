@@ -80,7 +80,8 @@ export default function QuestDetails({
 
   const filterFormations = () => {
     if (location.pathname === "/Participant/questionnaire_cloture") {
-      return formations.filter((formation) => formation.hasResponded);
+      // return formations.filter((formation) => formation.hasResponded);
+      return formations;
     } else if (location.pathname === "/Participant/questionnaire_non_cloture") {
       return formations.filter(
         (formation) => formation.hasResponded && !isCloture

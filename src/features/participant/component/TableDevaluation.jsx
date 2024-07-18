@@ -2,7 +2,10 @@ import React, { useEffect, useState } from "react";
 import style from "./TableDevaluation.module.css";
 import { useParams } from "react-router-dom";
 
+import { useNavigate } from "react-router-dom";
+
 export default function TableDevaluation({ isCloture }) {
+  const navigate = useNavigate();
   const [selectedOptions, setSelectedOptions] = useState({});
   const [section3Visible, setSection3Visible] = useState(false);
   const { formationID } = useParams();
@@ -119,6 +122,8 @@ export default function TableDevaluation({ isCloture }) {
         recommandations: "",
         commentaires: "",
       });
+
+      navigate("/Participant/questionnaire_non_cloture");
     } catch (error) {
       alert(
         "Erreur lors de l'enregistrement des réponses. Veuillez réessayer."

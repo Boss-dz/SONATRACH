@@ -2,7 +2,7 @@ import style from "./FormModule.module.css";
 import Button from "./Button";
 
 import React, { useEffect, useState, useRef } from "react";
-import { useLocation, useParams } from "react-router-dom";
+import { useLocation, useParams, useNavigate } from "react-router-dom";
 
 import axios from "axios";
 
@@ -17,6 +17,7 @@ export default function FormModule({
   secondBtnOnClick,
   inputIsActif,
 }) {
+  const navigate = useNavigate();
   const { userName } = useParams();
   const location = useLocation();
 
@@ -110,6 +111,8 @@ export default function FormModule({
           usersRoles,
         });
         alert("Utilisateur ajouté avec succès");
+
+        navigate(`/AdminIT`);
       } catch (error) {
         console.error("Error adding user:", error);
         alert("Erreur lors de l'ajout de l'utilisateur");
@@ -117,7 +120,11 @@ export default function FormModule({
     } else {
       try {
         await axios.put(`http://localhost:8000/api/user/${userName}`, formData);
-        alert("Utilisateur ajouté avec succès");
+        alert("Utilisateur modifié avec succès");
+
+        navigate(
+          `/AdminIT/gerer_les_membres/informations_d'un_membre/${userName}`
+        );
       } catch (error) {
         console.error("Error adding user:", error);
         alert("Erreur lors de l'ajout de l'utilisateur");

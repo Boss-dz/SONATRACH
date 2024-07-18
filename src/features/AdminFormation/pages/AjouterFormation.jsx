@@ -10,10 +10,13 @@ import Button from "../components/Button";
 import AddParticipant from "../components/AddParticipant";
 
 import { useState, useCallback, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import React from "react";
 
 export default function AjouterFormation() {
+  const navigate = useNavigate();
+
   const [active, setActive] = useState(false);
   const handleClick = useCallback(() => {
     setActive(true);
@@ -79,6 +82,8 @@ Merci pour votre collaboration.`;
       );
 
       alert("Formation et participants ajoutés avec succès");
+
+      navigate("/AdminFormation");
     } catch (error) {
       console.error(
         "Erreur lors de l'ajout de la formation et des participants:",

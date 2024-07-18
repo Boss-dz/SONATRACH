@@ -10,11 +10,13 @@ import Button from "../components/Button";
 import AddParticipant from "../components/AddParticipant";
 
 import { useState, useCallback, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import React from "react";
 import { useParams } from "react-router-dom";
 
 export default function ModifierFormation() {
+  const navigate = useNavigate();
   const { formationID } = useParams();
 
   const [active, setActive] = useState(false);
@@ -129,6 +131,10 @@ Merci pour votre collaboration.`;
       );
 
       alert("Formation et participants modifiés avec succès");
+
+      navigate(
+        `/AdminFormation/formations_non_cloture/reponses_formation/${formationID}`
+      );
     } catch (error) {
       console.error(
         "Erreur lors de la modification de la formation et des participants:",
