@@ -177,7 +177,7 @@ export default function Parametre() {
         }}
       >
         <Header />
-        <Titre />
+        <Titre searchbar={false} />
         <ToggleProfile />
         <ParametreModule
           toggleId="Profil"

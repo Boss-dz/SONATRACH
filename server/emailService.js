@@ -32,15 +32,6 @@ function fetchMailingConfig(callback) {
   });
 }
 
-// const transporter = nodemailer.createTransport({
-//   host: "smtp.gmail.com",
-//   port: 587,
-//   secure: false,
-//   auth: {
-//     user: "rayanmelzi0@gmail.com",
-//   },
-// });
-
 const sendEmail = (to, subject, text) => {
   return new Promise((resolve, reject) => {
     fetchMailingConfig((err, config) => {
@@ -76,31 +67,3 @@ const sendEmail = (to, subject, text) => {
 };
 
 module.exports = { sendEmail };
-
-// const sendEmail = (to, subject, text) => {
-//   fetchMailingConfig((err, config) => {
-//     if (err) {
-//       console.error("Error fetching LDAP config:", err);
-//       return callback(err, null);
-//     }
-//     let transporter = nodemailer.createTransport({
-//       host: config.Serveur_msgr,
-//       port: config.PORT,
-//       secure: false,
-//       auth: {
-//         user: "rayanmelzi0@gmail.com",
-//         pass: "emtlfndwouyhlgwf",
-//       },
-//     });
-//     const mailOptions = {
-//       from: "rayanmelzi0@gmail.com",
-//       to,
-//       subject,
-//       text,
-//     };
-
-//     return transporter.sendMail(mailOptions);
-//   });
-// };
-//
-// module.exports = { sendEmail };

@@ -47,10 +47,7 @@ const PrintComponent = React.forwardRef((props, ref) => (
           <tr>
             <td>
               <footer className={style.printFooter}>
-                <p>
-                  SONATRACH ● Division Forage ● Département Information et
-                  Technologies
-                </p>
+                <p>SONATRACH ● Division Forage</p>
               </footer>
             </td>
           </tr>
@@ -70,7 +67,6 @@ const PrintComponent = React.forwardRef((props, ref) => (
                 />
                 <h4 className={style.printTitle}>
                   Réponse au questionnaire d'évaluation
-                  {/* static */}
                 </h4>
               </header>
               <hr />
@@ -100,10 +96,7 @@ const PrintComponent = React.forwardRef((props, ref) => (
           <tr>
             <td>
               <footer className={style.printFooter}>
-                <p>
-                  SONATRACH ● Division Forage ● Département Information et
-                  Technologies
-                </p>
+                <p>SONATRACH ● Division Forage</p>
               </footer>
             </td>
           </tr>

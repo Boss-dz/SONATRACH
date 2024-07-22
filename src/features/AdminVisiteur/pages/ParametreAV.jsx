@@ -31,7 +31,7 @@ export default function ParametreAV() {
         }}
       >
         <Header />
-        <Titre />
+        <Titre searchbar={false} />
         <ToggleProfile />
         <div className={style.profile} id="profile">
           <Profile structure={structure} />
