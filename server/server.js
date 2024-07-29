@@ -35,7 +35,7 @@ function fetchLdapConfig(callback) {
   }
 
   const configQuery =
-    'SELECT param_key, param_value FROM parametres_de_base WHERE param_key IN ("ServeurLDAP", "baseDN", "DN_cmpt", "LDAP_password")';
+    'SELECT param_key, param_value FROM parametres_de_base WHERE param_key IN ("ServeurLDAP", "baseDN", "DN_cmpt", "LDAP_password" , "LDAP_port")';
   db.query(configQuery, (err, results) => {
     if (err) {
       console.error("Database query error:", err);
@@ -67,7 +67,8 @@ function ldapAuthenticate(username, password, callback) {
 
     try {
       const client = ldap.createClient({
-        url: `ldap://${config.ServeurLDAP}:389`,
+        // url: `ldap://${config.ServeurLDAP}:389`,
+        url: `ldap://${config.ServeurLDAP}:${config.LDAP_port}`,
       });
 
       let responseSent = false; // Track if the response has been sent so that the server don't crash for multiple err response
@@ -1343,7 +1344,8 @@ function fetchAllLdapUsers(callback) {
     }
 
     const client = ldap.createClient({
-      url: `ldap://${config.ServeurLDAP}:389`,
+      // url: `ldap://${config.ServeurLDAP}:389`,
+      url: `ldap://${config.ServeurLDAP}:${config.LDAP_port}`,
     });
 
     client.bind(config.DN_cmpt, config.LDAP_password, (err) => {
