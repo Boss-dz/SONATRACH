@@ -180,20 +180,20 @@ function ReponsesFormation() {
       >
         <Header />
         <Titre titre="Reponses de la Formation" searchbar={false} />
-        {!location.pathname.includes("formations_cloture") && (
-          <div
-            style={{
-              display: "flex",
-              justifyContent: "flex-end",
-              padding: "0px 80px",
-              marginBottom: "-50px",
-              position: "relative",
-              top: "15px",
-            }}
-          >
-            <Button content="Modifier" btnStyle="white" onClick={handleClick} />
-          </div>
-        )}
+        {/* {!location.pathname.includes("formations_cloture") && ( */}
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "flex-end",
+            padding: "0px 80px",
+            marginBottom: "-50px",
+            position: "relative",
+            top: "15px",
+          }}
+        >
+          <Button content="Modifier" btnStyle="white" onClick={handleClick} />
+        </div>
+        {/* )} */}
         <AddFormationForm
           formation={formation}
           setFormation={setFormation}

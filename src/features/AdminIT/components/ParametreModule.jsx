@@ -13,23 +13,34 @@ export default function ParametreModule({
   value3,
   inputName4,
   value4,
+  disabled4,
+  inputName5,
+  value5,
+  inputName6,
+  value6,
   mainBtn,
   mainBtnStyle,
+  onMainBtnClick,
   secondBtn,
   secondBtnStyle,
+  onSecondBtnClick,
   onSubmit,
 }) {
   const [input1, setInput1] = useState(value1 || "");
   const [input2, setInput2] = useState(value2 || "");
   const [input3, setInput3] = useState(value3 || "");
   const [input4, setInput4] = useState(value4 || "");
+  const [input5, setInput5] = useState(value5 || "");
+  const [input6, setInput6] = useState(value6 || "");
 
   useEffect(() => {
     setInput1(value1);
     setInput2(value2);
     setInput3(value3);
     setInput4(value4);
-  }, [value1, value2, value3, value4]);
+    setInput5(value5);
+    setInput6(value6);
+  }, [value1, value2, value3, value4, value5, value6]);
 
   const handleInputChange = (setter) => (e) => {
     setter(e.target.value);
@@ -88,6 +99,34 @@ export default function ParametreModule({
                   className={style.input}
                   value={input4 || ""}
                   onChange={handleInputChange(setInput4)}
+                  disabled={disabled4 !== undefined ? disabled4 : false}
+                />
+              </div>
+            )}
+          </div>
+        )}
+
+        {inputName5 !== undefined && (
+          <div className={style.row}>
+            <div className={style.col}>
+              <label htmlFor={inputName5}>{inputName5}</label>
+              <input
+                type="text"
+                id={inputName5}
+                className={style.input}
+                value={input5 || ""}
+                onChange={handleInputChange(setInput5)}
+              />
+            </div>
+            {inputName6 !== undefined && (
+              <div className={style.col}>
+                <label htmlFor={inputName6}>{inputName6}</label>
+                <input
+                  type="text"
+                  id={inputName6}
+                  className={style.input}
+                  value={input6 || ""}
+                  onChange={handleInputChange(setInput6)}
                 />
               </div>
             )}
@@ -104,11 +143,13 @@ export default function ParametreModule({
             <Button
               content={secondBtn}
               btnStyle={secondBtnStyle !== undefined && secondBtnStyle}
+              onClick={onSecondBtnClick !== undefined && onSecondBtnClick}
             />
           )}
           <Button
             content={mainBtn !== undefined ? mainBtn : "Enregistrer"}
             btnStyle={mainBtnStyle !== undefined && mainBtnStyle}
+            onClick={onMainBtnClick !== undefined && onMainBtnClick}
           />
         </div>
       </form>

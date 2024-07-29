@@ -13,7 +13,7 @@ const db = mysql.createConnection({
 // Function to fetch mailing configuration from the database
 function fetchMailingConfig(callback) {
   const configQuery =
-    'SELECT param_key, param_value FROM parametres_de_base WHERE param_key IN ("Serveur_msgr", "PORT")'; /* "SMTP_username", "SMTP_password" */
+    'SELECT param_key, param_value FROM parametres_de_base WHERE param_key IN ("Serveur_msgr", "Port_msgr")'; /* "SMTP_username", "SMTP_password" */
   db.query(configQuery, (err, results) => {
     if (err) {
       console.error("Database query error:", err);
@@ -41,7 +41,7 @@ const sendEmail = (to, subject, text) => {
 
       const transporter = nodemailer.createTransport({
         host: config.Serveur_msgr,
-        port: config.PORT,
+        port: config.Port_msgr,
         secure: false,
         auth: {
           user: "rayanmelzi0@gmail.com",

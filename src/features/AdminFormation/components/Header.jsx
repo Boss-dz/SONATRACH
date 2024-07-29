@@ -60,7 +60,8 @@ export default function Header() {
           <span>{">"} Formations non clôturé</span>
         </div>
       )}
-      {location.pathname.includes("/modifier_formation") ? (
+      {location.pathname.includes("/modifier_formation") &&
+      location.pathname.includes("/formations_non_cloture") ? (
         <div className={style.path}>
           <NavLink to="/AdminFormation" className={style.link}>
             Acceuil
@@ -145,8 +146,34 @@ export default function Header() {
           <span>{">"} Formations clôturé</span>
         </div>
       )}
-      {location.pathname.includes("/formations_cloture") &&
-      location.pathname.includes("/details_reponse") ? (
+
+      {location.pathname.includes("/modifier_formation") &&
+      location.pathname.includes("/formations_cloture") ? (
+        <div className={style.path}>
+          <NavLink to="/AdminFormation" className={style.link}>
+            Acceuil
+          </NavLink>
+          <span>{"> "}</span>
+
+          <NavLink
+            to="/AdminFormation/formations_cloture"
+            className={style.link}
+          >
+            Formations clôturé
+          </NavLink>
+
+          <span>{"> "}</span>
+
+          <NavLink
+            to={`/AdminFormation/formations_cloture/reponses_formation/${formationID}`}
+            className={style.link}
+          >
+            Reponses de la Formation
+          </NavLink>
+          <span>{">"} Modifier la formation</span>
+        </div>
+      ) : location.pathname.includes("/formations_cloture") &&
+        location.pathname.includes("/details_reponse") ? (
         <div className={style.path}>
           <NavLink to="/AdminFormation" className={style.link}>
             Acceuil
