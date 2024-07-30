@@ -11,9 +11,10 @@
 .container {
   width: 75%;
   height: 100%;
-  background-image: url("/public/Welcome.svg");
-  background-size: auto;
-  background-repeat: no-repeat;
+  background-color: #f29e4f;
+  background-image: url("/public/Welcome-cropped.svg");
+  background-size: 1000px;
+  /* background-repeat: no-repeat; */
   background-position: center;
 
   padding: 0 70px;
