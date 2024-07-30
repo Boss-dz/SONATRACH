@@ -188,6 +188,15 @@ function AppRoutes() {
         }
       />
       <Route
+        path="/AdminFormation/formations_cloture/reponses_formation/modifier_formation/:formationID"
+        element={
+          <PrivateRoute
+            roles={["Admin Formation"]}
+            element={ModifierFormation}
+          />
+        }
+      />
+      <Route
         path="/AdminVisiteur/formations_non_cloture/reponses_formation/:formationID"
         element={
           <PrivateRoute

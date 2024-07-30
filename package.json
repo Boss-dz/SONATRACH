@@ -28,6 +28,7 @@
     "jsonwebtoken": "^9.0.2",
     "ldapjs": "^3.0.7",
     "mysql": "^2.18.1",
+    "node-cron": "^3.0.3",
     "nodemailer": "^6.9.14",
     "react": "^18.2.0",
     "react-chartjs-2": "^5.2.0",

@@ -10,13 +10,13 @@ import Button from "../components/Button";
 import AddParticipant from "../components/AddParticipant";
 
 import { useState, useCallback, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useParams, useNavigate, useLocation } from "react-router-dom";
 import axios from "axios";
 import React from "react";
-import { useParams } from "react-router-dom";
 
 export default function ModifierFormation() {
   const navigate = useNavigate();
+  const location = useLocation();
   const { formationID } = useParams();
 
   const [active, setActive] = useState(false);
@@ -119,6 +119,29 @@ Merci pour votre collaboration.`;
         { participations }
       );
       // console.log("Participations updated successfully:", responsePrt.data);
+      // await Promise.all(
+      //   concerneParNotifications.map(async (participant) => {
+      //     const to = participant.email;
+      //     await axios.post("http://localhost:8000/api/send-notification", {
+      //       to,
+      //       subject,
+      //       message,
+      //     });
+      //   })
+      // );
+
+      alert("Formation et participants modifiés avec succès");
+
+      if (location.pathname.includes("/formations_cloture")) {
+        navigate(
+          `/AdminFormation/formations_cloture/reponses_formation/${formationID}`
+        );
+      } else {
+        navigate(
+          `/AdminFormation/formations_non_cloture/reponses_formation/${formationID}`
+        );
+      }
+
       await Promise.all(
         concerneParNotifications.map(async (participant) => {
           const to = participant.email;
@@ -128,12 +151,6 @@ Merci pour votre collaboration.`;
             message,
           });
         })
-      );
-
-      alert("Formation et participants modifiés avec succès");
-
-      navigate(
-        `/AdminFormation/formations_non_cloture/reponses_formation/${formationID}`
       );
     } catch (error) {
       console.error(

@@ -32,7 +32,7 @@ export default function Parametre() {
         const response = await axios.get(
           `http://localhost:8000/api/parametres`
         );
-        console.log(response.data);
+        // console.log(response.data);
         setLdap(response.data);
       } catch (error) {
         console.error("Error fetching the LDAP Server information", error);
@@ -43,13 +43,9 @@ export default function Parametre() {
     fetchLDAPdata();
   }, []);
 
-  useEffect(() => {
-    console.log(ldap);
-  }, [ldap]);
-
   // useEffect(() => {
-  //   console.log(userData);
-  // }, [userData]);
+  //   console.log(ldap);
+  // }, [ldap]);
 
   const handleProfileSubmit = async (event) => {
     event.preventDefault();
@@ -85,14 +81,15 @@ export default function Parametre() {
 
     const updatedData = {
       ServeurLDAP: event.target["Serveur LDAP"].value,
-      PORT: event.target["PORT"].value,
+      LDAP_port: event.target["Port LDAP"].value,
       baseDN: event.target["Base DN"].value,
-      DN_cmpt: event.target["DN du compte"].value,
-      Serveur_msgr: ldap.Serveur_msgr,
-      nom_Admin: ldap.nom_Admin,
-      LDAP_username: ldap.LDAP_username,
-      LDAP_password: ldap.LDAP_password,
-      periode_synch: ldap.periode_synch,
+      DN_cmpt:
+        "cn=" +
+        event.target["Nom de l'utilisateur LDAP"].value +
+        "," +
+        event.target["Base DN"].value,
+      LDAP_username: event.target["Nom de l'utilisateur LDAP"].value,
+      LDAP_password: event.target["Mot de passe LDAP"].value,
     };
 
     try {
@@ -112,15 +109,10 @@ export default function Parametre() {
     event.preventDefault();
 
     const updatedData = {
-      ServeurLDAP: ldap.ServeurLDAP,
-      PORT: ldap.PORT,
-      baseDN: ldap.baseDN,
-      DN_cmpt: ldap.DN_cmpt,
-      Serveur_msgr: event.target["Courriel de l'administrateur"].value,
+      Serveur_msgr: event.target["Serveur de messagerie"].value,
+      Port_msgr: event.target["Port de messagerie"].value,
+      email_admin: event.target["Courriel de l'administrateur"].value,
       nom_Admin: event.target["Nom de l'administrateur"].value,
-      LDAP_username: event.target["Nom d’utilisateur"].value,
-      LDAP_password: event.target["Mot de passe"].value,
-      periode_synch: ldap.periode_synch,
     };
 
     try {
@@ -133,6 +125,23 @@ export default function Parametre() {
     } catch (error) {
       console.error("Error updating messagerie settings", error);
       alert("Échec de la mise à jour des paramètres de messagerie.");
+    }
+  };
+
+  const sendTestingEmail = async (event) => {
+    event.preventDefault();
+
+    const to = ldap.email_admin;
+    const subject = `Test de messagerie`;
+    const message = `Cet email est envoyé pour vérifier le bon fonctionnement du système de messagerie.`;
+    const body = { to, subject, message };
+
+    try {
+      await axios.post(`http://localhost:8000/api/send-notification`, body);
+      alert("Email envoyé avec succès !");
+    } catch (error) {
+      console.error("Error sending email", error);
+      alert("Échec de l'envoi de l'email.");
     }
   };
 
@@ -153,15 +162,37 @@ export default function Parametre() {
     };
 
     try {
-      await axios.put(`http://localhost:8000/api/parametres`, updatedData, {
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
+      await axios.post(
+        `http://localhost:8000/api/update-sync-interval`,
+        JSON.stringify({
+          syncIntervalDays: parseInt(
+            event.target["Période de synchronisation automatique (en jours)"]
+              .value,
+            10
+          ),
+        }),
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
       alert("Paramètres de synchronisation mis à jour avec succès !");
     } catch (error) {
       console.error("Error updating synchronisation settings", error);
       alert("Échec de la mise à jour des paramètres de synchronisation.");
+    }
+  };
+
+  const onSynchronisationMainBtnClick = async (event) => {
+    event.preventDefault();
+
+    try {
+      const response = await axios.post("http://localhost:8000/api/sync-ldap");
+      alert(response.data.message);
+    } catch (error) {
+      console.error("Error syncing LDAP:", error);
+      alert("Erreur lors de la synchronisation des données LDAP.");
     }
   };
 
@@ -193,27 +224,33 @@ export default function Parametre() {
           title="Authentification LDAP"
           inputName1="Serveur LDAP"
           value1={ldap.ServeurLDAP}
-          inputName2="PORT"
-          value2={ldap.PORT}
+          inputName2="Port LDAP"
+          value2={ldap.LDAP_port}
           inputName3="Base DN"
           value3={ldap.baseDN}
           inputName4="DN du compte"
           value4={ldap.DN_cmpt}
+          disabled4={true}
+          inputName5="Nom de l'utilisateur LDAP"
+          value5={ldap.LDAP_username}
+          inputName6="Mot de passe LDAP"
+          value6={ldap.LDAP_password}
           onSubmit={handleLDAPSubmit}
         />
         <ParametreModule
           toggleId="Messagerie"
           title="Messagerie"
-          inputName1="Courriel de l'administrateur"
+          inputName1="Serveur de messagerie"
           value1={ldap.Serveur_msgr}
-          inputName2="Nom de l'administrateur"
-          value2={ldap.nom_Admin}
-          inputName3="Nom d’utilisateur"
-          value3={ldap.LDAP_username}
-          inputName4="Mot de passe"
-          value4={ldap.LDAP_password}
-          secondBtn="Envoyer un couriel de test a l’administrateur"
+          inputName2="Port de messagerie"
+          value2={ldap.Port_msgr}
+          inputName3="Courriel de l'administrateur"
+          value3={ldap.email_admin}
+          inputName4="Nom de l'administrateur"
+          value4={ldap.nom_Admin}
+          secondBtn="Envoyer un couriel de test a l'administrateur"
           secondBtnStyle="white"
+          onSecondBtnClick={sendTestingEmail}
           onSubmit={handleMessagerieSubmit}
         />
         <ParametreModule
@@ -222,6 +259,7 @@ export default function Parametre() {
           inputName1="Période de synchronisation automatique (en jours)"
           value1={ldap.periode_synch}
           mainBtn="Synchroniser Manuellement"
+          onMainBtnClick={onSynchronisationMainBtnClick}
           secondBtn="Enregistrer"
           onSubmit={handleSynchronisationSubmit}
         />

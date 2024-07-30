@@ -3,6 +3,7 @@ const mysql = require("mysql");
 const cors = require("cors");
 const ldap = require("ldapjs");
 const { sendEmail } = require("./emailService");
+const cron = require("node-cron");
 
 const app = express();
 app.use(express.json());
@@ -34,7 +35,7 @@ function fetchLdapConfig(callback) {
   }
 
   const configQuery =
-    'SELECT param_key, param_value FROM parametres_de_base WHERE param_key IN ("ServeurLDAP", "baseDN", "DN_cmpt", "LDAP_password")';
+    'SELECT param_key, param_value FROM parametres_de_base WHERE param_key IN ("ServeurLDAP", "baseDN", "DN_cmpt", "LDAP_password" , "LDAP_port")';
   db.query(configQuery, (err, results) => {
     if (err) {
       console.error("Database query error:", err);
@@ -64,78 +65,89 @@ function ldapAuthenticate(username, password, callback) {
       return callback(err, null);
     }
 
-    const client = ldap.createClient({
-      url: `ldap://${config.ServeurLDAP}:389`,
-    });
-    const dn = `uid=${username},ou=users,${config.baseDN}`;
-    // console.log("Attempting to bind with DN:", config.DN_cmpt);
+    try {
+      const client = ldap.createClient({
+        // url: `ldap://${config.ServeurLDAP}:389`,
+        url: `ldap://${config.ServeurLDAP}:${config.LDAP_port}`,
+      });
 
-    client.bind(config.DN_cmpt, config.LDAP_password, (err) => {
-      if (err) {
-        console.error("LDAP admin bind error:", err);
-        return callback(err);
-      }
+      let responseSent = false; // Track if the response has been sent so that the server don't crash for multiple err response
 
-      const opts = {
-        filter: `(uid=${username})`,
-        scope: "sub",
-        attributes: ["uid", "cn", "sn", "givenName", "title", "mail"],
+      const handleResponse = (err, result) => {
+        if (!responseSent) {
+          responseSent = true;
+          callback(err, result);
+        }
       };
 
-      // console.log("LDAP search options:", opts);
+      client.on("error", (err) => {
+        console.error("LDAP client error:", err);
+        return handleResponse(err, null); // Handle client error
+      });
 
-      client.search(`ou=users,${config.baseDN}`, opts, (err, res) => {
+      const dn = `uid=${username},ou=users,${config.baseDN}`;
+
+      client.bind(config.DN_cmpt, config.LDAP_password, (err) => {
         if (err) {
-          console.error("LDAP search error:", err);
+          console.error("LDAP admin bind error:", err);
           client.unbind();
-          return callback(err);
+          return handleResponse(err, null);
         }
 
-        let user = null;
+        const opts = {
+          filter: `(uid=${username})`,
+          scope: "sub",
+          attributes: ["uid", "cn", "sn", "givenName", "title", "mail"],
+        };
 
-        res.on("searchEntry", (entry) => {
-          user = JSON.stringify(entry.pojo);
-          user = JSON.parse(user);
-          // console.log("Found LDAP user:", JSON.parse(user));
-        });
-
-        res.on("searchReference", (referral) => {
-          // console.log("Referral:", referral.uris.join());
-        });
-
-        res.on("error", (err) => {
-          console.error("LDAP search error event:", err.message);
-          client.unbind();
-          return callback(err);
-        });
-
-        res.on("end", (result) => {
-          // console.log("LDAP search end status:", result.status);
-          if (result.status !== 0 || !user) {
-            console.error("LDAP search end error or user not found:", result);
+        client.search(`ou=users,${config.baseDN}`, opts, (err, res) => {
+          if (err) {
+            console.error("LDAP search error:", err);
             client.unbind();
-            return callback(new Error("User not found"), null);
+            return handleResponse(err, null);
           }
 
-          client.bind(dn, password, (err) => {
-            client.unbind();
+          let user = null;
 
-            if (err) {
-              console.error("LDAP user bind error:", err);
-              return callback(new Error("Invalid credentials"), null);
+          res.on("searchEntry", (entry) => {
+            user = JSON.stringify(entry.pojo);
+            user = JSON.parse(user);
+          });
+
+          // res.on("searchReference", (referral) => {
+          // console.log("Referral:", referral.uris.join());
+          // });
+
+          res.on("error", (err) => {
+            console.error("LDAP search error event:", err.message);
+            client.unbind();
+            return handleResponse(err, null);
+          });
+
+          res.on("end", (result) => {
+            if (result.status !== 0 || !user) {
+              console.error("LDAP search end error or user not found:", result);
+              client.unbind();
+              return handleResponse(new Error("User not found"), null);
             }
 
-            callback(null, user);
+            client.bind(dn, password, (err) => {
+              client.unbind();
+
+              if (err) {
+                console.error("LDAP user bind error:", err);
+                return handleResponse(new Error("Invalid credentials"), null);
+              }
+
+              handleResponse(null, user);
+            });
           });
         });
       });
-    });
-
-    client.on("error", (err) => {
-      console.error("LDAP client error:", err);
-      client.unbind();
-      return callback(err, null);
-    });
+    } catch (error) {
+      console.error("Unexpected error during LDAP operation:", error);
+      return callback(error, null);
+    }
   });
 }
 
@@ -154,17 +166,6 @@ const extractAttributes = (attributes) => {
     }
   });
   return attributeMap;
-
-  // const desiredData = {
-  //   uid: attributes.attributes.find((attr) => attr.type === "uid").values[0],
-  //   sn: attributes.attributes.find((attr) => attr.type === "sn").values[0],
-  //   givenName: attributes.attributes.find((attr) => attr.type === "givenName")
-  //     .values[0],
-  //   title: attributes.attributes.find((attr) => attr.type === "title")
-  //     .values[0],
-  //   mail: attributes.attributes.find((attr) => attr.type === "mail").values[0],
-  // };
-  // return desiredData;
 };
 
 app.post("/", (req, res) => {
@@ -178,7 +179,6 @@ app.post("/", (req, res) => {
       }
 
       // Extract LDAP user attributes
-      // console.log(ldapUser);
       const ldapUserAttributes = extractAttributes(ldapUser.attributes);
       const { uid, sn, givenName, title, mail } = ldapUserAttributes;
 
@@ -1333,6 +1333,229 @@ app.get("/api/admin-email", (req, res) => {
     const adminEmail = results[0].param_value;
     res.json({ email: adminEmail });
   });
+});
+
+// Function to fetch all LDAP users
+function fetchAllLdapUsers(callback) {
+  fetchLdapConfig((err, config) => {
+    if (err) {
+      console.error("Error fetching LDAP config:", err);
+      return callback(err, null);
+    }
+
+    const client = ldap.createClient({
+      // url: `ldap://${config.ServeurLDAP}:389`,
+      url: `ldap://${config.ServeurLDAP}:${config.LDAP_port}`,
+    });
+
+    client.bind(config.DN_cmpt, config.LDAP_password, (err) => {
+      if (err) {
+        console.error("LDAP admin bind error:", err);
+        return callback(err);
+      }
+
+      const opts = {
+        filter: "(objectClass=inetOrgPerson)",
+        scope: "sub",
+        attributes: ["uid", "cn", "sn", "givenName", "title", "mail"],
+      };
+
+      client.search(`ou=users,${config.baseDN}`, opts, (err, res) => {
+        if (err) {
+          console.error("LDAP search error:", err);
+          client.unbind();
+          return callback(err);
+        }
+
+        const users = [];
+        res.on("searchEntry", (entry) => {
+          users.push(
+            transformSearchResultEntry(JSON.parse(JSON.stringify(entry.pojo)))
+          );
+        });
+
+        res.on("error", (err) => {
+          console.error("LDAP search error event:", err.message);
+          client.unbind();
+          return callback(err);
+        });
+
+        res.on("end", (result) => {
+          client.unbind();
+          callback(null, users);
+        });
+      });
+    });
+
+    client.on("error", (err) => {
+      console.error("LDAP client error:", err);
+      client.unbind();
+      return callback(err, null);
+    });
+  });
+}
+
+function transformSearchResultEntry(entry) {
+  const result = {};
+
+  entry.attributes.forEach((attr) => {
+    result[attr.type] = attr.values[0];
+  });
+
+  return result;
+}
+
+// Function to sync LDAP data with MySQL
+function syncLdapToMySql(callback) {
+  fetchAllLdapUsers((err, ldapUsers) => {
+    if (err) {
+      return callback(err);
+    }
+
+    // Iterate through LDAP users and update MySQL database
+    ldapUsers.forEach((ldapUser) => {
+      const { uid, cn, sn, givenName, title, mail } = ldapUser;
+
+      // Check if the user exists in the MySQL database
+      db.query(
+        "SELECT * FROM utilisateur WHERE username = ?",
+        [uid],
+        (error, results) => {
+          if (error) {
+            console.error("Database query error:", error);
+            return callback(error);
+          }
+
+          // if (results.length === 0) {
+          //
+          //   // If the user does not exist, insert them into the database
+          //
+          //   db.query(
+          //     "INSERT INTO utilisateur (username, nom, prenom, fonction, email, role_default) VALUES (?, ?, ?, ?, ?, ?)",
+          //     [uid, sn, givenName, title, mail, "Participant"],
+          //     (insertError, insertResults) => {
+          //       if (insertError) {
+          //         console.error("Database insert error:", insertError);
+          //         return callback(insertError);
+          //       }
+          //     }
+          //   );
+          // } else {
+          if (results.length !== 0) {
+            // If the user already exists, update their information
+            db.query(
+              "UPDATE utilisateur SET nom = ?, prenom = ?, fonction = ?, email = ? WHERE username = ?",
+              [sn, givenName, title, mail, uid],
+              (updateError) => {
+                if (updateError) {
+                  console.error("Database update error:", updateError);
+                  return callback(updateError);
+                }
+              }
+            );
+          }
+        }
+      );
+    });
+
+    callback(null, "Synchronisation terminée avec succès");
+  });
+}
+
+// Endpoint to trigger synchronization
+app.post("/api/sync-ldap", (req, res) => {
+  syncLdapToMySql((err, message) => {
+    if (err) {
+      return res.status(500).json({ error: "Internal server error" });
+    }
+    res.status(200).json({ message });
+  });
+});
+
+// Function to fetch the sync interval from the database
+const fetchSyncInterval = (callback) => {
+  db.query(
+    'SELECT param_value FROM parametres_de_base WHERE param_key = "periode_synch"',
+    (err, results) => {
+      if (err) {
+        console.error("Database query error:", err);
+        return callback(err);
+      }
+
+      if (results.length === 0) {
+        const error = new Error("Sync interval not found");
+        console.error(error);
+        return callback(error);
+      }
+
+      const intervalDays = parseInt(results[0].param_value, 10);
+      callback(null, intervalDays);
+    }
+  );
+};
+
+// Function to schedule the sync task
+let currentTask = null;
+
+const scheduleSyncTask = () => {
+  if (currentTask) {
+    currentTask.stop(); // Stop the previous task if it exists
+  }
+
+  fetchSyncInterval((err, intervalDays) => {
+    if (err) {
+      console.error("Failed to fetch sync interval:", err);
+      return;
+    }
+
+    if (intervalDays > 0) {
+      const intervalSeconds = intervalDays * 24 * 60 * 60;
+      // const intervalSeconds = 10;
+
+      currentTask = cron.schedule(
+        `*/${intervalSeconds} * * * * *`,
+        syncLdapToMySqlWrapper
+      );
+
+      console.log(`Scheduled sync task to run every ${intervalDays} days.`);
+    } else {
+      console.log("Sync task is disabled");
+    }
+  });
+};
+const syncLdapToMySqlWrapper = () => {
+  syncLdapToMySql(handleSyncCompletion);
+};
+
+const handleSyncCompletion = (err, message) => {
+  if (err) {
+    console.error("Error during synchronization:", err);
+  } else {
+    console.log(message);
+  }
+};
+
+// Initialize the schedule
+scheduleSyncTask();
+
+// Endpoint for admin to update sync interval
+app.post("/api/update-sync-interval", (req, res) => {
+  const { syncIntervalDays } = req.body;
+
+  db.query(
+    'UPDATE parametres_de_base SET param_value = ? WHERE param_key = "periode_synch"',
+    [syncIntervalDays],
+    (err) => {
+      if (err) {
+        console.error("Failed to update sync interval:", err);
+        return res.status(500).json({ error: "Internal server error" });
+      }
+
+      scheduleSyncTask(); // Re-schedule the task with the new interval
+
+      res.status(200).json({ message: "Sync interval updated successfully" });
+    }
+  );
 });
 
 app.listen(8000, () => {
