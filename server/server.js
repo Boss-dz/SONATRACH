@@ -12,8 +12,8 @@ const db = mysql.createConnection({
   host: "localhost",
   user: "root",
   password: "",
-  database: "form-eval",
-  port: 3306,
+  database: "form-eval-son",
+  port: 3307,
 });
 
 db.connect((err) => {
@@ -264,23 +264,6 @@ app.post("/", (req, res) => {
   } else {
     res.status(400).json({ error: "Invalid username format" });
   }
-
-  // db.query(
-  //   "SELECT * FROM utilisateur WHERE username = ? AND password = ?",
-  //   [username, password],
-  //   (error, results) => {
-  //     if (error) {
-  //       console.error("Database query error:", error);
-  //       return res.status(500).json({ error: "Internal server error" });
-  //     }
-
-  //     if (results.length === 0) {
-  //       return res.status(401).json({ error: "Invalid username or password" });
-  //     }
-  //     const user = results[0];
-  //     return res.status(200).json({ message: "Login successful", user: user });
-  //   }
-  // );
 });
 
 app.get("/AdminFormation/formations_non_cloture/:userID?", (req, res) => {

@@ -93,10 +93,6 @@ Merci pour votre collaboration.`;
     }
   };
 
-  // useEffect(() => {
-  //   console.log(membresConcernes);
-  // }, [membresConcernes]);
-
   const handleRemoveParticipant = (id) => {
     setMembresAjoutes((prev) =>
       prev.filter((participant) => participant.userID !== id)
