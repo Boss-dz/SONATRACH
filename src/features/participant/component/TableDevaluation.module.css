@@ -23,10 +23,11 @@ th {
   padding-bottom: 20px;
 }
 .tableHead {
-  background-image: url("/public/Welcome.svg");
+  background-color: #f29e4f;
+  background-image: url("/public/Welcome-cropped.svg");
   color: #fff;
-  background-size: auto;
-  background-repeat: no-repeat;
+  background-size: 1500px;
+  /* background-repeat: no-repeat; */
   background-position: center;
 }
 .emojis {
