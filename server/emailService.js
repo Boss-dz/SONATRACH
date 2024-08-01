@@ -6,7 +6,7 @@ const db = mysql.createConnection({
   host: "localhost",
   user: "root",
   password: "",
-  database: "form-eval-son",
+  database: "eval-form",
   port: 3307,
 });
 
@@ -44,13 +44,13 @@ const sendEmail = (to, subject, text) => {
         port: config.Port_msgr,
         secure: false,
         auth: {
-          user: "haouamoha33@gmail.com",
-          pass: "17@savana123",
+          user: "rayanmelzi0@gmail.com",
+          pass: "emtlfndwouyhlgwf",
         },
       });
 
       const mailOptions = {
-        from: "haouamoha33@gmail.com",
+        from: "rayanmelzi0@gmail.com",
         to,
         subject,
         text,

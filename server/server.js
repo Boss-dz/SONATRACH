@@ -13,7 +13,7 @@ const db = mysql.createConnection({
   host: "localhost",
   user: "root",
   password: "",
-  database: "form-eval-son",
+  database: "eval-form",
   port: 3307,
 });
 
