@@ -71,8 +71,18 @@ export default function Notification({ addStyle, color }) {
   return (
     <div className={`${style.container} ${addStyle ? addStyle : ""}`}>
       <p className={style.text}>
-        Vous avez <span className={addStyle ? style.span : ""}>{length}</span>{" "}
-        questionnaire a remplir !
+        {addStyle ? (
+          <>
+            Vous pouvez modifier <span className={style.span}>{length}</span>{" "}
+            questionnaires !
+          </>
+        ) : (
+          <>
+            Vous avez{" "}
+            <span className={addStyle ? style.span : ""}>{length}</span>{" "}
+            questionnaire a remplir !
+          </>
+        )}
       </p>
       <div className={style.card}>
         {list.map((e, i) => (

@@ -55,7 +55,7 @@ export default function Notification({ addStyle, btnColor, statistics }) {
             </div>
             <div>
               <p className={style.date}>
-                Reponnses:{" "}
+                Reponses:{" "}
                 <b>
                   {e.reponses}/{e.participants}
                 </b>
